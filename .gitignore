@@ -47,5 +47,8 @@ next-env.d.ts
 *.swo
 *~
 
+# Git worktrees
+.worktrees/
+
 # OS
 Thumbs.db
