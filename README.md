@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Laxvish Website
 
-## Getting Started
+Marketing website for **Laxvish — the Operating System for Enterprise AI**.
 
-First, run the development server:
+This repository is website-only scope (frontend experience + website API surface for lead capture) and focuses on:
+
+- **The Workers**: domain AI agent experiences
+- **The Brain**: orchestration intelligence storytelling
+- **The Brakes**: verification and DPDP-first trust messaging
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+
+## Local Development
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Run development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Start local development server |
+| `npm run lint` | Run ESLint checks |
+| `npm run test` | Run unit tests with Vitest |
+| `npm run build` | Build production bundle |
+| `npm run start` | Serve built app |
 
-## Learn More
+## Testing
 
-To learn more about Next.js, take a look at the following resources:
+Unit tests currently cover:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `lib/enterpriseVault.ts` validation and record persistence behavior
+- `app/api/lead-capture/route.ts` handshake, validation, and rate-limiting behavior
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Run:
 
-## Deploy on Vercel
+```bash
+npm run test
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## CI/CD
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Continuous Integration
+
+Workflow: `.github/workflows/ci.yml`
+
+On push to `main` and on pull requests, CI runs:
+
+1. `npm ci`
+2. `npm run lint`
+3. `npm run test`
+4. `npm run build`
+
+### Vercel Deployment
+
+Workflow: `.github/workflows/deploy-vercel.yml`
+
+Production deploy runs on:
+
+- push to `main`
+- manual trigger (`workflow_dispatch`)
+
+Required GitHub repository secrets:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+## Lead Capture API
+
+Route: `POST /api/lead-capture`
+
+Security controls implemented:
+
+- required handshake header (`x-laxvish-handshake`)
+- payload validation
+- honeypot field
+- in-memory per-IP rate limiting
+
+## Repository Structure
+
+```text
+app/                    # Next.js app router pages and API routes
+components/             # UI and section components
+lib/                    # Shared domain logic (lead vault, validators)
+public/                 # Static assets
+.github/workflows/      # CI + deployment workflows
+```
+
+## Contributing
+
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a PR.
