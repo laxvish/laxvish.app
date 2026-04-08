@@ -131,6 +131,71 @@ Deploys to Vercel production environment after CI passes.
 
 ---
 
+## Database Setup (Prompt 17: Serverless Database Sync)
+
+### Overview
+The application supports PostgreSQL backend integration for persistent lead storage via Prisma ORM.
+
+### Prerequisites
+- PostgreSQL database (free options: [Neon](https://neon.tech), [Supabase](https://supabase.com))
+- Neon free tier: 0.5GB storage, 0.5 compute, 3 branches
+- Supabase free tier: 500MB storage, realtime APIs
+
+### Setup Steps
+
+1. **Get Database URL:**
+   - Sign up for Neon or Supabase
+   - Create a new PostgreSQL database
+   - Copy connection string (format: `postgresql://user:password@host:port/database?sslmode=require`)
+
+2. **Configure Local Environment:**
+   ```bash
+   # Copy .env.example to .env.local
+   cp .env.example .env.local
+   
+   # Add your DATABASE_URL
+   echo "DATABASE_URL=\"postgresql://...\"" >> .env.local
+   ```
+
+3. **Run Migrations:**
+   ```bash
+   # Automatically run before build
+   npm run prebuild
+   
+   # Or manually
+   npx prisma migrate deploy
+   ```
+
+4. **Verify Database:**
+   ```bash
+   # View Prisma Studio (admin interface)
+   npx prisma studio
+   ```
+
+### Schema (Prompt 17 Implementation)
+- **Lead Table** — Stores captured leads with:
+  - `id` (CUID primary key)
+  - `name`, `email`, `company`, `useCase` (lead details)
+  - `status` (pending/contacted/pilot/inactive)
+  - `identity` (SHA-256 deduplication hash)
+  - `source` (always "website" for website scope)
+  - `metadata` (JSON for additional context)
+  - `createdAt`, `updatedAt` (timestamps)
+  - Indexes on email, company, createdAt, status for query performance
+
+### Deployment
+Set `DATABASE_URL` in GitHub repository secrets for production:
+1. Settings → Secrets and Variables → Actions
+2. Add `DATABASE_URL` with production database connection string
+3. Vercel deployment will automatically apply migrations
+
+### Future Enhancements
+- Admin export API endpoint (JSON/CSV export)
+- Real-time webhooks for lead synchronization
+- Analytics dashboard for lead status tracking
+
+---
+
 ## Project Structure
 
 ```
@@ -146,7 +211,12 @@ laxvish.app/
 │   ├── sections/             # Homepage sections (Hero, Pillars, etc.)
 │   └── ui/                   # Reusable UI components
 ├── lib/
-│   └── enterpriseVault.ts    # Lead validation & storage
+│   ├── enterpriseVault.ts    # Lead validation & storage
+│   ├── prisma.ts             # Prisma client singleton (Prompt 17)
+│   └── generated/prisma/     # Auto-generated Prisma types
+├── prisma/
+│   ├── schema.prisma         # Lead table schema
+│   └── migrations/           # Database migration files
 ├── public/                   # Static assets (fonts, images)
 ├── .github/
 │   ├── copilot-instructions.md
@@ -154,7 +224,9 @@ laxvish.app/
 ├── vitest.config.ts          # Test runner config
 ├── next.config.ts            # Next.js config
 ├── tailwind.config.ts        # Tailwind theme tokens
-└── prompt.md                 # Full prompt specifications (16 sections)
+├── prisma.config.ts          # Prisma configuration
+├── .env.example              # Environment template with DATABASE_URL
+└── prompt.md                 # Full prompt specifications (17 sections)
 ```
 
 ---
@@ -166,6 +238,7 @@ laxvish.app/
 - **Images:** Next.js `<Image>` component with lazy loading
 - **Fonts:** Geist font preloaded via `next/font`
 - **Rendering:** Server components by default; selective client-side interactivity
+- **Database:** Prisma connection pooling (Neon/Supabase automatic)
 
 ---
 
