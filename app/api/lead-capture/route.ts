@@ -109,16 +109,27 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     request.headers.get("user-agent"),
   );
 
-  persistLeadVaultRecord(record);
+  try {
+    await persistLeadVaultRecord(record);
+    const queueDepth = await getLeadVaultCount();
 
-  return NextResponse.json(
-    {
-      ok: true,
-      message: "Lead captured in enterprise vault.",
-      referenceId: record.id,
-      action: record.action,
-      queueDepth: getLeadVaultCount(),
-    },
-    { status: 201 },
-  );
+    return NextResponse.json(
+      {
+        ok: true,
+        message: "Lead captured in enterprise vault.",
+        referenceId: record.id,
+        action: record.action,
+        queueDepth,
+      },
+      { status: 201 },
+    );
+  } catch {
+    return NextResponse.json(
+      {
+        ok: false,
+        message: "Lead storage is temporarily unavailable.",
+      },
+      { status: 503 },
+    );
+  }
 }

@@ -1,3 +1,5 @@
+import { Pool } from "pg";
+
 export type LeadCaptureAction = "pilot" | "blueprint";
 
 export interface LeadVaultInsert {
@@ -51,6 +53,10 @@ const MAX_USE_CASE_LENGTH = 1000;
 const MAX_USER_AGENT_LENGTH = 256;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+declare global {
+  var leadVaultPool: Pool | undefined;
+}
 
 function normalizeText(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -126,12 +132,55 @@ export function buildLeadVaultRecord(
   };
 }
 
-const vaultRecords: LeadVaultRecord[] = [];
+function getLeadVaultPool(): Pool {
+  if (!globalThis.leadVaultPool) {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error("DATABASE_URL is not configured.");
+    }
 
-export function persistLeadVaultRecord(record: LeadVaultRecord): void {
-  vaultRecords.push(record);
+    globalThis.leadVaultPool = new Pool({ connectionString });
+  }
+
+  return globalThis.leadVaultPool;
 }
 
-export function getLeadVaultCount(): number {
-  return vaultRecords.length;
+export async function persistLeadVaultRecord(record: LeadVaultRecord): Promise<void> {
+  const pool = getLeadVaultPool();
+  await pool.query(
+    `
+      INSERT INTO public.enterprise_lead_vault (
+        id,
+        created_at,
+        source,
+        identity_hash,
+        user_agent,
+        name,
+        work_email,
+        company,
+        use_case,
+        action
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    `,
+    [
+      record.id,
+      record.createdAt,
+      record.source,
+      record.identityHash,
+      record.userAgent,
+      record.name,
+      record.workEmail,
+      record.company,
+      record.useCase,
+      record.action,
+    ],
+  );
+}
+
+export async function getLeadVaultCount(): Promise<number> {
+  const pool = getLeadVaultPool();
+  const result = await pool.query<{ count: string }>(
+    "SELECT COUNT(*)::text AS count FROM public.enterprise_lead_vault",
+  );
+  return Number.parseInt(result.rows[0]?.count ?? "0", 10);
 }

@@ -64,3 +64,13 @@ Prompt 16: The Dual-Action Terminal (Lead Capture UI)
   2. Integration blueprint request
 - Connect form submission to the secure API route.
 - Show clear pending/success/error states with responsive layout behavior.
+
+Prompt 17: The Neon Serverless Ignition (Database Sync)
+- Add persistent database integration for lead storage and real-time sync.
+- Use PostgreSQL (Supabase/Neon) for serverless database backend.
+- Create async webhook handler to sync leads from API to database in near real-time.
+- Implement typed schema (TypeORM or Prisma) for leads with timestamps, status, and metadata.
+- Add optional admin dashboard/export endpoint for lead retrieval (JSON export, CSV).
+- Ensure database connection pooling for scalability and connection limit compliance.
+- Maintain security: use environment secrets, parameterized queries, and row-level validation.
+- Keep website scope: dashboard is optional; lead capture API is the primary integration.
