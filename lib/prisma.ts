@@ -1,7 +1,9 @@
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   var prisma: any;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let prisma: any = null;
 
 // Lazy load Prisma client only in runtime environments
@@ -9,8 +11,10 @@ if (process.env.NODE_ENV !== "production" || process.env.DATABASE_URL) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PrismaClient } = require("@prisma/client");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prisma = (global as any).prisma || new PrismaClient();
     if (process.env.NODE_ENV !== "production") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (global as any).prisma = prisma;
     }
   } catch (error) {
