@@ -1,6 +1,14 @@
+import Link from "next/link";
 import { NeuralCanvas } from "@/components/ui/NeuralCanvas";
+import {
+  BOOK_NOW_BUTTON_CLASS,
+  SECONDARY_HERO_CTA_CLASS,
+  getBookDemoUrl,
+} from "@/lib/site-navigation";
 
 export function Hero() {
+  const bookDemoUrl = getBookDemoUrl();
+
   return (
     <section className="relative isolate overflow-hidden border-b border-charcoal/20">
       <div className="absolute inset-0 opacity-82">
@@ -24,18 +32,20 @@ export function Hero() {
             and policy confidence from day one.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-            <button
-              type="button"
-              className="w-full rounded-full bg-vaultAmber px-6 py-3 text-sm font-semibold text-black transition-colors duration-200 hover:bg-[#c4beaf] sm:w-auto"
+            <a
+              href={bookDemoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={`${BOOK_NOW_BUTTON_CLASS} w-full px-6 py-3 sm:w-auto`}
             >
-              Request Pilot
-            </button>
-            <button
-              type="button"
-              className="w-full rounded-full border border-charcoal/40 px-6 py-3 text-sm font-semibold text-neonCyan transition-colors duration-200 hover:border-charcoal/75 sm:w-auto"
+              <span className="relative z-10">Book Now</span>
+            </a>
+            <Link
+              href="/solutions"
+              className={`${SECONDARY_HERO_CTA_CLASS} w-full sm:w-auto`}
             >
               View System Brief
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  BOOK_NOW_BUTTON_CLASS,
   FOOTER_GROUPS,
   SOCIAL_LINKS,
   getBookDemoUrl,
@@ -28,9 +29,9 @@ export function Footer() {
               href={bookDemoUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-6 inline-flex rounded-full bg-vaultAmber px-5 py-2.5 text-sm font-semibold text-black transition-colors duration-200 hover:bg-vaultAmber/90"
+              className={`${BOOK_NOW_BUTTON_CLASS} mt-6`}
             >
-              Book Demo
+              <span className="relative z-10">Book Now</span>
             </a>
           </div>
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getBookDemoUrl } from "@/lib/site-navigation";
+import { BOOK_NOW_BUTTON_CLASS, getBookDemoUrl } from "@/lib/site-navigation";
 
 export function FinalCta() {
   const bookDemoUrl = getBookDemoUrl();
@@ -23,9 +23,9 @@ export function FinalCta() {
             href={bookDemoUrl}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full bg-vaultAmber px-7 py-3 text-sm font-semibold text-black transition-colors duration-200 hover:bg-vaultAmber/90"
+            className={`${BOOK_NOW_BUTTON_CLASS} px-7 py-3`}
           >
-            Book Pilot Call
+            <span className="relative z-10">Book Now</span>
           </a>
           <Link
             href="/solutions"

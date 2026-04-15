@@ -5,7 +5,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NavMenu } from "@/components/layout/NavMenu";
 import { MagneticButton } from "@/components/ui/MagneticButton";
-import { PRIMARY_NAV_LINKS, getBookDemoUrl } from "@/lib/site-navigation";
+import {
+  BOOK_NOW_BUTTON_CLASS,
+  PRIMARY_NAV_LINKS,
+  getBookDemoUrl,
+} from "@/lib/site-navigation";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -55,7 +59,7 @@ export function Navbar() {
 
         <MagneticButton
           type="button"
-          className="relative hidden overflow-hidden rounded-full border border-[#90b2ff]/50 bg-[linear-gradient(135deg,#d9e8ff_0%,#a9c4ff_50%,#7ea7ff_100%)] px-5 py-2 text-sm font-semibold tracking-[0.01em] text-obsidian shadow-[0_12px_30px_rgba(62,108,214,0.38)] transition-all duration-300 before:absolute before:inset-0 before:bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.58)_50%,transparent_100%)] before:translate-x-[-140%] before:transition-transform before:duration-700 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(62,108,214,0.46)] hover:before:translate-x-[140%] md:inline-flex"
+          className={`${BOOK_NOW_BUTTON_CLASS} hidden md:inline-flex`}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={redirectToDemo}
@@ -86,7 +90,7 @@ export function Navbar() {
           />
           <button
             type="button"
-            className="mt-4 w-full rounded-full border border-[#90b2ff]/45 bg-[linear-gradient(135deg,#d9e8ff_0%,#a9c4ff_50%,#7ea7ff_100%)] px-4 py-2 text-sm font-semibold text-obsidian shadow-[0_8px_20px_rgba(62,108,214,0.33)] transition-all duration-200 hover:shadow-[0_10px_24px_rgba(62,108,214,0.42)]"
+            className={`${BOOK_NOW_BUTTON_CLASS} mt-4 w-full px-4`}
             onClick={redirectToDemo}
           >
             Book Now
