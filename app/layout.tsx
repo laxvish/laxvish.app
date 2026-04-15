@@ -4,6 +4,7 @@ import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { NoiseOverlay } from "@/components/layout/NoiseOverlay";
+import { Analytics } from "@vercel/analytics/next";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -35,6 +36,7 @@ export default function RootLayout({
         <Navbar />
         <main className="relative z-10 flex min-h-screen flex-col">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
