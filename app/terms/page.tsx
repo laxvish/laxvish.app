@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import { PageBlocks } from "@/components/sections/depth/PageBlocks";
 import { PageHero } from "@/components/sections/depth/PageHero";
+import { buildPageMetadata } from "@/lib/seo";
 import { PAGE_CONTENT } from "@/lib/site-pages";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Terms of Use",
+  description:
+    "Read the terms governing use of Laxvish website resources and service discussions.",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   const content = PAGE_CONTENT.terms;
