@@ -16,9 +16,10 @@ datasource db {
 model Lead {
   id        String   @id @default(cuid())
   name      String   @db.VarChar(255)
-  email     String   @db.VarChar(255)
+  workEmail String   @db.VarChar(255)
   company   String   @db.VarChar(255)
   useCase   String   @db.Text
+  action    String   @db.VarChar(64)
   status    String   @default("pending") // pending, contacted, pilot, inactive
   identity  String?  @db.Char(64) // SHA-256 hash for deduplication
   
@@ -31,7 +32,7 @@ model Lead {
   updatedAt DateTime @updatedAt
   
   // Indexes for query performance
-  @@index([email])
+  @@index([workEmail])
   @@index([company])
   @@index([createdAt])
   @@index([status])

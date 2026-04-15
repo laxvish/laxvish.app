@@ -5,8 +5,10 @@ import {
   persistLeadVaultRecord,
   validateLeadVaultInsert,
 } from "@/lib/enterpriseVault";
+import { sendLeadSyncWebhook } from "@/lib/leadSync";
+import { safeTokenCompare } from "@/lib/security";
 
-const HANDSHAKE_TOKEN = "vault-handshake-v1";
+const HANDSHAKE_TOKEN = process.env.LEAD_CAPTURE_HANDSHAKE ?? "vault-handshake-v1";
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 6;
 
@@ -17,6 +19,14 @@ interface RateWindow {
 
 const rateWindows = new Map<string, RateWindow>();
 
+function cleanupRateWindows(timestamp: number): void {
+  for (const [key, value] of rateWindows.entries()) {
+    if (timestamp - value.startTime > RATE_LIMIT_WINDOW_MS) {
+      rateWindows.delete(key);
+    }
+  }
+}
+
 function getRequesterKey(request: NextRequest): string {
   const forwarded = request.headers.get("x-forwarded-for");
   const firstForwarded = forwarded?.split(",")[0]?.trim();
@@ -24,6 +34,7 @@ function getRequesterKey(request: NextRequest): string {
 }
 
 function isRateLimited(key: string, timestamp: number): boolean {
+  cleanupRateWindows(timestamp);
   const currentWindow = rateWindows.get(key);
   if (!currentWindow || timestamp - currentWindow.startTime > RATE_LIMIT_WINDOW_MS) {
     rateWindows.set(key, { count: 1, startTime: timestamp });
@@ -56,7 +67,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   const handshake = request.headers.get("x-laxvish-handshake");
-  if (handshake !== HANDSHAKE_TOKEN) {
+  if (!safeTokenCompare(handshake, HANDSHAKE_TOKEN)) {
     return NextResponse.json(
       { ok: false, message: "Secure handshake failed." },
       { status: 401 },
@@ -90,6 +101,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const validation = validateLeadVaultInsert(payload);
   if (!validation.success) {
+    console.error("Lead payload validation failed:", validation.errors);
     return NextResponse.json(
       {
         ok: false,
@@ -108,10 +120,35 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     identityHash,
     request.headers.get("user-agent"),
   );
+  const syncMode = process.env.LEAD_SYNC_MODE === "webhook" ? "webhook" : "direct";
+
+  if (syncMode === "webhook") {
+    const syncQueued = await sendLeadSyncWebhook(record);
+    if (!syncQueued) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: "Lead sync webhook delivery failed.",
+        },
+        { status: 503 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        ok: true,
+        message: "Lead accepted and queued for sync.",
+        referenceId: record.id,
+        action: record.action,
+        sync: "queued",
+      },
+      { status: 202 },
+    );
+  }
 
   try {
     await persistLeadVaultRecord(record);
-    const queueDepth = await getLeadVaultCount();
+    const queueDepth = process.env.DATABASE_URL ? null : await getLeadVaultCount();
 
     return NextResponse.json(
       {
@@ -119,15 +156,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         message: "Lead captured in enterprise vault.",
         referenceId: record.id,
         action: record.action,
-        queueDepth,
+        ...(queueDepth !== null ? { queueDepth } : {}),
+        sync: "disabled",
       },
       { status: 201 },
     );
-  } catch {
+  } catch (error: unknown) {
+    console.error("Lead storage failure.", {
+      hasDatabase: Boolean(process.env.DATABASE_URL),
+      error: error instanceof Error ? error.message : "unknown",
+    });
     return NextResponse.json(
       {
         ok: false,
         message: "Lead storage is temporarily unavailable.",
+        sync: "disabled",
       },
       { status: 503 },
     );

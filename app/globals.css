@@ -2,47 +2,6 @@
 @import "tailwindcss";
 
 body {
-  @apply bg-obsidian text-gray-300 antialiased;
+  @apply bg-obsidian text-charcoal antialiased;
   font-family: var(--font-inter), sans-serif;
-}
-
-@keyframes marquee-left {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-@keyframes marquee-right {
-  0% {
-    transform: translate3d(-50%, 0, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  gap: 1rem;
-  will-change: transform;
-}
-
-.marquee-track-left {
-  animation: marquee-left 30s linear infinite;
-}
-
-.marquee-track-right {
-  animation: marquee-right 30s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track-left,
-  .marquee-track-right {
-    animation: none;
-    transform: translate3d(0, 0, 0);
-  }
 }

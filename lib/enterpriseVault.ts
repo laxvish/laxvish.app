@@ -1,6 +1,6 @@
-import { Pool } from "pg";
+import { getPrismaClient } from "@/lib/prisma";
 
-export type LeadCaptureAction = "pilot" | "blueprint";
+export type LeadCaptureAction = string;
 
 export interface LeadVaultInsert {
   name: string;
@@ -43,27 +43,24 @@ export const ENTERPRISE_VAULT_SCHEMA = {
     workEmail: "email",
     company: "string(2-120)",
     useCase: "string(10-1000)",
-    action: "enum(pilot|blueprint)",
+    action: "string(1-64)",
   },
 } as const;
 
 const MAX_NAME_LENGTH = 80;
 const MAX_COMPANY_LENGTH = 120;
 const MAX_USE_CASE_LENGTH = 1000;
+const MAX_ACTION_LENGTH = 64;
 const MAX_USER_AGENT_LENGTH = 256;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 declare global {
-  var leadVaultPool: Pool | undefined;
+  var leadVaultMemory: LeadVaultRecord[] | undefined;
 }
 
 function normalizeText(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
-}
-
-function isAction(value: unknown): value is LeadCaptureAction {
-  return value === "pilot" || value === "blueprint";
 }
 
 export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationResult {
@@ -79,31 +76,33 @@ export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationRe
   const workEmail = normalizeText(candidate.workEmail).toLowerCase();
   const company = normalizeText(candidate.company);
   const useCase = normalizeText(candidate.useCase);
-  const action = candidate.action;
+  const action = normalizeText(candidate.action);
+  const website = candidate.website;
 
   const errors: string[] = [];
 
-  if (name.length < 2 || name.length > MAX_NAME_LENGTH) {
-    errors.push("Name must be between 2 and 80 characters.");
+  if (name.length === 0 || name.length > MAX_NAME_LENGTH) {
+    errors.push("name is required and must be <= 80 characters.");
   }
   if (!emailPattern.test(workEmail)) {
-    errors.push("Work email must be valid.");
+    errors.push("workEmail must be a valid email.");
   }
-  if (company.length < 2 || company.length > MAX_COMPANY_LENGTH) {
-    errors.push("Company must be between 2 and 120 characters.");
+  if (company.length === 0 || company.length > MAX_COMPANY_LENGTH) {
+    errors.push("company is required and must be <= 120 characters.");
   }
-  if (useCase.length < 10 || useCase.length > MAX_USE_CASE_LENGTH) {
-    errors.push("Use case must be between 10 and 1000 characters.");
+  if (useCase.length === 0 || useCase.length > MAX_USE_CASE_LENGTH) {
+    errors.push("useCase is required and must be <= 1000 characters.");
   }
-  if (!isAction(action)) {
-    errors.push("Action must be either 'pilot' or 'blueprint'.");
+  if (action.length === 0 || action.length > MAX_ACTION_LENGTH) {
+    errors.push("action is required and must be <= 64 characters.");
+  }
+  if (website !== undefined && (typeof website !== "string" || website.trim().length > 0)) {
+    errors.push("website must be empty when provided.");
   }
 
   if (errors.length > 0) {
     return { success: false, errors };
   }
-
-  const safeAction = action as LeadCaptureAction;
 
   return {
     success: true,
@@ -112,7 +111,7 @@ export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationRe
       workEmail,
       company,
       useCase,
-      action: safeAction,
+      action,
     },
   };
 }
@@ -132,55 +131,45 @@ export function buildLeadVaultRecord(
   };
 }
 
-function getLeadVaultPool(): Pool {
-  if (!globalThis.leadVaultPool) {
-    const connectionString = process.env.DATABASE_URL;
-    if (!connectionString) {
-      throw new Error("DATABASE_URL is not configured.");
-    }
-
-    globalThis.leadVaultPool = new Pool({ connectionString });
+function getLeadVaultMemory(): LeadVaultRecord[] {
+  if (!globalThis.leadVaultMemory) {
+    globalThis.leadVaultMemory = [];
   }
-
-  return globalThis.leadVaultPool;
+  return globalThis.leadVaultMemory;
 }
 
 export async function persistLeadVaultRecord(record: LeadVaultRecord): Promise<void> {
-  const pool = getLeadVaultPool();
-  await pool.query(
-    `
-      INSERT INTO public.enterprise_lead_vault (
-        id,
-        created_at,
-        source,
-        identity_hash,
-        user_agent,
-        name,
-        work_email,
-        company,
-        use_case,
-        action
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    `,
-    [
-      record.id,
-      record.createdAt,
-      record.source,
-      record.identityHash,
-      record.userAgent,
-      record.name,
-      record.workEmail,
-      record.company,
-      record.useCase,
-      record.action,
-    ],
-  );
+  const prisma = getPrismaClient();
+  if (!prisma) {
+    getLeadVaultMemory().push(record);
+    return;
+  }
+
+  await prisma.lead.create({
+    data: {
+      id: record.id,
+      name: record.name,
+      workEmail: record.workEmail,
+      company: record.company,
+      useCase: record.useCase,
+      action: record.action,
+      status: "pending",
+      identity: record.identityHash,
+      source: "website",
+      metadata: JSON.stringify({
+        source: record.source,
+        userAgent: record.userAgent,
+      }),
+      createdAt: new Date(record.createdAt),
+    },
+  });
 }
 
 export async function getLeadVaultCount(): Promise<number> {
-  const pool = getLeadVaultPool();
-  const result = await pool.query<{ count: string }>(
-    "SELECT COUNT(*)::text AS count FROM public.enterprise_lead_vault",
-  );
-  return Number.parseInt(result.rows[0]?.count ?? "0", 10);
+  const prisma = getPrismaClient();
+  if (!prisma) {
+    return getLeadVaultMemory().length;
+  }
+
+  return prisma.lead.count();
 }

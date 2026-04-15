@@ -7,17 +7,17 @@ const pillars: Pillar[] = [
   {
     title: "Workers",
     description:
-      "Domain agents that execute high-value tasks across MSME, AYUSH, and logistics workflows.",
+      "Focused AI workers for repeatable business tasks with measurable output.",
   },
   {
     title: "Brain",
     description:
-      "A coordination layer that routes, supervises, and aligns actions across the digital workforce.",
+      "A control layer that routes tasks, monitors execution, and keeps workflows aligned.",
   },
   {
     title: "Brakes",
     description:
-      "Verification controls that reduce risk with policy-first governance and trust-by-design guardrails.",
+      "Verification controls that keep AI actions auditable, policy-aware, and enterprise safe.",
   },
 ];
 
@@ -25,28 +25,28 @@ export function PillarsGrid() {
   return (
     <section
       id="the-os"
-      className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
+      className="mx-auto w-full max-w-[90rem] px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
     >
-      <div className="max-w-3xl">
-        <h2 className="text-3xl font-bold text-white [font-family:var(--font-space-grotesk)] sm:text-4xl lg:text-5xl">
+      <div className="mx-auto max-w-3xl text-center">
+        <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
           Workers. Brain. Brakes.
         </h2>
-        <p className="mt-4 text-gray-400">
-          One operating model to orchestrate execution while keeping enterprise
-          AI verifiable and compliant.
+        <p className="mt-4 text-sm text-charcoal/80 sm:text-base">
+          Three primitives that make enterprise AI easier to understand, govern,
+          and scale.
         </p>
       </div>
 
-      <div className="mt-10 grid gap-5 md:grid-cols-3">
+      <div className="mt-8 grid gap-4 md:grid-cols-3">
         {pillars.map((pillar) => (
           <article
             key={pillar.title}
-            className="rounded-2xl border border-white/10 bg-white/5 p-6 transition-all duration-200 hover:-translate-y-1 hover:border-neonCyan/40 hover:shadow-[0_0_20px_rgba(0,240,255,0.15)]"
+            className="rounded-2xl border border-charcoal/20 bg-[#0d0d0d] p-6"
           >
-            <h3 className="text-xl font-semibold text-white [font-family:var(--font-space-grotesk)]">
+            <h3 className="text-lg font-semibold text-neonCyan [font-family:var(--font-space-grotesk)]">
               {pillar.title}
             </h3>
-            <p className="mt-3 text-sm leading-6 text-gray-400">
+            <p className="mt-3 text-sm leading-6 text-charcoal/78">
               {pillar.description}
             </p>
           </article>

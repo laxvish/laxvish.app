@@ -8,10 +8,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        obsidian: "#050505",
-        neonCyan: "#00F0FF",
-        vaultAmber: "#FFB800",
-        charcoal: "#1A1A24",
+        obsidian: "#000000",
+        neonCyan: "#F2F2F2",
+        vaultAmber: "#B6B09F",
+        charcoal: "#EAE4D5",
       },
       keyframes: {
         pulseSlow: {

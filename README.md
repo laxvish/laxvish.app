@@ -52,6 +52,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser. The page auto-refreshes on edits to `app/page.tsx` and related components.
 
+To use your own Book Demo popup target, set:
+
+```bash
+NEXT_PUBLIC_NEETOCAL_URL="https://laxvish.neetocal.com/meeting-with-shubham-kumar"
+```
+
 ### Build
 
 ```bash
@@ -73,12 +79,29 @@ npm start
 
 ---
 
+## Site Navigation
+
+The premium navigation and footer route to dedicated pages:
+
+- `/solutions`
+- `/workers`
+- `/brain`
+- `/brakes`
+- `/security-trust`
+- `/faq`
+- `/about`
+- `/contact`
+- `/privacy`
+- `/terms`
+
+---
+
 ## Testing
 
 Unit tests cover two critical areas:
 
 ### Enterprise Vault (`lib/enterpriseVault.ts`)
-- ✅ Validates lead data (name, email, company, use case)
+- ✅ Validates lead data (name, workEmail, company, useCase, action)
 - ✅ Enforces length constraints
 - ✅ Persists records in-memory
 
@@ -134,7 +157,7 @@ Deploys to Vercel production environment after CI passes.
 ## Database Setup (Prompt 17: Serverless Database Sync)
 
 ### Overview
-The application supports PostgreSQL backend integration for persistent lead storage via Prisma ORM.
+The application supports PostgreSQL backend integration for persistent lead storage via Prisma ORM, plus near real-time webhook sync.
 
 ### Prerequisites
 - PostgreSQL database (free options: [Neon](https://neon.tech), [Supabase](https://supabase.com))
@@ -162,11 +185,21 @@ The application supports PostgreSQL backend integration for persistent lead stor
    # Automatically run before build
    npm run prebuild
    
-   # Or manually
-   npx prisma migrate deploy
-   ```
+    # Or manually
+    npx prisma migrate deploy
+    ```
 
-4. **Verify Database:**
+4. **Configure Sync + Admin Secrets (`.env.local`):**
+   ```bash
+   LEAD_SYNC_MODE="direct" # direct | webhook
+   LEAD_SYNC_SECRET="replace-with-strong-secret"
+   ADMIN_API_KEY="replace-with-admin-key"
+   ```
+   Optional:
+   ```bash
+   LEAD_SYNC_WEBHOOK_URL="https://your-domain.com/api/webhooks/lead-sync"
+   ```
+5. **Verify Database:**
    ```bash
    # View Prisma Studio (admin interface)
    npx prisma studio
@@ -175,23 +208,30 @@ The application supports PostgreSQL backend integration for persistent lead stor
 ### Schema (Prompt 17 Implementation)
 - **Lead Table** — Stores captured leads with:
   - `id` (CUID primary key)
-  - `name`, `email`, `company`, `useCase` (lead details)
+  - `name`, `workEmail`, `company`, `useCase`, `action` (lead details)
   - `status` (pending/contacted/pilot/inactive)
   - `identity` (SHA-256 deduplication hash)
   - `source` (always "website" for website scope)
   - `metadata` (JSON for additional context)
   - `createdAt`, `updatedAt` (timestamps)
-  - Indexes on email, company, createdAt, status for query performance
+  - Indexes on workEmail, company, createdAt, status for query performance
 
 ### Deployment
 Set `DATABASE_URL` in GitHub repository secrets for production:
 1. Settings → Secrets and Variables → Actions
 2. Add `DATABASE_URL` with production database connection string
-3. Vercel deployment will automatically apply migrations
+3. Add `LEAD_SYNC_MODE`, `LEAD_SYNC_SECRET`, `LEAD_SYNC_WEBHOOK_URL` (if webhook mode is enabled), and `ADMIN_API_KEY`
+4. Vercel deployment will automatically apply migrations
+
+### Runtime Endpoints (Prompt 17)
+- `POST /api/lead-capture` — Uses `LEAD_SYNC_MODE`:
+  - `direct`: writes directly to database.
+  - `webhook`: queues via webhook and returns `202`.
+- `POST /api/webhooks/lead-sync` — Async sync handler to Prisma/PostgreSQL (requires `x-lead-sync-secret`).
+- `GET /api/admin/leads?format=json|csv&limit=100` — Optional admin export endpoint (requires `x-admin-api-key`).
 
 ### Future Enhancements
-- Admin export API endpoint (JSON/CSV export)
-- Real-time webhooks for lead synchronization
+- Retry queue + dead-letter handling for webhook delivery
 - Analytics dashboard for lead status tracking
 
 ---
@@ -252,10 +292,11 @@ Secure endpoint for lead intake with three-layer protection: handshake header, r
 ```typescript
 {
   "name": string,
-  "email": string,
+  "workEmail": string,
   "company": string,
   "useCase": string,
-  "honeypot"?: string  // Anti-spam (should be empty)
+  "action": string,
+  "website"?: string  // Anti-spam honeypot (should be empty)
 }
 ```
 
@@ -277,7 +318,7 @@ Secure endpoint for lead intake with three-layer protection: handshake header, r
 ```
 
 **Headers required:**
-- `x-laxvish-handshake: true` — Must be present and true
+- `x-laxvish-handshake: <token>` — Must match `LEAD_CAPTURE_HANDSHAKE` (defaults to `vault-handshake-v1`)
 
 **Rate limit:** 6 requests per IP per 60 seconds.
 

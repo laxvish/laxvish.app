@@ -50,7 +50,7 @@ export function MagneticButton({
       style={magneticEnabled ? { x: springX, y: springY } : undefined}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={`rounded-full border border-vaultAmber bg-transparent px-5 py-2 text-sm font-medium text-vaultAmber transition-shadow duration-200 hover:shadow-[0_0_18px_rgba(255,184,0,0.35)] ${className ?? ""}`}
+      className={className ?? `rounded-full border border-vaultAmber bg-transparent px-5 py-2 text-sm font-medium text-vaultAmber transition-shadow duration-200 hover:shadow-[0_0_18px_rgba(182,176,159,0.38)]`}
     >
       {children}
     </motion.button>

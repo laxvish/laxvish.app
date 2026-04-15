@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { NoiseOverlay } from "@/components/layout/NoiseOverlay";
 
@@ -33,6 +34,7 @@ export default function RootLayout({
         <NoiseOverlay />
         <Navbar />
         <main className="relative z-10 flex min-h-screen flex-col">{children}</main>
+        <Footer />
       </body>
     </html>
   );

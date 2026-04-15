@@ -15,14 +15,22 @@ interface Particle {
 
 type EffectTier = 0 | 1 | 2;
 
-const PARTICLE_COUNT = 800;
-const MIN_ACTIVE_COUNT = 180;
-const FRICTION = 0.95;
-const FLOW_FORCE = 0.05;
+const PARTICLE_COUNT = 1800;
+const MIN_ACTIVE_COUNT = 420;
+const FRICTION = 0.965;
+const FLOW_FORCE = 0.095;
 const VORTEX_RADIUS = 180;
-const TARGET_FRAME_MS = 1000 / 48;
+const TARGET_FRAME_MS = 1000 / 56;
 const MAX_CANVAS_DPR = 1.6;
 const GLOW_NODE_STEP = 7;
+const ICE_BLUE_HEX = "#e6f2ff";
+const SKY_BLUE_HEX = "#bcdcff";
+const AZURE_BLUE_HEX = "#86b6ff";
+const COBALT_BLUE_HEX = "#5f93f5";
+const ICE_BLUE_RGB = "230, 242, 255";
+const SKY_BLUE_RGB = "188, 220, 255";
+const AZURE_BLUE_RGB = "134, 182, 255";
+const COBALT_BLUE_RGB = "95, 147, 245";
 
 export function NeuralCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -54,6 +62,7 @@ export function NeuralCanvas() {
     let effectTier: EffectTier = 2;
     let isInViewport = true;
     let lastFrameTime = 0;
+    let hasInitialized = false;
 
     const particles: Particle[] = Array.from(
       { length: PARTICLE_COUNT },
@@ -65,8 +74,8 @@ export function NeuralCanvas() {
           y,
           prevX: x,
           prevY: y,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
           isAmber: index < PARTICLE_COUNT * 0.05,
           depth: Math.random(),
         };
@@ -76,14 +85,14 @@ export function NeuralCanvas() {
     const applyQualityPreset = (nextTier: EffectTier, computedCount: number) => {
       effectTier = nextTier;
       if (nextTier === 0) {
-        activeCount = Math.min(computedCount, 320);
-        frameBudgetMs = 1000 / 32;
+        activeCount = Math.min(computedCount, 640);
+        frameBudgetMs = 1000 / 42;
         glowNodeStep = Number.MAX_SAFE_INTEGER;
         shadowScale = 0.55;
       } else if (nextTier === 1) {
-        activeCount = Math.min(computedCount, 520);
-        frameBudgetMs = 1000 / 42;
-        glowNodeStep = 18;
+        activeCount = Math.min(computedCount, 1100);
+        frameBudgetMs = 1000 / 52;
+        glowNodeStep = 10;
         shadowScale = 0.8;
       } else {
         activeCount = computedCount;
@@ -96,6 +105,8 @@ export function NeuralCanvas() {
 
     const resizeCanvas = () => {
       const rect = canvas.getBoundingClientRect();
+      const previousWidth = width;
+      const previousHeight = height;
       const nativeDpr = window.devicePixelRatio || 1;
       const renderDpr = Math.min(nativeDpr, MAX_CANVAS_DPR);
 
@@ -124,16 +135,31 @@ export function NeuralCanvas() {
 
       applyQualityPreset(nextTier, computedCount);
 
+      if (!hasInitialized || previousWidth <= 0 || previousHeight <= 0) {
+        for (let index = 0; index < particles.length; index += 1) {
+          const particle = particles[index];
+          particle.x = Math.random() * width;
+          particle.y = Math.random() * height;
+          particle.prevX = particle.x;
+          particle.prevY = particle.y;
+          particle.vx = (Math.random() - 0.5) * 0.45;
+          particle.vy = (Math.random() - 0.5) * 0.45;
+          particle.isAmber = index < amberCount;
+          particle.depth = Math.random();
+        }
+        hasInitialized = true;
+        return;
+      }
+
+      const ratioX = width / previousWidth;
+      const ratioY = height / previousHeight;
       for (let index = 0; index < particles.length; index += 1) {
         const particle = particles[index];
-        particle.x = Math.random() * width;
-        particle.y = Math.random() * height;
-        particle.prevX = particle.x;
-        particle.prevY = particle.y;
-        particle.vx = 0;
-        particle.vy = 0;
+        particle.x *= ratioX;
+        particle.y *= ratioY;
+        particle.prevX *= ratioX;
+        particle.prevY *= ratioY;
         particle.isAmber = index < amberCount;
-        particle.depth = Math.random();
       }
     };
 
@@ -160,11 +186,16 @@ export function NeuralCanvas() {
         return;
       }
 
-      if (timestamp - lastFrameTime < frameBudgetMs) {
+      const elapsedMs =
+        lastFrameTime === 0 ? TARGET_FRAME_MS : timestamp - lastFrameTime;
+
+      if (elapsedMs < frameBudgetMs) {
         animationFrameId = window.requestAnimationFrame(animate);
         return;
       }
 
+      const deltaMs = Math.min(48, Math.max(12, elapsedMs));
+      const deltaScale = deltaMs / TARGET_FRAME_MS;
       lastFrameTime = timestamp;
       const time = timestamp * 0.001;
       const pulse = 1 + Math.sin(time * 0.7) * 0.12;
@@ -205,12 +236,14 @@ export function NeuralCanvas() {
           Math.PI *
           2;
 
-        particle.vx += Math.cos(angle) * FLOW_FORCE * depthVelocity;
-        particle.vy += Math.sin(angle) * FLOW_FORCE * depthVelocity;
+        particle.vx += Math.cos(angle) * FLOW_FORCE * depthVelocity * deltaScale;
+        particle.vy += Math.sin(angle) * FLOW_FORCE * depthVelocity * deltaScale;
 
         if (effectTier > 0) {
-          particle.vx += Math.sin(time * 0.5 + particle.y * 0.0025) * 0.01;
-          particle.vy += Math.cos(time * 0.45 + particle.x * 0.0025) * 0.01;
+          particle.vx +=
+            Math.sin(time * 0.5 + particle.y * 0.0025) * 0.012 * deltaScale;
+          particle.vy +=
+            Math.cos(time * 0.45 + particle.x * 0.0025) * 0.012 * deltaScale;
         }
 
         if (mouseX !== null && mouseY !== null) {
@@ -221,15 +254,16 @@ export function NeuralCanvas() {
             const influence = (VORTEX_RADIUS - distance) / VORTEX_RADIUS;
             const tangentX = -dy / distance;
             const tangentY = dx / distance;
-            particle.vx += tangentX * influence * 0.32;
-            particle.vy += tangentY * influence * 0.32;
+            particle.vx += tangentX * influence * 0.36 * deltaScale;
+            particle.vy += tangentY * influence * 0.36 * deltaScale;
           }
         }
 
-        particle.vx *= FRICTION;
-        particle.vy *= FRICTION;
-        particle.x += particle.vx;
-        particle.y += particle.vy;
+        const drag = Math.pow(FRICTION, deltaScale);
+        particle.vx *= drag;
+        particle.vy *= drag;
+        particle.x += particle.vx * deltaScale;
+        particle.y += particle.vy * deltaScale;
 
         if (particle.x < 0) {
           particle.x += width;
@@ -259,8 +293,8 @@ export function NeuralCanvas() {
             amberNearPath.lineTo(particle.x, particle.y);
           }
           if (amberNodes && particle.depth > 0.62 && index % glowNodeStep === 0) {
-            amberNodes.moveTo(particle.x + 1.2, particle.y);
-            amberNodes.arc(particle.x, particle.y, 1.2, 0, Math.PI * 2);
+            amberNodes.moveTo(particle.x + 1.7, particle.y);
+            amberNodes.arc(particle.x, particle.y, 1.7, 0, Math.PI * 2);
           }
         } else {
           if (useFarLayer && particle.depth < 0.33 && cyanFarPath) {
@@ -274,94 +308,94 @@ export function NeuralCanvas() {
             cyanNearPath.lineTo(particle.x, particle.y);
           }
           if (cyanNodes && particle.depth > 0.62 && index % glowNodeStep === 0) {
-            cyanNodes.moveTo(particle.x + 1.05, particle.y);
-            cyanNodes.arc(particle.x, particle.y, 1.05, 0, Math.PI * 2);
+            cyanNodes.moveTo(particle.x + 1.45, particle.y);
+            cyanNodes.arc(particle.x, particle.y, 1.45, 0, Math.PI * 2);
           }
         }
       }
 
       if (useFarLayer && cyanFarPath && amberFarPath) {
-        context.shadowColor = "#00F0FF";
+        context.shadowColor = ICE_BLUE_HEX;
         context.shadowBlur = 5 * shadowScale;
-        context.strokeStyle = `rgba(0, 240, 255, ${0.06 * pulse})`;
-        context.lineWidth = 0.45 * shadowScale;
+        context.strokeStyle = `rgba(${ICE_BLUE_RGB}, ${0.09 * pulse})`;
+        context.lineWidth = 0.6 * shadowScale;
         context.stroke(cyanFarPath);
         context.shadowBlur = 0;
-        context.strokeStyle = `rgba(0, 240, 255, ${0.11 * pulse})`;
-        context.lineWidth = 0.34 * shadowScale;
+        context.strokeStyle = `rgba(${SKY_BLUE_RGB}, ${0.16 * pulse})`;
+        context.lineWidth = 0.46 * shadowScale;
         context.stroke(cyanFarPath);
 
-        context.shadowColor = "#FFB800";
+        context.shadowColor = SKY_BLUE_HEX;
         context.shadowBlur = 7 * shadowScale;
-        context.strokeStyle = `rgba(255, 184, 0, ${0.14 * pulse})`;
-        context.lineWidth = 0.54 * shadowScale;
+        context.strokeStyle = `rgba(${SKY_BLUE_RGB}, ${0.18 * pulse})`;
+        context.lineWidth = 0.72 * shadowScale;
         context.stroke(amberFarPath);
         context.shadowBlur = 0;
-        context.strokeStyle = `rgba(255, 184, 0, ${0.24 * pulse})`;
-        context.lineWidth = 0.38 * shadowScale;
+        context.strokeStyle = `rgba(${AZURE_BLUE_RGB}, ${0.29 * pulse})`;
+        context.lineWidth = 0.52 * shadowScale;
         context.stroke(amberFarPath);
       }
 
       if (useMidLayer && cyanMidPath && amberMidPath) {
-        context.shadowColor = "#00F0FF";
+        context.shadowColor = SKY_BLUE_HEX;
         context.shadowBlur = 7 * shadowScale;
-        context.strokeStyle = `rgba(0, 240, 255, ${0.08 * pulse})`;
-        context.lineWidth = 0.62 * shadowScale;
+        context.strokeStyle = `rgba(${SKY_BLUE_RGB}, ${0.11 * pulse})`;
+        context.lineWidth = 0.78 * shadowScale;
         context.stroke(cyanMidPath);
         context.shadowBlur = 0;
-        context.strokeStyle = `rgba(0, 240, 255, ${0.14 * pulse})`;
-        context.lineWidth = 0.45 * shadowScale;
+        context.strokeStyle = `rgba(${AZURE_BLUE_RGB}, ${0.19 * pulse})`;
+        context.lineWidth = 0.58 * shadowScale;
         context.stroke(cyanMidPath);
 
-        context.shadowColor = "#FFB800";
+        context.shadowColor = AZURE_BLUE_HEX;
         context.shadowBlur = 8 * shadowScale;
-        context.strokeStyle = `rgba(255, 184, 0, ${0.18 * pulse})`;
-        context.lineWidth = 0.82 * shadowScale;
+        context.strokeStyle = `rgba(${AZURE_BLUE_RGB}, ${0.23 * pulse})`;
+        context.lineWidth = 0.96 * shadowScale;
         context.stroke(amberMidPath);
         context.shadowBlur = 0;
-        context.strokeStyle = `rgba(255, 184, 0, ${0.32 * pulse})`;
-        context.lineWidth = 0.5 * shadowScale;
+        context.strokeStyle = `rgba(${COBALT_BLUE_RGB}, ${0.38 * pulse})`;
+        context.lineWidth = 0.66 * shadowScale;
         context.stroke(amberMidPath);
       }
 
       if (effectTier === 0) {
         context.shadowBlur = 0;
-        context.strokeStyle = `rgba(0, 240, 255, ${0.16 * pulse})`;
-        context.lineWidth = 0.48 * shadowScale;
+        context.strokeStyle = `rgba(${AZURE_BLUE_RGB}, ${0.22 * pulse})`;
+        context.lineWidth = 0.62 * shadowScale;
         context.stroke(cyanNearPath);
-        context.strokeStyle = `rgba(255, 184, 0, ${0.34 * pulse})`;
-        context.lineWidth = 0.52 * shadowScale;
+        context.strokeStyle = `rgba(${COBALT_BLUE_RGB}, ${0.42 * pulse})`;
+        context.lineWidth = 0.68 * shadowScale;
         context.stroke(amberNearPath);
       } else {
-        context.shadowColor = "#00F0FF";
+        context.shadowColor = AZURE_BLUE_HEX;
         context.shadowBlur = 8 * shadowScale;
-        context.strokeStyle = `rgba(0, 240, 255, ${0.11 * pulse})`;
-        context.lineWidth = 0.92 * shadowScale;
+        context.strokeStyle = `rgba(${AZURE_BLUE_RGB}, ${0.16 * pulse})`;
+        context.lineWidth = 1.15 * shadowScale;
         context.stroke(cyanNearPath);
         context.shadowBlur = 0;
-        context.strokeStyle = `rgba(0, 240, 255, ${0.2 * pulse})`;
-        context.lineWidth = 0.6 * shadowScale;
+        context.strokeStyle = `rgba(${COBALT_BLUE_RGB}, ${0.27 * pulse})`;
+        context.lineWidth = 0.75 * shadowScale;
         context.stroke(cyanNearPath);
 
-        context.shadowColor = "#FFB800";
+        context.shadowColor = COBALT_BLUE_HEX;
         context.shadowBlur = 10 * shadowScale;
-        context.strokeStyle = `rgba(255, 184, 0, ${0.24 * pulse})`;
-        context.lineWidth = 1.02 * shadowScale;
+        context.strokeStyle = `rgba(${COBALT_BLUE_RGB}, ${0.31 * pulse})`;
+        context.lineWidth = 1.24 * shadowScale;
         context.stroke(amberNearPath);
         context.shadowBlur = 0;
-        context.strokeStyle = `rgba(255, 184, 0, ${0.44 * pulse})`;
-        context.lineWidth = 0.6 * shadowScale;
+        context.strokeStyle = `rgba(${ICE_BLUE_RGB}, ${0.44 * pulse})`;
+        context.lineWidth = 0.74 * shadowScale;
         context.stroke(amberNearPath);
 
         if (cyanNodes && amberNodes) {
-          context.shadowColor = "#00F0FF";
+          context.shadowColor = SKY_BLUE_HEX;
           context.shadowBlur = 10 * shadowScale;
-          context.fillStyle = `rgba(0, 240, 255, ${0.2 * pulse})`;
+          context.fillStyle = `rgba(${SKY_BLUE_RGB}, ${0.26 * pulse})`;
           context.fill(cyanNodes);
 
-          context.shadowColor = "#FFB800";
+          context.shadowColor = COBALT_BLUE_HEX;
           context.shadowBlur = 12 * shadowScale;
-          context.fillStyle = `rgba(255, 184, 0, ${0.3 * pulse})`;
+          context.fillStyle = `rgba(${AZURE_BLUE_RGB}, ${0.38 * pulse})`;
           context.fill(amberNodes);
         }
       }

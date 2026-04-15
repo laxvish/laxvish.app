@@ -106,54 +106,51 @@ export function ContactPanel() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-16 sm:px-6 sm:py-20 lg:max-w-5xl lg:py-24">
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-8 sm:p-10">
-        <h2 className="text-3xl font-bold text-white [font-family:var(--font-space-grotesk)] sm:text-4xl">
-          Dual-Action Lead Terminal
+    <section
+      id="contact"
+      className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6 sm:py-16 lg:py-20"
+    >
+      <div className="rounded-2xl border border-charcoal/20 bg-[#0d0d0d] p-6 sm:p-8">
+        <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
+          Start with one clear next step
         </h2>
-        <p className="mt-3 text-sm text-gray-400">
-          Choose your activation path. We capture only business contact details.
+        <p className="mt-3 text-sm text-charcoal/80">
+          Pick your path. We only ask for essential business details.
         </p>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <button
             type="button"
             onClick={() => setAction("pilot")}
             className={`rounded-xl border px-4 py-3 text-left text-sm transition-colors duration-200 ${
               action === "pilot"
-                ? "border-vaultAmber bg-vaultAmber/10 text-vaultAmber"
-                : "border-white/15 bg-black/20 text-gray-300 hover:border-vaultAmber/40"
+                ? "border-vaultAmber/70 bg-vaultAmber/10 text-vaultAmber"
+                : "border-charcoal/20 bg-transparent text-charcoal/88 hover:border-charcoal/45"
             }`}
           >
-            <span className="block text-xs uppercase tracking-[0.14em] text-gray-400">
-              Action 01
-            </span>
-            <span className="mt-1 block font-semibold">Pilot Activation</span>
+            <span className="block font-semibold">Request pilot</span>
           </button>
           <button
             type="button"
             onClick={() => setAction("blueprint")}
             className={`rounded-xl border px-4 py-3 text-left text-sm transition-colors duration-200 ${
               action === "blueprint"
-                ? "border-neonCyan bg-neonCyan/10 text-neonCyan"
-                : "border-white/15 bg-black/20 text-gray-300 hover:border-neonCyan/40"
+                ? "border-neonCyan/70 bg-neonCyan/10 text-neonCyan"
+                : "border-charcoal/20 bg-transparent text-charcoal/88 hover:border-charcoal/45"
             }`}
           >
-            <span className="block text-xs uppercase tracking-[0.14em] text-gray-400">
-              Action 02
-            </span>
-            <span className="mt-1 block font-semibold">Blueprint Request</span>
+            <span className="block font-semibold">Get integration blueprint</span>
           </button>
         </div>
 
-        <form className="mt-8 grid gap-4 sm:grid-cols-2" onSubmit={onSubmit}>
+        <form className="mt-7 grid gap-4 sm:grid-cols-2" onSubmit={onSubmit}>
           <input
             type="text"
             value={formData.name}
             onChange={updateField("name")}
             placeholder="Name"
             required
-            className="rounded-lg border border-white/15 bg-black/30 px-4 py-3 text-sm text-white placeholder:text-gray-500"
+            className="rounded-lg border border-charcoal/20 bg-black/30 px-4 py-3 text-sm text-neonCyan placeholder:text-charcoal/45 focus:border-vaultAmber/55 focus:outline-none"
           />
           <input
             type="email"
@@ -161,7 +158,7 @@ export function ContactPanel() {
             onChange={updateField("workEmail")}
             placeholder="Work Email"
             required
-            className="rounded-lg border border-white/15 bg-black/30 px-4 py-3 text-sm text-white placeholder:text-gray-500"
+            className="rounded-lg border border-charcoal/20 bg-black/30 px-4 py-3 text-sm text-neonCyan placeholder:text-charcoal/45 focus:border-vaultAmber/55 focus:outline-none"
           />
           <input
             type="text"
@@ -169,7 +166,7 @@ export function ContactPanel() {
             onChange={updateField("company")}
             placeholder="Company"
             required
-            className="rounded-lg border border-white/15 bg-black/30 px-4 py-3 text-sm text-white placeholder:text-gray-500"
+            className="rounded-lg border border-charcoal/20 bg-black/30 px-4 py-3 text-sm text-neonCyan placeholder:text-charcoal/45 focus:border-vaultAmber/55 focus:outline-none"
           />
           <input
             type="text"
@@ -186,7 +183,7 @@ export function ContactPanel() {
             placeholder="Use Case"
             required
             rows={4}
-            className="rounded-lg border border-white/15 bg-black/30 px-4 py-3 text-sm text-white placeholder:text-gray-500 sm:col-span-2"
+            className="rounded-lg border border-charcoal/20 bg-black/30 px-4 py-3 text-sm text-neonCyan placeholder:text-charcoal/45 focus:border-vaultAmber/55 focus:outline-none sm:col-span-2"
           />
           <button
             type="submit"
@@ -200,7 +197,9 @@ export function ContactPanel() {
         {feedback.status !== "idle" ? (
           <p
             className={`mt-4 text-sm ${
-              feedback.status === "success" ? "text-neonCyan" : "text-vaultAmber"
+              feedback.status === "success"
+                ? "text-neonCyan"
+                : "text-vaultAmber"
             }`}
           >
             {feedback.message}
