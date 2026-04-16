@@ -89,13 +89,13 @@ export const FOOTER_GROUPS: FooterGroup[] = [
 export const SOCIAL_LINKS: SiteLink[] = [
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com",
+    href: "https://www.linkedin.com/company/laxvish/",
     kind: "support",
     external: true,
   },
   {
     label: "X",
-    href: "https://x.com",
+    href: "https://x.com/HelloLaxvish",
     kind: "support",
     external: true,
   },
