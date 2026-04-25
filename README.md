@@ -106,8 +106,8 @@ Unit tests cover two critical areas:
 - ✅ Persists records in-memory
 
 ### Lead Capture API (`app/api/lead-capture/route.ts`)
-- ✅ Handshake header validation (`x-laxvish-handshake`)
-- ✅ Per-IP rate limiting (6 requests per 60s window)
+- ✅ Multi-layer anti-abuse checks (per-IP + per-identity throttling)
+- ✅ Per-IP and per-identity rate limiting (6 + 3 requests per 60s window)
 - ✅ Honeypot field detection
 - ✅ SHA-256 identity hashing for deduplication
 
@@ -191,9 +191,9 @@ The application supports PostgreSQL backend integration for persistent lead stor
 
 4. **Configure Sync + Admin Secrets (`.env.local`):**
    ```bash
-   LEAD_SYNC_MODE="direct" # direct | webhook
-   LEAD_SYNC_SECRET="replace-with-strong-secret"
-   ADMIN_API_KEY="replace-with-admin-key"
+    LEAD_SYNC_MODE="direct" # direct | webhook
+    LEAD_SYNC_SECRET="replace-with-strong-secret"
+    ADMIN_API_KEY="replace-with-admin-key"
    ```
    Optional:
    ```bash
@@ -286,7 +286,7 @@ laxvish.app/
 
 ### POST `/api/lead-capture`
 
-Secure endpoint for lead intake with three-layer protection: handshake header, rate limiting, and anti-abuse honeypot.
+Secure endpoint for lead intake with trusted-origin checks, rate limiting, and anti-abuse honeypot.
 
 **Request:**
 ```typescript
@@ -318,9 +318,9 @@ Secure endpoint for lead intake with three-layer protection: handshake header, r
 ```
 
 **Headers required:**
-- `x-laxvish-handshake: <token>` — Must match `LEAD_CAPTURE_HANDSHAKE` (defaults to `vault-handshake-v1`)
+- `content-type: application/json`
 
-**Rate limit:** 6 requests per IP per 60 seconds.
+**Rate limit:** 6 requests per IP and 3 requests per identity-action key per 60 seconds.
 
 ---
 

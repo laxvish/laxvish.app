@@ -1,6 +1,15 @@
 import { getPrismaClient } from "@/lib/prisma";
 
 export type LeadCaptureAction = string;
+export type LeadSubmissionType = "contact" | "career";
+export type CareerRoleTrack = "internship" | "full-time";
+
+export interface CareerApplicationDetails {
+  phone: string;
+  roleTrack: CareerRoleTrack;
+  portfolioUrl: string;
+  resumeUrl: string;
+}
 
 export interface LeadVaultInsert {
   name: string;
@@ -8,6 +17,8 @@ export interface LeadVaultInsert {
   company: string;
   useCase: string;
   action: LeadCaptureAction;
+  submissionType: LeadSubmissionType;
+  careerDetails?: CareerApplicationDetails;
 }
 
 export interface LeadVaultRecord extends LeadVaultInsert {
@@ -44,6 +55,8 @@ export const ENTERPRISE_VAULT_SCHEMA = {
     company: "string(2-120)",
     useCase: "string(10-1000)",
     action: "string(1-64)",
+    submissionType: "enum(contact|career)",
+    careerDetails: "object(optional)",
   },
 } as const;
 
@@ -52,8 +65,13 @@ const MAX_COMPANY_LENGTH = 120;
 const MAX_USE_CASE_LENGTH = 1000;
 const MAX_ACTION_LENGTH = 64;
 const MAX_USER_AGENT_LENGTH = 256;
+const MAX_PHONE_LENGTH = 24;
+const MAX_URL_LENGTH = 2048;
+const MIN_CAREER_MESSAGE_LENGTH = 20;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phonePattern = /^[+()\-.\s0-9]{7,24}$/;
+const roleTrackValues: CareerRoleTrack[] = ["internship", "full-time"];
 
 declare global {
   var leadVaultMemory: LeadVaultRecord[] | undefined;
@@ -61,6 +79,18 @@ declare global {
 
 function normalizeText(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function isValidHttpUrl(value: string): boolean {
+  if (value.length === 0 || value.length > MAX_URL_LENGTH) {
+    return false;
+  }
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
 }
 
 export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationResult {
@@ -77,6 +107,9 @@ export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationRe
   const company = normalizeText(candidate.company);
   const useCase = normalizeText(candidate.useCase);
   const action = normalizeText(candidate.action);
+  const submissionTypeRaw = normalizeText(candidate.submissionType).toLowerCase();
+  const submissionType: LeadSubmissionType =
+    submissionTypeRaw.length === 0 ? "contact" : (submissionTypeRaw as LeadSubmissionType);
   const website = candidate.website;
 
   const errors: string[] = [];
@@ -87,6 +120,77 @@ export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationRe
   if (!emailPattern.test(workEmail)) {
     errors.push("workEmail must be a valid email.");
   }
+  if (website !== undefined && (typeof website !== "string" || website.trim().length > 0)) {
+    errors.push("website must be empty when provided.");
+  }
+  if (
+    submissionTypeRaw.length > 0 &&
+    submissionType !== "contact" &&
+    submissionType !== "career"
+  ) {
+    errors.push("submissionType must be either contact or career.");
+  }
+
+  if (submissionType === "career") {
+    const phone = normalizeText(candidate.phone);
+    const roleTrack = normalizeText(candidate.roleTrack).toLowerCase();
+    const portfolioUrl = normalizeText(candidate.portfolioUrl);
+    const resumeUrl = normalizeText(candidate.resumeUrl);
+    const whyJoin = normalizeText(candidate.whyJoin);
+    const normalizedCompany = company.length > 0 ? company : "Career Applicant";
+    const normalizedAction = action.length > 0 ? action : `career-${roleTrack}`;
+
+    if (!phonePattern.test(phone) || phone.length > MAX_PHONE_LENGTH) {
+      errors.push("phone must be a valid contact number.");
+    }
+    if (!roleTrackValues.includes(roleTrack as CareerRoleTrack)) {
+      errors.push("roleTrack must be either internship or full-time.");
+    }
+    if (!isValidHttpUrl(portfolioUrl)) {
+      errors.push("portfolioUrl must be a valid http/https URL.");
+    }
+    if (!isValidHttpUrl(resumeUrl)) {
+      errors.push("resumeUrl must be a valid http/https URL.");
+    }
+    if (
+      whyJoin.length < MIN_CAREER_MESSAGE_LENGTH ||
+      whyJoin.length > MAX_USE_CASE_LENGTH
+    ) {
+      errors.push("whyJoin is required and must be 20-1000 characters.");
+    }
+    if (
+      normalizedCompany.length === 0 ||
+      normalizedCompany.length > MAX_COMPANY_LENGTH
+    ) {
+      errors.push("company must be <= 120 characters when provided.");
+    }
+    if (normalizedAction.length === 0 || normalizedAction.length > MAX_ACTION_LENGTH) {
+      errors.push("action is required and must be <= 64 characters.");
+    }
+
+    if (errors.length > 0) {
+      return { success: false, errors };
+    }
+
+    return {
+      success: true,
+      data: {
+        name,
+        workEmail,
+        company: normalizedCompany,
+        useCase: whyJoin,
+        action: normalizedAction,
+        submissionType: "career",
+        careerDetails: {
+          phone,
+          roleTrack: roleTrack as CareerRoleTrack,
+          portfolioUrl,
+          resumeUrl,
+        },
+      },
+    };
+  }
+
   if (company.length === 0 || company.length > MAX_COMPANY_LENGTH) {
     errors.push("company is required and must be <= 120 characters.");
   }
@@ -95,9 +199,6 @@ export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationRe
   }
   if (action.length === 0 || action.length > MAX_ACTION_LENGTH) {
     errors.push("action is required and must be <= 64 characters.");
-  }
-  if (website !== undefined && (typeof website !== "string" || website.trim().length > 0)) {
-    errors.push("website must be empty when provided.");
   }
 
   if (errors.length > 0) {
@@ -112,6 +213,7 @@ export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationRe
       company,
       useCase,
       action,
+      submissionType: "contact",
     },
   };
 }
@@ -159,6 +261,8 @@ export async function persistLeadVaultRecord(record: LeadVaultRecord): Promise<v
       metadata: JSON.stringify({
         source: record.source,
         userAgent: record.userAgent,
+        submissionType: record.submissionType,
+        ...(record.careerDetails ? { careerDetails: record.careerDetails } : {}),
       }),
       createdAt: new Date(record.createdAt),
     },

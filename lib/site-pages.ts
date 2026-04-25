@@ -213,6 +213,34 @@ export const PAGE_CONTENT: Record<string, DepthPageContent> = {
       { metric: "Control", value: "Governance included from day one" },
     ],
   },
+  careers: {
+    eyebrow: "Careers",
+    title: "Build enterprise AI systems with Laxvish.",
+    summary:
+      "Apply for internship or full-time roles and help teams ship trustworthy AI workers, orchestration, and verification controls.",
+    details: [
+      {
+        title: "Product-first work",
+        description:
+          "Contribute to real website and product surfaces used for enterprise discovery and delivery.",
+      },
+      {
+        title: "AI execution mindset",
+        description:
+          "Work on practical outcomes where reliability, speed, and governance matter together.",
+      },
+      {
+        title: "Ownership and learning",
+        description:
+          "Take ownership of scoped problems, collaborate closely, and grow through fast feedback loops.",
+      },
+    ],
+    outcomes: [
+      { metric: "Impact", value: "Hands-on contribution to production-ready AI experiences" },
+      { metric: "Mentorship", value: "Direct collaboration with product and engineering leads" },
+      { metric: "Growth", value: "Continuous learning across frontend, AI UX, and systems thinking" },
+    ],
+  },
   privacy: {
     eyebrow: "Privacy",
     title: "Privacy by design for website and workflow interactions.",

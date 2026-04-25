@@ -21,7 +21,6 @@ Configure these in Vercel **Project Settings → Environment Variables** and in 
 
 ### Server/API
 - `DATABASE_URL`
-- `LEAD_CAPTURE_HANDSHAKE`
 - `LEAD_SYNC_MODE` (`direct` or `webhook`)
 - `LEAD_SYNC_SECRET`
 - `LEAD_SYNC_WEBHOOK_URL` (required if `LEAD_SYNC_MODE=webhook`)

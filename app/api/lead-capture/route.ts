@@ -6,11 +6,10 @@ import {
   validateLeadVaultInsert,
 } from "@/lib/enterpriseVault";
 import { sendLeadSyncWebhook } from "@/lib/leadSync";
-import { safeTokenCompare } from "@/lib/security";
 
-const HANDSHAKE_TOKEN = process.env.LEAD_CAPTURE_HANDSHAKE ?? "vault-handshake-v1";
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const MAX_REQUESTS_PER_WINDOW = 6;
+const MAX_REQUESTS_PER_IP_WINDOW = 6;
+const MAX_REQUESTS_PER_IDENTITY_WINDOW = 3;
 
 interface RateWindow {
   count: number;
@@ -18,30 +17,37 @@ interface RateWindow {
 }
 
 const rateWindows = new Map<string, RateWindow>();
+const identityRateWindows = new Map<string, RateWindow>();
 
-function cleanupRateWindows(timestamp: number): void {
-  for (const [key, value] of rateWindows.entries()) {
+function cleanupRateWindows(timestamp: number, windows: Map<string, RateWindow>): void {
+  for (const [key, value] of windows.entries()) {
     if (timestamp - value.startTime > RATE_LIMIT_WINDOW_MS) {
-      rateWindows.delete(key);
+      windows.delete(key);
     }
   }
 }
 
 function getRequesterKey(request: NextRequest): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const firstForwarded = forwarded?.split(",")[0]?.trim();
-  return firstForwarded || request.headers.get("x-real-ip") || "anonymous";
+  const platformIp =
+    request.headers.get("x-vercel-forwarded-for") ??
+    request.headers.get("cf-connecting-ip");
+  return platformIp?.trim() || "anonymous";
 }
 
-function isRateLimited(key: string, timestamp: number): boolean {
-  cleanupRateWindows(timestamp);
-  const currentWindow = rateWindows.get(key);
+function isRateLimited(
+  key: string,
+  timestamp: number,
+  windows: Map<string, RateWindow>,
+  maxRequests: number,
+): boolean {
+  cleanupRateWindows(timestamp, windows);
+  const currentWindow = windows.get(key);
   if (!currentWindow || timestamp - currentWindow.startTime > RATE_LIMIT_WINDOW_MS) {
-    rateWindows.set(key, { count: 1, startTime: timestamp });
+    windows.set(key, { count: 1, startTime: timestamp });
     return false;
   }
 
-  if (currentWindow.count >= MAX_REQUESTS_PER_WINDOW) {
+  if (currentWindow.count >= maxRequests) {
     return true;
   }
 
@@ -66,17 +72,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const handshake = request.headers.get("x-laxvish-handshake");
-  if (!safeTokenCompare(handshake, HANDSHAKE_TOKEN)) {
-    return NextResponse.json(
-      { ok: false, message: "Secure handshake failed." },
-      { status: 401 },
-    );
-  }
-
   const now = Date.now();
   const requesterKey = getRequesterKey(request);
-  if (isRateLimited(requesterKey, now)) {
+  const ipWindowLimit =
+    requesterKey === "anonymous" ? MAX_REQUESTS_PER_IP_WINDOW * 5 : MAX_REQUESTS_PER_IP_WINDOW;
+  if (isRateLimited(requesterKey, now, rateWindows, ipWindowLimit)) {
     return NextResponse.json(
       { ok: false, message: "Too many requests. Please retry shortly." },
       { status: 429 },
@@ -109,6 +109,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         errors: validation.errors,
       },
       { status: 422 },
+    );
+  }
+
+  const identityRateKey = `${validation.data.workEmail}|${validation.data.action}`;
+  if (
+    isRateLimited(
+      identityRateKey,
+      now,
+      identityRateWindows,
+      MAX_REQUESTS_PER_IDENTITY_WINDOW,
+    )
+  ) {
+    return NextResponse.json(
+      { ok: false, message: "Too many requests for this identity. Please retry shortly." },
+      { status: 429 },
     );
   }
 

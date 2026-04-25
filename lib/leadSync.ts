@@ -5,25 +5,48 @@ interface LeadSyncPayload {
   record: LeadVaultRecord;
 }
 
+function isCareerDetails(value: unknown): boolean {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.phone === "string" &&
+    (candidate.roleTrack === "internship" || candidate.roleTrack === "full-time") &&
+    typeof candidate.portfolioUrl === "string" &&
+    typeof candidate.resumeUrl === "string"
+  );
+}
+
 function isLeadVaultRecord(value: unknown): value is LeadVaultRecord {
   if (!value || typeof value !== "object") {
     return false;
   }
 
   const candidate = value as Record<string, unknown>;
-  return (
+  const baseValid =
     typeof candidate.id === "string" &&
     typeof candidate.createdAt === "string" &&
     candidate.source === "website-terminal" &&
     typeof candidate.identityHash === "string" &&
     typeof candidate.userAgent === "string" &&
+    (candidate.submissionType === "contact" || candidate.submissionType === "career") &&
     typeof candidate.name === "string" &&
     typeof candidate.workEmail === "string" &&
     typeof candidate.company === "string" &&
     typeof candidate.useCase === "string" &&
     typeof candidate.action === "string" &&
-    candidate.action.trim().length > 0
-  );
+    candidate.action.trim().length > 0;
+
+  if (!baseValid) {
+    return false;
+  }
+
+  if (candidate.submissionType === "career") {
+    return isCareerDetails(candidate.careerDetails);
+  }
+
+  return candidate.careerDetails === undefined;
 }
 
 export function validateLeadSyncPayload(payload: unknown): LeadSyncPayload | null {
@@ -49,6 +72,8 @@ export async function syncLeadRecordToDatabase(record: LeadVaultRecord): Promise
     action: record.action,
     source: record.source,
     userAgent: record.userAgent,
+    submissionType: record.submissionType,
+    ...(record.careerDetails ? { careerDetails: record.careerDetails } : {}),
   });
 
   await prisma.lead.upsert({

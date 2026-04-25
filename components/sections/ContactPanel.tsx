@@ -56,7 +56,6 @@ export function ContactPanel() {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "x-laxvish-handshake": "vault-handshake-v1",
         },
         body: JSON.stringify({
           name: formData.name,

@@ -56,6 +56,12 @@ export const PRIMARY_NAV_LINKS: SiteLink[] = [
     kind: "support",
     description: "DPDP-first controls and security posture",
   },
+  {
+    label: "Careers",
+    href: "/careers/apply",
+    kind: "support",
+    description: "Internship and full-time opportunities",
+  },
 ];
 
 export const FOOTER_GROUPS: FooterGroup[] = [
@@ -80,6 +86,7 @@ export const FOOTER_GROUPS: FooterGroup[] = [
     title: "Company",
     links: [
       { label: "About", href: "/about", kind: "support" },
+      { label: "Careers", href: "/careers/apply", kind: "support" },
       { label: "Contact", href: "/contact", kind: "support" },
       { label: "FAQ", href: "/faq", kind: "support" },
     ],
