@@ -37,24 +37,24 @@ const capabilityCards: CapabilityCard[] = [
 export function CapabilityMatrix() {
   return (
     <section className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-      <h2 className="text-3xl font-bold text-white [font-family:var(--font-space-grotesk)] sm:text-4xl">
+      <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
         One Platform. Three Control Planes.
       </h2>
       <div className="mt-8 grid gap-5 lg:grid-cols-3">
         {capabilityCards.map((card) => (
           <article
             key={card.title}
-            className="rounded-xl border border-white/10 bg-white/5 p-6"
+            className="rounded-xl border border-charcoal/20 bg-[#F6F1F1]/30 p-6"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-white">{card.title}</h3>
+              <h3 className="text-lg font-semibold text-neonCyan">{card.title}</h3>
               <span
                 className={`h-2.5 w-2.5 rounded-full ${
                   card.accent === "cyan" ? "bg-neonCyan" : "bg-vaultAmber"
                 }`}
               />
             </div>
-            <ul className="mt-4 space-y-2.5 text-sm text-gray-400">
+            <ul className="mt-4 space-y-2.5 text-sm text-charcoal/70">
               {card.points.map((point) => (
                 <li key={point} className="leading-6">
                   {point}

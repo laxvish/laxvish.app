@@ -26,10 +26,10 @@ export function VerificationPanel() {
   return (
     <section className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
       <div className="max-w-3xl">
-        <h2 className="text-3xl font-bold text-white [font-family:var(--font-space-grotesk)] sm:text-4xl">
+        <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
           Operational Trust, Live.
         </h2>
-        <p className="mt-4 text-gray-400">
+        <p className="mt-4 text-charcoal/70">
           Verification isn&apos;t a sidecar. It runs as a continuous signal layer
           across every critical workflow.
         </p>
@@ -39,10 +39,10 @@ export function VerificationPanel() {
         {signals.map((signal) => (
           <article
             key={signal.title}
-            className="rounded-xl border border-white/10 bg-black/30 p-5 transition-transform duration-300 hover:-translate-y-0.5"
+            className="rounded-xl border border-charcoal/20 bg-[#F6F1F1]/30 p-5 transition-transform duration-300 hover:-translate-y-0.5"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-white">{signal.title}</h3>
+              <h3 className="text-sm font-semibold text-charcoal">{signal.title}</h3>
               <span
                 className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${
                   signal.accent === "cyan"
@@ -53,7 +53,7 @@ export function VerificationPanel() {
                 Live
               </span>
             </div>
-            <p className="mt-4 text-xs leading-5 text-gray-400">{signal.metric}</p>
+            <p className="mt-4 text-xs leading-5 text-charcoal/70">{signal.metric}</p>
           </article>
         ))}
       </div>

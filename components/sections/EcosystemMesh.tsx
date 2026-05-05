@@ -35,10 +35,10 @@ const meshCards: MeshCard[] = [
 export function EcosystemMesh() {
   return (
     <section className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-      <h2 className="text-3xl font-bold text-white [font-family:var(--font-space-grotesk)] sm:text-4xl">
+      <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
         The Intelligence Mesh Behind Enterprise Execution
       </h2>
-      <p className="mt-4 max-w-2xl text-sm leading-6 text-gray-400">
+      <p className="mt-4 max-w-2xl text-sm leading-6 text-charcoal/70">
         Every node is governed, every pathway is observable, and every action can
         be traced to business outcomes.
       </p>
@@ -47,18 +47,18 @@ export function EcosystemMesh() {
         {meshCards.map((card) => (
           <article
             key={card.domain}
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-6"
+            className="rounded-2xl border border-charcoal/20 bg-[#F6F1F1]/30 p-6"
           >
             <p className="text-xs uppercase tracking-[0.18em] text-neonCyan/90">
               {card.domain}
             </p>
-            <p className="mt-3 text-base font-medium text-white">{card.signal}</p>
-            <p className="mt-2 text-sm text-vaultAmber">{card.outcome}</p>
+            <p className="mt-3 text-base font-medium text-neonCyan">{card.signal}</p>
+            <p className="mt-2 text-sm text-[#AFD3E2]">{card.outcome}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {card.pathways.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-gray-700 px-3 py-1 text-xs text-gray-300"
+                  className="rounded-full border border-charcoal/30 px-3 py-1 text-xs text-charcoal/70"
                 >
                   {tag}
                 </span>

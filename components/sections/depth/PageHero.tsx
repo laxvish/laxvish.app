@@ -1,36 +1,37 @@
-import { MiniHeroShape } from "@/components/visuals/MiniHeroShape";
-import type { ShapeVariant } from "@/components/visuals/MiniHeroShape";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 interface PageHeroProps {
   eyebrow: string;
   title: string;
   summary: string;
-  shape?: ShapeVariant;
+  shape?: any; // Deprecated, kept for backward compatibility if passed
 }
 
 export function PageHero({
   eyebrow,
   title,
   summary,
-  shape = "octahedron",
 }: PageHeroProps) {
   return (
-    <section className="mx-auto w-full max-w-[90rem] px-4 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
-      <div className="grid items-center gap-6 rounded-3xl border border-charcoal/20 bg-[#0a0a0a] p-8 sm:p-12 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
+    <section className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col justify-center px-6 pt-32 pb-20 sm:px-12 sm:pt-40 lg:px-16">
+      <div className="max-w-3xl space-y-10 lg:pr-12">
+        <FadeIn delay={0.1} yOffset={10}>
+          <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
             {eyebrow}
           </p>
-          <h1 className="mt-4 max-w-4xl text-3xl font-bold leading-tight text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-5xl">
+        </FadeIn>
+        
+        <FadeIn delay={0.2} yOffset={20}>
+          <h1 className="text-[clamp(2.5rem,6vw,4rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
             {title}
           </h1>
-          <p className="mt-5 max-w-2xl text-sm leading-7 text-charcoal/80 sm:text-base">
+        </FadeIn>
+        
+        <FadeIn delay={0.3} yOffset={20}>
+          <p className="max-w-xl text-base leading-relaxed tracking-wide text-charcoal/70 sm:text-lg">
             {summary}
           </p>
-        </div>
-        <div>
-          <MiniHeroShape variant={shape} />
-        </div>
+        </FadeIn>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CallmeSection } from "@/components/sections/CallmeSection";
 import { ContactPanel } from "@/components/sections/ContactPanel";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { FinalCta } from "@/components/sections/FinalCta";
@@ -7,11 +8,15 @@ import { PillarsGrid } from "@/components/sections/PillarsGrid";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Enterprise AI OS for Workers, Brain and Brakes",
+  title: "Enterprise AI Operating System — Workers, Brain, Brakes",
   description:
-    "Deploy enterprise AI workers, orchestrate with centralized intelligence, and enforce verification controls with Laxvish.",
+    "Laxvish is the enterprise AI operating system that deploys domain AI agents, orchestrates workflows with centralized intelligence, and verifies every outcome. Move from AI experiments to real operations.",
   path: "/",
-  keywords: ["enterprise ai platform", "ai workers", "ai verification"],
+  keywords: [
+    "enterprise ai operating system",
+    "ai workflow platform",
+    "ai orchestration system",
+  ],
 });
 
 export default function Home() {
@@ -19,6 +24,7 @@ export default function Home() {
     <>
       <Hero />
       <PillarsGrid />
+      <CallmeSection />
       <ContactPanel />
       <FaqAccordion />
       <FinalCta />

@@ -17,10 +17,14 @@ interface LeadExportRow {
 }
 
 function toCsvValue(value: string): string {
-  if (!value.includes(",") && !value.includes("\"") && !value.includes("\n")) {
-    return value;
+  if (!value) return '';
+  
+  const sanitized = /^[=+\-@]/.test(value) ? "'" + value : value;
+  
+  if (!sanitized.includes(",") && !sanitized.includes("\"") && !sanitized.includes("\n")) {
+    return sanitized;
   }
-  return `"${value.replaceAll("\"", "\"\"")}"`;
+  return `"${sanitized.replaceAll("\"", "\"\"")}"`;
 }
 
 function toCsv(rows: LeadExportRow[]): string {

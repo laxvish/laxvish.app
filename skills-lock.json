@@ -1,10 +1,30 @@
 {
   "version": 1,
   "skills": {
+    "chrome-devtools": {
+      "source": "local",
+      "sourceType": "local"
+    },
+    "editorial-designer": {
+      "source": "heyman333/atelier-ui",
+      "sourceType": "github",
+      "skillPath": "skills/editorial-designer/SKILL.md",
+      "computedHash": "7905b16a95b77328b586bc74dc8dee4d736640a669ca32ed6678f4f948c6f23e"
+    },
+    "javascript-typescript-jest": {
+      "source": "local",
+      "sourceType": "local"
+    },
     "neon-postgres": {
       "source": "neondatabase/agent-skills",
       "sourceType": "github",
       "computedHash": "574cf4b7c901ebc7d88d34e2c3e3d08fdec127bd0047f888de148ff0af787d4e"
+    },
+    "remotion-best-practices": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion/SKILL.md",
+      "computedHash": "6b0cd8f84e1213ef7a198d9d68bd155fed3f4d985ef7d5b13d7be0aac1526493"
     }
   }
 }

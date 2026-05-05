@@ -30,28 +30,28 @@ interface ShapeTheme {
 
 const SHAPE_THEMES: Record<ShapeVariant, ShapeTheme> = {
   sphere: {
-    core: "#B6B09F",
-    rim: "#F2F2F2",
+    core: "#8DBCC7",
+    rim: "#A4CCD9",
     speed: 0.34,
   },
   torus: {
-    core: "#EAE4D5",
-    rim: "#F2F2F2",
+    core: "#A4CCD9",
+    rim: "#C4E1E6",
     speed: 0.5,
   },
   icosahedron: {
-    core: "#B6B09F",
-    rim: "#F2F2F2",
+    core: "#C4E1E6",
+    rim: "#8DBCC7",
     speed: 0.48,
   },
   cone: {
-    core: "#EAE4D5",
-    rim: "#F2F2F2",
+    core: "#8DBCC7",
+    rim: "#EBFFD8",
     speed: 0.4,
   },
   octahedron: {
-    core: "#B6B09F",
-    rim: "#F2F2F2",
+    core: "#A4CCD9",
+    rim: "#C4E1E6",
     speed: 0.45,
   },
 };
@@ -81,13 +81,18 @@ function RotatingShape({ variant }: MiniHeroShapeProps) {
   const flowUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uColor: { value: new Color("#ff2b2b") },
+      uColor: { value: new Color("#8DBCC7") },
     }),
     [],
   );
 
   useFrame((state) => {
-    if (!groupRef.current || !coreRef.current || !vibrationRef.current || !flowMaterialRef.current) {
+    if (
+      !groupRef.current ||
+      !coreRef.current ||
+      !vibrationRef.current ||
+      !flowMaterialRef.current
+    ) {
       return;
     }
 
@@ -164,10 +169,18 @@ export function MiniHeroShape({ variant }: MiniHeroShapeProps) {
     <div className="relative h-56 w-full overflow-hidden rounded-2xl border border-charcoal/20 sm:h-64">
       <Canvas camera={{ position: [0, 0, 3.8], fov: 42 }}>
         <ambientLight intensity={0.28} />
-        <directionalLight position={[1.8, 2.1, 2]} intensity={1.45} color={theme.rim} />
-        <pointLight position={[-2.2, -0.8, 1.4]} intensity={0.85} color="#B6B09F" />
-        <pointLight position={[1.4, -1.2, 1]} intensity={0.6} color="#EAE4D5" />
-        <pointLight position={[0, 0.5, 1.4]} intensity={0.9} color="#ff2b2b" />
+        <directionalLight
+          position={[1.8, 2.1, 2]}
+          intensity={1.45}
+          color={theme.rim}
+        />
+        <pointLight
+          position={[-2.2, -0.8, 1.4]}
+          intensity={0.85}
+          color="#8DBCC7"
+        />
+        <pointLight position={[1.4, -1.2, 1]} intensity={0.6} color="#A4CCD9" />
+        <pointLight position={[0, 0.5, 1.4]} intensity={0.9} color="#C4E1E6" />
         <RotatingShape variant={variant} />
       </Canvas>
     </div>

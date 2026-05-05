@@ -4,17 +4,17 @@ const DEFAULT_SITE_URL = "https://www.laxvish.app";
 const SITE_NAME = "Laxvish";
 const DEFAULT_TITLE = "Enterprise AI Operating System";
 const DEFAULT_DESCRIPTION =
-  "Laxvish is the operating system for enterprise AI: deploy domain workers, orchestrate decisions, and verify outcomes with DPDP-first trust controls.";
+  "Laxvish is the enterprise AI operating system: deploy domain AI agents, orchestrate workflows with centralized intelligence, and verify every outcome with governance-first controls.";
 
 const BASE_KEYWORDS = [
-  "enterprise ai",
-  "ai operating system",
-  "ai orchestration",
-  "ai agents",
-  "enterprise automation",
-  "dpdp compliant ai",
-  "ai governance",
-  "verification layer for ai",
+  "enterprise ai operating system",
+  "ai workflow platform",
+  "ai orchestration system",
+  "enterprise ai agents",
+  "ai governance and verification",
+  "ai workflow automation",
+  "enterprise automation ai",
+  "ai compliance tools",
 ];
 
 export function getSiteUrl(): string {

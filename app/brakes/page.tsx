@@ -5,10 +5,15 @@ import { buildPageMetadata } from "@/lib/seo";
 import { PAGE_CONTENT } from "@/lib/site-pages";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "AI Verification Brakes for Safe Execution",
+  title: "AI Governance and Verification — Ship AI with Brakes",
   description:
-    "Apply verification-first controls, risk-triggered checks, and audit-ready guardrails for AI.",
+    "Enforce AI governance and verification before any output reaches production. Confidence checks, policy enforcement, and audit-grade traces built into every AI execution.",
   path: "/brakes",
+  keywords: [
+    "ai governance and verification",
+    "ai validation system",
+    "ai compliance tools",
+  ],
 });
 
 export default function BrakesPage() {
@@ -22,7 +27,22 @@ export default function BrakesPage() {
         summary={content.summary}
         shape="cone"
       />
-      <PageBlocks details={content.details} outcomes={content.outcomes} />
+      <PageBlocks
+        details={content.details}
+        outcomes={content.outcomes}
+        problemHeadline={content.problemHeadline}
+        problemDescription={content.problemDescription}
+        problemPoints={content.problemPoints}
+        solutionHeadline={content.solutionHeadline}
+        solutionDescription={content.solutionDescription}
+        howItWorks={content.howItWorks}
+        useCases={content.useCases}
+        differentiationHeadline={content.differentiationHeadline}
+        differentiationPoints={content.differentiationPoints}
+        ctaHeadline={content.ctaHeadline}
+        ctaDescription={content.ctaDescription}
+        internalLinks={content.internalLinks}
+      />
     </>
   );
 }

@@ -104,10 +104,10 @@ Use these principles as the default for all new website UI work:
 ## Approved Color Palette (Do Not Drift)
 
 Use only these core brand/UI colors unless explicitly requested:
-- `#000000` — base/background
-- `#B6B09F` — premium accent
-- `#EAE4D5` — secondary text/surface tint
-- `#F2F2F2` — primary text/highlight
+- `#F6F1F1` — base/background
+- `#AFD3E2` — premium accent
+- `#19A7CE` — secondary text/surface tint
+- `#146C94` — primary text/highlight
 
 Implementation guidance:
 - Prefer tokenized use through Tailwind theme colors.
@@ -170,3 +170,8 @@ For optimization changes:
 - Reduce unnecessary work (duplicate writes/queries, extra layout/reflow, heavy effects).
 - Keep animation speed time-normalized (delta-time based), especially on resize and high-DPR screens.
 - Favor simpler architecture if output quality is equal or better.
+
+
+## Updates and reference
+Always take reference of graph.md file in begaining to understand context only take this as for once tp store in context window.if already there leave it.
+After each updates and implementation update the graph.md file.

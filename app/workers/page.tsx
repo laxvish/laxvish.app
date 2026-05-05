@@ -5,10 +5,15 @@ import { buildPageMetadata } from "@/lib/seo";
 import { PAGE_CONTENT } from "@/lib/site-pages";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Domain AI Workers for Enterprise Operations",
+  title: "Enterprise AI Agents — Domain Workers for Real Operations",
   description:
-    "See how specialized AI workers execute repeatable tasks with enterprise-grade controls.",
+    "Deploy enterprise AI agents scoped to specific business functions. Laxvish Workers handle repeatable, production-grade tasks with predictable behavior, measurable output, and verification controls.",
   path: "/workers",
+  keywords: [
+    "enterprise ai agents",
+    "domain ai agents",
+    "ai agents for operations",
+  ],
 });
 
 export default function WorkersPage() {
@@ -22,7 +27,22 @@ export default function WorkersPage() {
         summary={content.summary}
         shape="torus"
       />
-      <PageBlocks details={content.details} outcomes={content.outcomes} />
+      <PageBlocks
+        details={content.details}
+        outcomes={content.outcomes}
+        problemHeadline={content.problemHeadline}
+        problemDescription={content.problemDescription}
+        problemPoints={content.problemPoints}
+        solutionHeadline={content.solutionHeadline}
+        solutionDescription={content.solutionDescription}
+        howItWorks={content.howItWorks}
+        useCases={content.useCases}
+        differentiationHeadline={content.differentiationHeadline}
+        differentiationPoints={content.differentiationPoints}
+        ctaHeadline={content.ctaHeadline}
+        ctaDescription={content.ctaDescription}
+        internalLinks={content.internalLinks}
+      />
     </>
   );
 }

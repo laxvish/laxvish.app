@@ -1,7 +1,10 @@
 "use client";
 
 import { type ChangeEvent, type FormEvent, useState } from "react";
+import { motion } from "framer-motion";
+import { ExecutionPhase, ValidationPhase } from "@/lib/motion-system";
 import type { LeadCaptureAction } from "@/lib/enterpriseVault";
+import { SystemPanel } from "@/components/ui/SystemPanel";
 
 interface ContactFormData {
   name: string;
@@ -107,49 +110,53 @@ export function ContactPanel() {
   return (
     <section
       id="contact"
-      className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6 sm:py-16 lg:py-20"
+      className="mx-auto w-full max-w-4xl px-6 py-24 sm:px-12 lg:py-32"
     >
-      <div className="rounded-2xl border border-charcoal/20 bg-[#0d0d0d] p-6 sm:p-8">
-        <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
-          Start with one clear next step
+      <SystemPanel className="border border-charcoal bg-vaultAmber p-8 sm:p-12 shadow-2xl shadow-charcoal/5">
+        <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
+          Start with one clear next step.
         </h2>
-        <p className="mt-3 text-sm text-charcoal/80">
+        <p className="mt-6 text-lg text-neonCyan">
           Pick your path. We only ask for essential business details.
         </p>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          <button
+        <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          <motion.button
             type="button"
             onClick={() => setAction("pilot")}
-            className={`rounded-xl border px-4 py-3 text-left text-sm transition-colors duration-200 ${
+            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
+            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
+            className={`border px-6 py-4 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
               action === "pilot"
-                ? "border-vaultAmber/70 bg-vaultAmber/10 text-vaultAmber"
-                : "border-charcoal/20 bg-transparent text-charcoal/88 hover:border-charcoal/45"
+                ? "border-charcoal bg-charcoal text-obsidian"
+                : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
             }`}
           >
-            <span className="block font-semibold">Request pilot</span>
-          </button>
-          <button
+            Request pilot
+          </motion.button>
+          <motion.button
             type="button"
             onClick={() => setAction("blueprint")}
-            className={`rounded-xl border px-4 py-3 text-left text-sm transition-colors duration-200 ${
+            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
+            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
+            className={`border px-6 py-4 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
               action === "blueprint"
-                ? "border-neonCyan/70 bg-neonCyan/10 text-neonCyan"
-                : "border-charcoal/20 bg-transparent text-charcoal/88 hover:border-charcoal/45"
+                ? "border-charcoal bg-charcoal text-obsidian"
+                : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
             }`}
           >
-            <span className="block font-semibold">Get integration blueprint</span>
-          </button>
+            Get integration blueprint
+          </motion.button>
         </div>
 
-        <form className="mt-7 grid gap-4 sm:grid-cols-2" onSubmit={onSubmit}>
+        <form className="mt-8 grid gap-6 sm:grid-cols-2" onSubmit={onSubmit}>
           <input
             type="text"
             value={formData.name}
             onChange={updateField("name")}
             placeholder="Name"
             required
-            className="rounded-lg border border-charcoal/20 bg-black/30 px-4 py-3 text-sm text-neonCyan placeholder:text-charcoal/45 focus:border-vaultAmber/55 focus:outline-none"
+            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
           />
           <input
             type="email"
@@ -157,7 +164,7 @@ export function ContactPanel() {
             onChange={updateField("workEmail")}
             placeholder="Work Email"
             required
-            className="rounded-lg border border-charcoal/20 bg-black/30 px-4 py-3 text-sm text-neonCyan placeholder:text-charcoal/45 focus:border-vaultAmber/55 focus:outline-none"
+            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
           />
           <input
             type="text"
@@ -165,7 +172,7 @@ export function ContactPanel() {
             onChange={updateField("company")}
             placeholder="Company"
             required
-            className="rounded-lg border border-charcoal/20 bg-black/30 px-4 py-3 text-sm text-neonCyan placeholder:text-charcoal/45 focus:border-vaultAmber/55 focus:outline-none"
+            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
           />
           <input
             type="text"
@@ -182,30 +189,32 @@ export function ContactPanel() {
             placeholder="Use Case"
             required
             rows={4}
-            className="rounded-lg border border-charcoal/20 bg-black/30 px-4 py-3 text-sm text-neonCyan placeholder:text-charcoal/45 focus:border-vaultAmber/55 focus:outline-none sm:col-span-2"
+            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none sm:col-span-2"
           />
-          <button
+          <motion.button
             type="submit"
             disabled={isSubmitting}
-            className="mt-2 rounded-full bg-vaultAmber px-6 py-3 text-sm font-semibold text-black transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 sm:w-fit"
+            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
+            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
+            className="mt-6 inline-flex items-center justify-center bg-charcoal px-8 py-4 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 disabled:opacity-50 hover:bg-neonCyan sm:col-span-2 sm:w-auto sm:justify-start"
           >
             {isSubmitting ? "Capturing..." : actionLabels[action]}
-          </button>
+          </motion.button>
         </form>
 
         {feedback.status !== "idle" ? (
           <p
-            className={`mt-4 text-sm ${
+            className={`mt-6 text-sm font-medium tracking-wide ${
               feedback.status === "success"
-                ? "text-neonCyan"
-                : "text-vaultAmber"
+                ? "text-charcoal"
+                : "text-red-700"
             }`}
           >
             {feedback.message}
             {feedback.referenceId ? ` Reference: ${feedback.referenceId}` : ""}
           </p>
         ) : null}
-      </div>
+      </SystemPanel>
     </section>
   );
 }

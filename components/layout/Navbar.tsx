@@ -40,35 +40,33 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-charcoal/15 bg-obsidian/75 shadow-[0_8px_24px_rgba(0,0,0,0.28)] backdrop-blur-xl">
-      <div className="mx-auto flex h-16 w-full max-w-[96rem] items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-charcoal bg-obsidian">
+      <div className="mx-auto flex h-20 w-full max-w-[96rem] items-center justify-between px-6 sm:h-24 sm:px-12 lg:px-16">
         <Link
           href="/"
-          className="text-sm font-bold tracking-[0.22em] text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-lg sm:tracking-[0.3em]"
+          className="text-lg font-normal tracking-[0.2em] uppercase text-charcoal sm:text-xl"
           onClick={closeMenu}
         >
-          LAXVISH
+          Laxvish
         </Link>
 
         <NavMenu
           links={PRIMARY_NAV_LINKS}
           pathname={pathname}
           onNavigate={closeMenu}
-          className="hidden items-center gap-1 md:flex"
+          className="hidden items-center gap-6 md:flex"
         />
 
         <MagneticButton
           type="button"
           className={`${BOOK_NOW_BUTTON_CLASS} hidden md:inline-flex`}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
           onClick={redirectToDemo}
         >
-          <span className="relative z-10">Book Now</span>
+          <span>Book Now</span>
         </MagneticButton>
         <button
           type="button"
-          className="rounded-md border border-charcoal/30 px-3 py-1.5 text-xs font-medium text-charcoal/90 transition-colors duration-200 hover:border-neonCyan/45 hover:text-neonCyan md:hidden"
+          className="border border-charcoal px-4 py-2 text-sm font-medium tracking-wide text-charcoal transition-colors duration-300 hover:bg-charcoal hover:text-obsidian md:hidden"
           onClick={() => setIsMenuOpen((current) => !current)}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-nav-panel"
@@ -80,17 +78,17 @@ export function Navbar() {
       {isMenuOpen ? (
         <div
           id="mobile-nav-panel"
-          className="border-t border-charcoal/15 bg-[#080808] px-4 py-4 md:hidden"
+          className="border-t border-charcoal bg-obsidian px-6 py-6 md:hidden"
         >
           <NavMenu
             links={PRIMARY_NAV_LINKS}
             pathname={pathname}
             onNavigate={closeMenu}
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-4"
           />
           <button
             type="button"
-            className={`${BOOK_NOW_BUTTON_CLASS} mt-4 w-full px-4`}
+            className={`${BOOK_NOW_BUTTON_CLASS} mt-6 w-full`}
             onClick={redirectToDemo}
           >
             Book Now

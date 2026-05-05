@@ -11,6 +11,33 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
+  const timestamp = request.headers.get("x-lead-sync-timestamp");
+  const nonce = request.headers.get("x-lead-sync-nonce");
+  
+  if (!timestamp || !nonce) {
+    return NextResponse.json(
+      { ok: false, message: "Missing timestamp or nonce." },
+      { status: 401 },
+    );
+  }
+
+  const timestampNum = Number.parseInt(timestamp, 10);
+  if (!Number.isFinite(timestampNum)) {
+    return NextResponse.json(
+      { ok: false, message: "Invalid timestamp format." },
+      { status: 401 },
+    );
+  }
+
+  const now = Date.now();
+  const maxAge = 5 * 60 * 1000;
+  if (Math.abs(now - timestampNum) > maxAge) {
+    return NextResponse.json(
+      { ok: false, message: "Request timestamp expired." },
+      { status: 401 },
+    );
+  }
+
   const token = request.headers.get("x-lead-sync-secret");
   if (!safeTokenCompare(token, webhookSecret)) {
     return NextResponse.json(

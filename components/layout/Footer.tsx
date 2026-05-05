@@ -10,43 +10,45 @@ export function Footer() {
   const bookDemoUrl = getBookDemoUrl();
 
   return (
-    <footer className="relative z-10 border-t border-charcoal/15 bg-[#070707]">
-      <div className="mx-auto w-full max-w-[96rem] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1.1fr_2fr]">
+    <footer className="relative z-10 border-t border-charcoal bg-vaultAmber">
+      <div className="mx-auto w-full max-w-[96rem] px-6 py-24 sm:px-12 lg:px-16">
+        <div className="grid gap-16 lg:grid-cols-[1.2fr_2fr]">
           <div>
-            <p className="text-sm font-semibold tracking-[0.24em] text-neonCyan">
-              LAXVISH
+            <p className="text-sm font-semibold tracking-[0.2em] uppercase text-charcoal">
+              Laxvish
             </p>
-            <h2 className="mt-4 max-w-sm text-2xl font-bold text-charcoal [font-family:var(--font-space-grotesk)]">
-              Enterprise AI Operating System for accountable execution.
+            <h2 className="mt-6 max-w-sm text-3xl font-normal tracking-tight text-charcoal sm:text-4xl">
+              Enterprise AI OS for accountable execution.
             </h2>
-            <p className="mt-4 max-w-md text-sm leading-6 text-charcoal/75">
+            <p className="mt-6 max-w-md text-base leading-relaxed text-neonCyan">
               Build production AI with specialized workers, centralized
               orchestration, and verification-first controls made for
               enterprise teams.
             </p>
-            <a
-              href={bookDemoUrl}
-              target="_blank"
-              rel="noreferrer"
-              className={`${BOOK_NOW_BUTTON_CLASS} mt-6`}
-            >
-              <span className="relative z-10">Book Now</span>
-            </a>
+            <div className="mt-8">
+              <a
+                href={bookDemoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={BOOK_NOW_BUTTON_CLASS}
+              >
+                <span>Book Now</span>
+              </a>
+            </div>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-3">
+          <div className="grid gap-12 sm:grid-cols-3">
             {FOOTER_GROUPS.map((group) => (
               <div key={group.title}>
-                <h3 className="text-sm font-semibold text-neonCyan">
+                <h3 className="text-sm font-semibold tracking-wide text-charcoal">
                   {group.title}
                 </h3>
-                <ul className="mt-4 space-y-2.5">
+                <ul className="mt-6 space-y-4">
                   {group.links.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-sm text-charcoal/75 transition-colors duration-150 hover:text-neonCyan"
+                        className="text-base text-neonCyan transition-colors duration-300 hover:text-charcoal"
                       >
                         {link.label}
                       </Link>
@@ -58,16 +60,16 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-charcoal/15 pt-6 text-xs text-charcoal/65 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-24 flex flex-col gap-6 border-t border-charcoal/20 pt-8 text-sm font-medium text-neonCyan sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Laxvish. DPDP-first by design.</p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {SOCIAL_LINKS.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 target="_blank"
-                rel="noreferrer"
-                className="transition-colors duration-150 hover:text-neonCyan"
+                rel="noopener noreferrer"
+                className="transition-colors duration-300 hover:text-charcoal"
               >
                 {item.label}
               </a>

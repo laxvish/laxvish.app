@@ -1,0 +1,354 @@
+
+=== DIRECTORY TREE (max depth 3, source files only) ===
+.agents
+.agents/skills
+.agents/skills/chrome-devtools
+.agents/skills/chrome-devtools/SKILL.md
+.agents/skills/javascript-typescript-jest
+.agents/skills/javascript-typescript-jest/SKILL.md
+.agents/skills/neon-postgres
+.agents/skills/neon-postgres/SKILL.md
+.agents/skills/reverse-engineer
+.agents/skills/reverse-engineer/SKILL.md
+.github
+.github/copilot-instructions.md
+.github/instructions
+.github/instructions/a11y.instructions.md
+.github/instructions/nextjs-tailwind.instructions.md
+.github/instructions/nextjs.instructions.md
+.github/skills
+.github/skills/chrome-devtools
+.github/skills/chrome-devtools/SKILL.md
+.github/skills/javascript-typescript-jest
+.github/skills/javascript-typescript-jest/SKILL.md
+.gitignore
+LICENSE
+README.md
+REPO_MAPPING_SUMMARY.md
+app
+app/about
+app/about/page.tsx
+app/api
+app/api/admin
+app/api/admin/leads
+app/api/lead-capture
+app/api/lead-capture/route.ts
+app/api/webhooks
+app/api/webhooks/lead-sync
+app/brain
+app/brain/page.tsx
+app/brakes
+app/brakes/page.tsx
+app/careers
+app/careers/apply
+app/careers/apply/page.tsx
+app/contact
+app/contact/page.tsx
+app/faq
+app/faq/page.tsx
+app/favicon.ico
+app/globals.css
+app/layout.tsx
+app/page.tsx
+app/privacy
+app/privacy/page.tsx
+app/robots.ts
+app/security-trust
+app/security-trust/page.tsx
+app/solutions
+app/solutions/page.tsx
+app/terms
+app/terms/page.tsx
+app/workers
+app/workers/page.tsx
+components
+components/layout
+components/layout/Footer.tsx
+components/layout/NavMenu.tsx
+components/layout/Navbar.tsx
+components/layout/NoiseOverlay.tsx
+components/sections
+components/sections/CapabilityMatrix.tsx
+components/sections/CareersApplicationPanel.tsx
+components/sections/ContactPanel.tsx
+components/sections/EcosystemCommandStrip.tsx
+components/sections/EcosystemMarquee.tsx
+components/sections/EcosystemMesh.tsx
+components/sections/FaqAccordion.tsx
+components/sections/FinalCta.tsx
+components/sections/Hero.tsx
+components/sections/PillarsGrid.tsx
+components/sections/TrustRibbon.tsx
+components/sections/UseCaseRail.tsx
+components/sections/VerificationPanel.tsx
+components/sections/depth
+components/sections/depth/PageBlocks.tsx
+components/sections/depth/PageHero.tsx
+components/ui
+components/ui/FadeIn.tsx
+components/ui/LivingPaintingCanvas.tsx
+components/ui/MagneticButton.tsx
+components/ui/NeuralCanvas.tsx
+components/ui/NoiseOverlay.tsx
+components/visuals
+components/visuals/MiniHeroShape.tsx
+deploy.md
+docs
+docs/codebase
+docs/codebase/.codebase-scan.txt
+eslint.config.mjs
+graph.md
+lib
+lib/csrf.ts
+lib/enterpriseVault.ts
+lib/leadSync.ts
+lib/prisma.ts
+lib/security.ts
+lib/seo.ts
+lib/site-navigation.ts
+lib/site-pages.ts
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+postcss.config.mjs
+prisma
+prisma/migrations
+prisma/migrations/001_init_leads
+prisma/migrations/001_init_leads/migration.sql
+prisma/migrations/002_sync_lead_payload_fields
+prisma/migrations/002_sync_lead_payload_fields/migration.sql
+prisma/schema.prisma
+prisma.config.ts
+prompt.md
+public
+public/file.svg
+public/globe.svg
+public/next.svg
+public/sitemap.xml
+public/vercel.svg
+public/window.svg
+review.md
+skills-lock.json
+tailwind.config.ts
+tsconfig.json
+tsconfig.tsbuildinfo
+
+=== STACK DETECTION (manifest files) ===
+
+--- package-lock.json ---
+{
+  "name": "laxvish.app",
+  "version": "0.1.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "laxvish.app",
+      "version": "0.1.0",
+      "dependencies": {
+        "@prisma/adapter-pg": "^7.7.0",
+        "@prisma/client": "^7.7.0",
+        "@react-three/drei": "^10.7.7",
+        "@react-three/fiber": "^9.6.0",
+        "animejs": "^4.3.6",
+        "framer-motion": "^12.38.0",
+        "matter-js": "^0.20.0",
+        "motion": "^12.38.0",
+        "next": "16.2.3",
+        "pg": "^8.20.0",
+        "react": "19.2.4",
+        "react-dom": "19.2.4",
+        "three": "^0.183.2"
+      },
+      "devDependencies": {
+        "@tailwindcss/postcss": "^4",
+        "@types/matter-js": "^0.20.2",
+        "@types/node": "^20",
+        "@types/pg": "^8.20.0",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "@types/three": "^0.183.1",
+        "eslint": "^9",
+        "eslint-config-next": "16.2.3",
+        "prisma": "^7.7.0",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+      }
+    },
+    "node_modules/@alloc/quick-lru": {
+      "version": "5.2.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/@babel/code-frame": {
+      "version": "7.29.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/helper-validator-identifier": "^7.28.5",
+        "js-tokens": "^4.0.0",
+        "picocolors": "^1.1.1"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/compat-data": {
+      "version": "7.29.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/core": {
+      "version": "7.29.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/code-frame": "^7.29.0",
+        "@babel/generator": "^7.29.0",
+        "@babel/helper-compilation-targets": "^7.28.6",
+        "@babel/helper-module-transforms": "^7.28.6",
+
+[TRUNCATED] Showing first 80 of 7836 lines.
+--- package.json ---
+{
+  "name": "laxvish.app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "prisma generate",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.0",
+    "animejs": "^4.3.6",
+    "framer-motion": "^12.38.0",
+    "matter-js": "^0.20.0",
+    "motion": "^12.38.0",
+    "next": "16.2.3",
+    "pg": "^8.20.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/matter-js": "^0.20.2",
+    "@types/node": "^20",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.183.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.3",
+    "prisma": "^7.7.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+
+
+=== ENTRY POINTS ===
+No common entry points found. Check 'main' or 'scripts.start' in manifest files above.
+
+=== LINTING AND FORMATTING CONFIG ===
+Found: eslint.config.mjs
+Found: tsconfig.json
+
+=== ENVIRONMENT VARIABLE TEMPLATES ===
+No .env.example or .env.template found. Identify required environment variables by searching the code and config for environment variable reads.
+
+=== TODO / FIXME / HACK (production code only, test dirs excluded) ===
+None found.
+
+=== GIT RECENT COMMITS (last 20) ===
+ad789d7 Add careers application flow and improve lead capture logic
+f38c18f Update social links for site navigation
+246bdf7 Improve SEO metadata across website\n\n- Add centralized SEO metadata helpers in lib/seo.ts\n- Upgrade root metadata with canonical, Open Graph, Twitter, and robots directives\n- Add JSON-LD Organization and WebSite schema in app layout\n- Add route-level metadata for key marketing pages\n- Add app/robots.ts with sitemap and host directives\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+e456cd8 Move sitemap.xml to public directory
+e1d8ce4 Standardize Book Now button across all CTAs
+b8830d0 chore: add deployment guide and website updates
+4233f00 fix(Prompt 17): Move @prisma/client back to dependencies
+736064d fix(Prompt 17): Add eslint-disable comments for any types in Prisma client
+a249ffd docs: Add Prompt 17 database setup and configuration guide
+54e2d05 feat(Prompt 17): Add Prisma PostgreSQL database schema and migrations
+c4996f2 docs: Update README with CI/CD, testing, and deployment information
+e66feaf chore: ignore local worktrees
+8b5090f Merge remote branch; resolve gitignore conflict
+8f421f7 Initial commit: Laxvish marketing website with all prompts 1-16 implemented
+303fad4 Initial commit
+
+=== HIGH-CHURN FILES (last 90 days, top 20) ===
+   5 .gitignore
+   5 README.md
+   5 package.json
+   4 app/api/lead-capture/route.ts
+   4 app/layout.tsx
+   4 components/sections/Hero.tsx
+   4 lib/enterpriseVault.ts
+   4 lib/site-navigation.ts
+   4 package-lock.json
+   3 app/globals.css
+   3 components/sections/ContactPanel.tsx
+   3 app/page.tsx
+   3 components/layout/Navbar.tsx
+   3 components/sections/FinalCta.tsx
+   3 lib/prisma.ts
+   3 prompt.md
+   2 deploy.md
+   2 lib/leadSync.ts
+   2 lib/site-pages.ts
+   2 app/about/page.tsx
+
+=== MONOREPO SIGNALS ===
+No monorepo signals detected.
+
+=== CODE METRICS ===
+Total files scanned: 89
+Total lines of code: 12851
+
+Files by language:
+  TypeScript/React: 38
+  Other: 35
+  TypeScript: 16
+
+Top 10 largest files:
+tsconfig.tsbuildinfo: 303.0KB
+package-lock.json: 225.6KB
+graph.md: 27.3KB
+app/favicon.ico: 25.3KB
+components/ui/NeuralCanvas.tsx: 15.5KB
+components/ui/LivingPaintingCanvas.tsx: 15.2KB
+components/sections/CareersApplicationPanel.tsx: 14.3KB
+.github/instructions/a11y.instructions.md: 12.0KB
+README.md: 10.0KB
+lib/site-pages.ts: 10.0KB
+
+=== CI/CD PIPELINES ===
+No CI/CD pipelines detected.
+
+=== CONTAINERS & ORCHESTRATION ===
+No containerization configs detected.
+
+=== SECURITY & COMPLIANCE ===
+No security configs detected.
+
+=== PERFORMANCE & TESTING ===
+No performance testing configs detected.
+
+=== SCAN COMPLETE ===

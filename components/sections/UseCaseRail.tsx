@@ -27,20 +27,20 @@ const useCases: UseCase[] = [
 
 export function UseCaseRail() {
   return (
-    <section id="agents" className="border-y border-white/5 bg-black/25">
+    <section id="agents" className="border-y border-charcoal/20 bg-[#F6F1F1]/25">
       <div className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-        <h2 className="text-3xl font-bold text-white [font-family:var(--font-space-grotesk)] sm:text-4xl">
+        <h2 className="text-3xl font-bold text-charcoal [font-family:var(--font-space-grotesk)] sm:text-4xl">
           Built for Real-World Indian Enterprise Workloads
         </h2>
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {useCases.map((item) => (
             <article
               key={item.title}
-              className="rounded-xl border border-gray-800 bg-charcoal/60 p-6"
+              className="rounded-xl border border-charcoal/20 bg-[#F6F1F1]/30 p-6"
             >
-              <h3 className="text-lg font-semibold text-white">{item.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-gray-400">{item.summary}</p>
-              <p className="mt-4 text-xs font-medium text-vaultAmber">
+              <h3 className="text-lg font-semibold text-charcoal">{item.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-charcoal/70">{item.summary}</p>
+              <p className="mt-4 text-xs font-medium text-[#AFD3E2]">
                 {item.outcome}
               </p>
             </article>

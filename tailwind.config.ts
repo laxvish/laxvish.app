@@ -8,10 +8,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        obsidian: "#000000",
-        neonCyan: "#F2F2F2",
-        vaultAmber: "#B6B09F",
-        charcoal: "#EAE4D5",
+        obsidian: "#FAFAFA", // ultra-minimal base (off-white)
+        neonCyan: "#666666", // muted secondary text/elements
+        vaultAmber: "#EAEAEA", // matte surface panels
+        charcoal: "#111111", // deep ink for typography
       },
       keyframes: {
         pulseSlow: {
