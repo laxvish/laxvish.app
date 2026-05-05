@@ -1,16 +1,12 @@
 "use client";
 
-import {
-  type MouseEvent,
-  type ReactNode,
-} from "react";
+import { type MouseEvent, type ReactNode } from "react";
 import {
   motion,
   useMotionValue,
   useReducedMotion,
   useSpring,
 } from "framer-motion";
-import { type MouseEvent, type ReactNode } from "react";
 import { ExecutionPhase, ValidationPhase } from "@/lib/motion-system";
 
 interface MagneticButtonProps {

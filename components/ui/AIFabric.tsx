@@ -75,7 +75,13 @@ export function AIFabric({
   // In Level 1, scroll reduces interaction to 30-40%
   // In Level 2/3, interaction is always reduced or minimal
   const hoverMultiplier = useTransform(scrollY, [0, 250, 500], [isHero ? 1 : 0.4, isHero ? 0.8 : 0.4, isHero ? 0.3 : 0.1]);
-  const dampedInteraction = useTransform([isInteracting, hoverMultiplier], ([interact, mult]) => interact * mult);
+  const dampedInteraction = useMotionValue(0);
+  useEffect(() => {
+    return isInteracting.on("change", (latest) => {
+      const mult = hoverMultiplier.get();
+      dampedInteraction.set(latest * mult);
+    });
+  }, [isInteracting, hoverMultiplier, dampedInteraction]);
   const smoothInteraction = useSpring(dampedInteraction, { stiffness: 50, damping: 15 });
 
   // Camera System
@@ -86,9 +92,10 @@ export function AIFabric({
   const cameraScrollScale = useTransform(scrollY, scrollBreakpoints, [1, 1.01, 1.03, 1.06, 1]);
   const interactionScale = useTransform(smoothInteraction, [0, 1], [0, 0.02]);
   
-  const finalCameraScale = isHero 
-    ? useTransform([cameraScrollScale, interactionScale, warpScale], ([s, i, ws]) => s + i + ws)
-    : useTransform([interactionScale, warpScale], ([i, ws]) => 1 + i + ws);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const finalCameraScale = isHero 
+    ? useTransform([cameraScrollScale, interactionScale, warpScale], (([s, i, ws]: any) => s + i + ws) as any)
+    : useTransform([interactionScale, warpScale], (([i, ws]: any) => 1 + i + ws) as any);
 
   // Dynamic Lighting System
   const lightX = useTransform(smoothMouseX, [0, 1], ["-10%", "10%"]);
@@ -97,9 +104,10 @@ export function AIFabric({
   // Hero Scroll Lighting: Soft (0.03) -> Slight Incr (0.045) -> Sharper (0.07) -> Max (0.12) -> Soft (0.03)
   const scrollLightIntensity = useTransform(scrollY, scrollBreakpoints, [0.03, 0.045, 0.07, 0.12, 0.03]);
   const interactionLightBoost = useTransform(smoothInteraction, [0, 1], [0, 0.05]);
-  const finalLightIntensity = isHero
-    ? useTransform([scrollLightIntensity, interactionLightBoost, warpLight], ([base, boost, wl]) => base + boost + wl)
-    : useTransform([interactionLightBoost, warpLight], ([boost, wl]) => (isFocus ? 0.01 : 0.03) + boost + wl);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const finalLightIntensity = isHero
+    ? useTransform([scrollLightIntensity, interactionLightBoost, warpLight], (([base, boost, wl]: any) => base + boost + wl) as any)
+    : useTransform([interactionLightBoost, warpLight], (([boost, wl]: any) => (isFocus ? 0.01 : 0.03) + boost + wl) as any);
 
   // Structural Alignment mapped to Scroll (5-State Progression)
   
@@ -152,15 +160,12 @@ export function AIFabric({
       onMouseEnter={() => !isFocus && isInteracting.set(1)}
       onMouseLeave={() => !isFocus && isInteracting.set(0)}
     >
-      <div className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: baseOpacity }}>
+<div className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: baseOpacity }}>
       {/* Dynamic Cinematic Lighting System */}
       <motion.div 
         className={`absolute inset-0 pointer-events-none z-30 ${theme === "light" ? "mix-blend-multiply" : "mix-blend-screen"}`}
         style={{
-          background: useTransform(
-            [lightX, lightY, finalLightIntensity],
-            ([x, y, intensity]) => `radial-gradient(circle at calc(30% + ${x}) calc(20% + ${y}), rgba(${theme === "light" ? "25,167,206" : "0,255,255"},${intensity}) 0%, transparent 60%)`
-          )
+          background: "rgba(255,255,255,0.03)"
         }}
       />
       
