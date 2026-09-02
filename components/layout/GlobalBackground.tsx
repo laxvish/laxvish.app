@@ -1,24 +1,39 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import {
+  BRAND_PALETTE,
+  SPINE_MILESTONES,
+  SUBCONTINENT_HUBS,
+} from "@/types/visual-engine";
+
+const emptySubscribe = () => () => {};
 
 export function GlobalBackground() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
-  // Scroll tracking for the trans-page kinetic thread spine
+  // Scroll tracking for the trans-page kinetic thread spine with spring physics
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, {
-    damping: 24,
-    stiffness: 90,
-    mass: 0.8,
+    damping: 26,
+    stiffness: 85,
+    mass: 0.85,
   });
 
   // Calculate soliton pulse Y position along the vertical spine (2vh to 96vh)
-  const solitonY = useTransform(smoothProgress, [0, 1], ["3vh", "95vh"]);
-  const pulseOpacity = useTransform(smoothProgress, [0, 0.05, 0.95, 1], [0.3, 1, 1, 0.4]);
+  const solitonY = useTransform(smoothProgress, [0, 1], ["2.5vh", "96.5vh"]);
+  const pulseOpacity = useTransform(
+    smoothProgress,
+    [0, 0.04, 0.96, 1],
+    [0.4, 1, 1, 0.5]
+  );
 
-  // Generate top edge ruler ticks (0 to 1440px every 20px)
+  // Generate top edge technical drafting ruler ticks (0 to 1440px every 20px)
   const topRulerTicks = useMemo(() => {
     const ticks = [];
     for (let x = 0; x <= 1440; x += 20) {
@@ -26,14 +41,10 @@ export function GlobalBackground() {
       ticks.push({
         x,
         isMajor,
-        height: isMajor ? 6 : 3,
+        height: isMajor ? 7 : 3.5,
       });
     }
     return ticks;
-  }, []);
-
-  useEffect(() => {
-    setMounted(true);
   }, []);
 
   return (
@@ -60,16 +71,22 @@ export function GlobalBackground() {
             <path
               d="M 140 0 L 0 0 0 140"
               fill="none"
-              stroke="#1A1820"
+              stroke={BRAND_PALETTE.deepink}
               strokeWidth="0.5"
               strokeOpacity="0.04"
             />
             {/* Micro-dot at center of cell (70, 70) */}
-            <circle cx="70" cy="70" r="0.75" fill="#B4D3D9" fillOpacity="0.3" />
+            <circle
+              cx="70"
+              cy="70"
+              r="0.75"
+              fill={BRAND_PALETTE.mist}
+              fillOpacity="0.35"
+            />
             {/* Precision Crosshair (+) at grid intersections */}
             <path
               d="M -3.5 0 L 3.5 0 M 0 -3.5 L 0 3.5"
-              stroke="#1A1820"
+              stroke={BRAND_PALETTE.deepink}
               strokeWidth="0.75"
               strokeOpacity="0.14"
             />
@@ -82,7 +99,13 @@ export function GlobalBackground() {
             height="28"
             patternUnits="userSpaceOnUse"
           >
-            <circle cx="14" cy="14" r="0.65" fill="#1A1820" fillOpacity="0.035" />
+            <circle
+              cx="14"
+              cy="14"
+              r="0.65"
+              fill={BRAND_PALETTE.deepink}
+              fillOpacity="0.035"
+            />
           </pattern>
         </defs>
 
@@ -104,8 +127,8 @@ export function GlobalBackground() {
       </div>
 
       {/* Top Precision Metric Drafting Ruler (Desktop) */}
-      <div className="hidden lg:flex absolute top-0 inset-x-0 mx-auto h-4 w-full max-w-[1440px] items-start justify-between px-16">
-        <svg className="h-full w-full overflow-visible" viewBox="0 0 1440 10">
+      <div className="hidden lg:flex absolute top-0 inset-x-0 mx-auto h-5 w-full max-w-[1440px] items-start justify-between px-16">
+        <svg className="h-full w-full overflow-visible" viewBox="0 0 1440 12">
           {topRulerTicks.map((tick) => (
             <g key={tick.x} transform={`translate(${tick.x}, 0)`}>
               <line
@@ -113,15 +136,15 @@ export function GlobalBackground() {
                 y1="0"
                 x2="0"
                 y2={tick.height}
-                stroke="#1A1820"
+                stroke={BRAND_PALETTE.deepink}
                 strokeWidth={tick.isMajor ? "0.75" : "0.5"}
-                strokeOpacity={tick.isMajor ? "0.2" : "0.08"}
+                strokeOpacity={tick.isMajor ? "0.22" : "0.08"}
               />
               {tick.isMajor && tick.x > 0 && tick.x < 1400 && (
                 <text
-                  x="2"
-                  y="8"
-                  className="fill-deepink/30 font-mono text-[5.5px]"
+                  x="2.5"
+                  y="9"
+                  className="fill-deepink/30 font-mono text-[5.5px] tracking-tight"
                 >
                   {tick.x}
                 </text>
@@ -135,39 +158,82 @@ export function GlobalBackground() {
       {/* LAYER 3: TRANS-PAGE KINETIC THREAD SPINE (THE PROTAGONIST)*/}
       {/* ========================================================= */}
       <div className="absolute top-0 bottom-0 left-3 sm:left-6 lg:left-10 xl:left-[max(1.5rem,calc(50vw-708px))] flex flex-col items-center justify-between py-6">
-        {/* Continuous Hairline Spine Path */}
-        <div className="relative h-full w-px bg-gradient-to-b from-transparent via-mark/25 to-transparent">
-          {/* Milestone Node 01 */}
-          <div className="absolute top-[18%] -left-1 flex items-center gap-1.5 font-mono text-[7px] font-medium tracking-widest text-deepink/35 uppercase">
-            <span className="h-2 w-2 rotate-45 border border-mark/50 bg-cream" />
-            <span className="hidden xl:inline">NODE // 01</span>
-          </div>
+        {/* Continuous Hairline Spine Path & Unspooling SVG Rail */}
+        <div className="relative h-full w-2 flex items-center justify-center">
+          {/* SVG Carrier Track & Unspooling Thread */}
+          <svg
+            className="absolute inset-0 h-full w-full overflow-visible"
+            preserveAspectRatio="none"
+          >
+            {/* Hairline Carrier Guide Line */}
+            <line
+              x1="50%"
+              y1="0"
+              x2="50%"
+              y2="100%"
+              stroke={BRAND_PALETTE.ink}
+              strokeWidth="0.75"
+              strokeOpacity="0.2"
+              strokeDasharray="3 4"
+            />
+            {/* Living Thread Unspooling Path Length Reveal */}
+            {mounted && (
+              <motion.line
+                x1="50%"
+                y1="0"
+                x2="50%"
+                y2="100%"
+                stroke={BRAND_PALETTE.mark}
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                style={{ pathLength: smoothProgress }}
+              />
+            )}
+          </svg>
 
-          {/* Milestone Node 02 */}
-          <div className="absolute top-[48%] -left-1 flex items-center gap-1.5 font-mono text-[7px] font-medium tracking-widest text-deepink/35 uppercase">
-            <span className="h-2 w-2 rotate-45 border border-mark/50 bg-cream" />
-            <span className="hidden xl:inline">CORE // 142.8 HZ</span>
-          </div>
+          {/* Spine Chapter Milestones */}
+          {SPINE_MILESTONES.map((milestone) => (
+            <div
+              key={milestone.id}
+              style={{ top: `${milestone.yPositionPercent}%` }}
+              className="absolute -left-1.5 flex items-center gap-2 font-mono text-[7px] sm:text-[7.5px] tracking-widest text-deepink/35 uppercase"
+            >
+              {/* Precision Milestone Marker */}
+              <div className="relative flex h-3 w-3 items-center justify-center">
+                <span className="h-2 w-2 rotate-45 border border-mark/60 bg-cream" />
+                <span className="absolute h-0.75 w-0.75 rotate-45 bg-mark" />
+              </div>
+              <div className="hidden xl:flex flex-col gap-0.5 whitespace-nowrap">
+                <span className="font-medium text-deepink/50">
+                  {milestone.nodeCode}
+                </span>
+                {milestone.telemetry?.statusText && (
+                  <span className="text-[6px] text-ink tracking-wider">
+                    {milestone.telemetry.statusText}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
 
-          {/* Milestone Node 03 */}
-          <div className="absolute top-[78%] -left-1 flex items-center gap-1.5 font-mono text-[7px] font-medium tracking-widest text-deepink/35 uppercase">
-            <span className="h-2 w-2 rotate-45 border border-mark/50 bg-cream" />
-            <span className="hidden xl:inline">DPDP // VERIFIED</span>
-          </div>
-
-          {/* Traveling Soliton Data Pulse (Scroll-Driven) */}
+          {/* Traveling Soliton Data Pulse (Scroll-Driven with Spring Physics) */}
           {mounted && (
             <motion.div
               style={{
                 top: solitonY,
                 opacity: pulseOpacity,
               }}
-              className="absolute -left-[3px] -translate-y-1/2"
+              className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
             >
-              {/* Pulse Core Dot & Trailing Segment */}
-              <div className="relative flex h-2 w-2 items-center justify-center">
-                <span className="h-1.5 w-1.5 rounded-full bg-mark shadow-sm" />
+              {/* Soliton Wave Packet: Core Dot, Halo, and Acoustic Crosshair */}
+              <div className="relative flex h-4 w-4 items-center justify-center">
+                {/* Core Soliton Point */}
+                <span className="h-1.5 w-1.5 rounded-full bg-mark" />
+                {/* Soliton Wave Envelope Halo */}
                 <span className="absolute h-3.5 w-3.5 rounded-full border border-mark/60" />
+                {/* Trailing Micro-Nodes */}
+                <span className="absolute -top-2.5 h-0.75 w-0.75 rounded-full bg-mark/40" />
+                <span className="absolute -bottom-2.5 h-0.75 w-0.75 rounded-full bg-mark/40" />
               </div>
             </motion.div>
           )}
@@ -180,8 +246,12 @@ export function GlobalBackground() {
       <div className="font-mono text-[7px] sm:text-[8px] tracking-widest uppercase text-deepink/35">
         {/* Top-Right: Geographic Grid Reference */}
         <div className="absolute top-3 right-3 sm:top-5 sm:right-6 lg:right-10 flex flex-col items-end gap-0.5 border-r border-t border-mark/30 pr-1.5 pt-1">
-          <span className="font-semibold text-deepink/50">GRID // NIXI-IND</span>
-          <span className="text-[6.5px] sm:text-[7px]">20.59°N · 78.96°E</span>
+          <span className="font-semibold text-deepink/50">
+            GRID // {SUBCONTINENT_HUBS["NIXI-IND"].code}
+          </span>
+          <span className="text-[6.5px] sm:text-[7px]">
+            {SUBCONTINENT_HUBS["NIXI-IND"].coordinatesLabel}
+          </span>
         </div>
 
         {/* Bottom-Right: System Operational Telemetry */}
@@ -201,8 +271,14 @@ export function GlobalBackground() {
 
         {/* Subtle Right-Margin Latitude Watermarks (Desktop 2XL) */}
         <div className="hidden 2xl:flex absolute right-6 top-1/3 -rotate-90 origin-right flex-col gap-1 text-[6.5px] text-deepink/25 tracking-wider">
-          <span>LAT 28.61°N [DEL] · LAT 19.07°N [BOM]</span>
-          <span>LAT 17.38°N [HYD] · LAT 12.97°N [BLR]</span>
+          <span>
+            LAT {SUBCONTINENT_HUBS["DEL"].lat.toFixed(2)}°N [DEL] · LAT{" "}
+            {SUBCONTINENT_HUBS["BOM"].lat.toFixed(2)}°N [BOM]
+          </span>
+          <span>
+            LAT {SUBCONTINENT_HUBS["HYD"].lat.toFixed(2)}°N [HYD] · LAT{" "}
+            {SUBCONTINENT_HUBS["BLR"].lat.toFixed(2)}°N [BLR]
+          </span>
         </div>
       </div>
 
@@ -218,13 +294,13 @@ export function GlobalBackground() {
           <path
             d="M 0 12 Q 180 4, 360 12 T 720 12 T 1080 12 T 1440 12"
             fill="none"
-            stroke="#BDA6CE"
+            stroke={BRAND_PALETTE.ink}
             strokeWidth="0.75"
           />
           <path
             d="M 0 12 Q 180 20, 360 12 T 720 12 T 1080 12 T 1440 12"
             fill="none"
-            stroke="#9B8EC7"
+            stroke={BRAND_PALETTE.mark}
             strokeWidth="0.5"
             strokeOpacity="0.5"
             strokeDasharray="4 6"
