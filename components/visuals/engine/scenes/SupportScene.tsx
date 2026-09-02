@@ -6,136 +6,193 @@ import { useState, useEffect } from "react";
 export function SupportScene() {
   const [shot, setShot] = useState<number>(0);
   const [isAutoPlay, setIsAutoPlay] = useState<boolean>(true);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!isAutoPlay) return;
     const timers = [
-      setTimeout(() => setShot(1), 1800), // Shot 1: Chaotic messages arriving
-      setTimeout(() => setShot(2), 3800), // Shot 2: Thread sweeps through
-      setTimeout(() => setShot(3), 5600), // Shot 3: Collapse into Identity/Auth/Access
-      setTimeout(() => setShot(4), 7400), // Shot 4: Brakes verifies & acts
-      setTimeout(() => setShot(5), 9400), // Shot 5: Access Restored (Calm settlement)
-      setTimeout(() => setShot(0), 12500), // Reset
+      setTimeout(() => setShot(1), 1600), // Shot 1: Pressure Spike (Panic Messages)
+      setTimeout(() => setShot(2), 3600), // Shot 2: Thread Magnetic Dampening Wave
+      setTimeout(() => setShot(3), 5600), // Shot 3: Chaos liquefies into 3 Core Pillars
+      setTimeout(() => setShot(4), 7600), // Shot 4: Brakes Cryptographic Forge Check
+      setTimeout(() => setShot(5), 9600), // Shot 5: Cryptographic Key & Oceanic Calm (0 PSI)
+      setTimeout(() => setShot(0), 13500), // Reset
     ];
     return () => timers.forEach(clearTimeout);
   }, [shot, isAutoPlay]);
 
-  return (
-    <div className="relative flex min-h-[420px] w-full flex-col justify-between overflow-hidden rounded-[2rem] bg-[#FAF8F5] p-6 text-charcoal sm:p-10">
-      {/* Subtle Background */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#111111_0.75px,transparent_0.75px)] [background-size:20px_20px] opacity-[0.05]" />
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMousePos({ x, y });
+  };
 
-      {/* Header */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-3.5 font-mono text-[11px] text-charcoal/50">
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-charcoal uppercase">SCENE 02</span>
-          <span>:</span>
-          <span className="uppercase tracking-wider">CUSTOMER SUPPORT ENGINE</span>
-        </div>
-        <div>
-          <span className="rounded-full bg-charcoal/5 px-2.5 py-0.5 text-[10px] font-semibold text-charcoal">
-            {shot === 0 && "Standby Queue"}
-            {shot === 1 && "Shot 1 · Chaotic Noise Inflow"}
-            {shot === 2 && "Shot 2 · Thread Traverses Stream"}
-            {shot === 3 && "Shot 3 · Semantic Reduction"}
-            {shot === 4 && "Shot 4 · Brakes Verification Check"}
-            {shot === 5 && "Shot 5 · Access Restored · Total Calm"}
+  return (
+    <div
+      onMouseMove={handleMouseMove}
+      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[#080B12] p-6 text-white sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border border-cyan-500/20"
+      style={{
+        perspective: "1000px",
+      }}
+    >
+      {/* Dynamic Ambient Lighting: Red Alert transitioning to Deep Cyan/Indigo Calm */}
+      <div
+        className={`pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full blur-[100px] transition-all duration-1000 ${
+          shot === 1 ? "bg-red-600/25" : "bg-cyan-500/15"
+        }`}
+      />
+      <div className="pointer-events-none absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-blue-600/10 blur-[100px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#06b6d4_0.75px,transparent_0.75px)] [background-size:24px_24px] opacity-[0.05]" />
+
+      {/* Titanium Crucible Header */}
+      <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4 font-mono text-xs">
+        <div className="flex items-center gap-3">
+          <span
+            className={`flex h-2.5 w-2.5 rounded-full transition-colors duration-500 ${
+              shot === 1
+                ? "bg-red-500 shadow-[0_0_10px_#ef4444] animate-ping"
+                : "bg-cyan-400 shadow-[0_0_10px_#22d3ee] animate-pulse"
+            }`}
+          />
+          <span className="font-bold tracking-[0.2em] text-cyan-300 uppercase">
+            ARTIFACT II : THE PRESSURE CRUCIBLE
           </span>
+        </div>
+
+        {/* Analog Pressure Meter */}
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] text-white/50 uppercase">Crucible PSI:</span>
+          <div className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 font-mono text-xs">
+            <span
+              className={`font-bold transition-colors ${
+                shot === 1 ? "text-red-400" : shot === 5 ? "text-emerald-400" : "text-cyan-300"
+              }`}
+            >
+              {shot === 0 && "0 PSI · STABLE"}
+              {shot === 1 && "98 PSI · CRITICAL SPIKE"}
+              {shot === 2 && "62 PSI · DAMPENING"}
+              {shot === 3 && "24 PSI · CONDENSING"}
+              {shot === 4 && "6 PSI · BRAKES LOCK"}
+              {shot === 5 && "0 PSI · ABSOLUTE EQUILIBRIUM ✓"}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Main Kinetic Stage */}
-      <div className="relative z-10 my-auto flex w-full flex-col items-center justify-center py-6 text-center">
+      {/* 3D Spatial Canvas */}
+      <motion.div
+        animate={{
+          rotateX: -mousePos.y * 12,
+          rotateY: mousePos.x * 12,
+        }}
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        className="relative z-10 my-auto flex w-full flex-col items-center justify-center py-6 text-center"
+      >
         <AnimatePresence mode="wait">
-          {/* Shot 0: Idle support desk */}
+          {/* Shot 0: Deep Equilibrium */}
           {shot === 0 && (
             <motion.div
               key="shot-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center gap-2 font-mono text-xs text-charcoal/40"
+              className="flex flex-col items-center gap-3"
             >
-              <div className="h-3 w-3 rounded-full bg-charcoal/30 animate-pulse" />
-              <span>Monitoring omnichannel customer inbox across WhatsApp, Web & Email...</span>
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-500/10 backdrop-blur-md">
+                <span className="h-3 w-3 rounded-full bg-cyan-400 animate-ping" />
+              </div>
+              <p className="font-serif text-sm italic text-cyan-100/60 max-w-sm">
+                The crucible rests in vacuum. Ready to absorb enterprise friction.
+              </p>
             </motion.div>
           )}
 
-          {/* Shot 1: Chaotic misaligned messages entering */}
+          {/* Shot 1: Chaotic Misaligned Red Distress Shards */}
           {shot === 1 && (
             <motion.div
               key="shot-1"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="relative flex w-full max-w-md flex-col gap-2.5 text-left font-mono text-xs"
+              className="relative flex w-full max-w-md flex-col gap-3 font-mono text-xs"
             >
               <motion.div
-                initial={{ x: -25, rotate: -2, opacity: 0 }}
-                animate={{ x: 0, rotate: -2, opacity: 1 }}
-                className="rounded-xl border border-red-200 bg-white p-3 shadow-sm text-charcoal"
+                animate={{ x: [-3, 3, -3], rotate: [-2, -3, -2] }}
+                transition={{ repeat: Infinity, duration: 0.3 }}
+                className="rounded-2xl border-2 border-red-500/80 bg-red-950/70 p-3.5 text-left text-red-100 shadow-[0_0_25px_rgba(239,68,68,0.4)]"
               >
-                &ldquo;I can&rsquo;t login to the dashboard since 9:00 AM.&rdquo;
+                <div className="flex justify-between text-[9px] text-red-300/60 pb-1">
+                  <span>DISPATCH STREAM #994</span>
+                  <span className="font-bold text-red-400">SEVERITY 1</span>
+                </div>
+                &ldquo;I can&rsquo;t login to the production dashboard since 9:00 AM!&rdquo;
               </motion.div>
+
               <motion.div
-                initial={{ x: 30, rotate: 1.5, opacity: 0 }}
-                animate={{ x: 0, rotate: 1.5, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="rounded-xl border border-amber-200 bg-white p-3 shadow-sm text-charcoal"
+                animate={{ x: [3, -3, 3], rotate: [2, 1, 2] }}
+                transition={{ repeat: Infinity, duration: 0.35, delay: 0.1 }}
+                className="rounded-2xl border-2 border-amber-500/80 bg-amber-950/70 p-3.5 text-left text-amber-100 shadow-[0_0_25px_rgba(245,158,11,0.3)]"
               >
-                &ldquo;Password reset didn&rsquo;t work, no SMS or email arrived.&rdquo;
+                <div className="flex justify-between text-[9px] text-amber-300/60 pb-1">
+                  <span>WHATSAPP VIP ESCALATION</span>
+                  <span className="font-bold text-amber-400">UNRESOLVED</span>
+                </div>
+                &ldquo;Password reset link never arrived in my inbox or phone.&rdquo;
               </motion.div>
+
               <motion.div
-                initial={{ y: 20, rotate: -1, opacity: 0 }}
-                animate={{ y: 0, rotate: -1, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="rounded-xl border border-red-300 bg-white p-3 shadow-sm text-charcoal font-semibold"
+                animate={{ y: [-2, 2, -2], rotate: [-1, 0, -1] }}
+                transition={{ repeat: Infinity, duration: 0.25, delay: 0.2 }}
+                className="rounded-2xl border-2 border-rose-500/80 bg-rose-950/70 p-3.5 text-left text-rose-100 shadow-[0_0_25px_rgba(244,63,94,0.4)] font-semibold"
               >
-                &ldquo;Need access urgently! Board meeting in 15 mins!&rdquo;
+                <div className="flex justify-between text-[9px] text-rose-300/60 pb-1">
+                  <span>EXECUTIVE BOARD ALERT</span>
+                  <span className="font-bold text-rose-300">URGENT (15 MINS)</span>
+                </div>
+                &ldquo;Need access immediately! Annual Board Meeting starts in 15 mins!&rdquo;
               </motion.div>
-              <div className="text-center font-mono text-[10px] text-charcoal/50 mt-1">
-                Queue Depth: 42 tickets · Sentiment: Critical
-              </div>
             </motion.div>
           )}
 
-          {/* Shot 2: The Laxvish Thread appears and passes through every message */}
+          {/* Shot 2: The Laxvish Thread creates a Magnetic Dampening Wave */}
           {shot === 2 && (
             <motion.div
               key="shot-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="relative flex w-full max-w-md flex-col items-center justify-center py-4"
+              className="relative flex w-full max-w-lg flex-col items-center justify-center py-4"
             >
-              <svg viewBox="0 0 400 80" className="h-20 w-full overflow-visible">
-                {/* Sweeping Thread line */}
+              <svg viewBox="0 0 500 100" className="h-24 w-full overflow-visible">
+                {/* Magnetic Wave Barrier */}
                 <motion.path
-                  d="M 10,40 Q 100,5 200,40 T 390,40"
-                  stroke="#111111"
-                  strokeWidth="2.5"
+                  d="M 20,50 Q 150,5 250,50 T 480,50"
+                  stroke="#22D3EE"
+                  strokeWidth="3.5"
                   strokeLinecap="round"
                   fill="none"
+                  filter="drop-shadow(0 0 15px rgba(34,211,238,0.9))"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 1.2, ease: "easeInOut" }}
                 />
                 <motion.circle
-                  cx="200"
-                  cy="40"
-                  r="5"
-                  fill="#111111"
-                  animate={{ scale: [1, 1.4, 1] }}
+                  cx="250"
+                  cy="50"
+                  r="7"
+                  fill="#22D3EE"
+                  animate={{ scale: [1, 1.5, 1], boxShadow: ["0 0 20px #22D3EE"] }}
                   transition={{ repeat: Infinity, duration: 1 }}
                 />
               </svg>
-              <span className="font-mono text-xs font-bold text-charcoal">
-                The Thread sweeps through chaos, isolating root cause from panic.
+              <span className="font-mono text-xs font-bold tracking-wider text-cyan-300">
+                MAGNETIC DAMPENING FIELD ENGAGED · TRACING ROOT CAUSE
               </span>
             </motion.div>
           )}
 
-          {/* Shot 3: Collapse into IDENTITY, AUTHENTICATION, ACCESS */}
+          {/* Shot 3: Chaos liquefies into 3 Pure Pillars */}
           {shot === 3 && (
             <motion.div
               key="shot-3"
@@ -145,82 +202,90 @@ export function SupportScene() {
               className="flex flex-wrap items-center justify-center gap-3 font-mono text-xs"
             >
               {[
-                { label: "IDENTITY", val: "rajiv@apexcap.in (Verified Okta SSO)" },
-                { label: "AUTHENTICATION", val: "SAML Token Expired (TTL 24h)" },
-                { label: "ACCESS", val: "Tier-1 Board Member Clearance" },
-              ].map((pill, idx) => (
+                { tag: "IDENTITY", val: "rajiv@apexcap.in (Verified Okta SSO)", color: "border-cyan-400 bg-cyan-950/60 text-cyan-200" },
+                { tag: "AUTH FAULT", val: "SAML Session Revoked by Timeout", color: "border-amber-400 bg-amber-950/60 text-amber-200" },
+                { tag: "TARGET ROLE", val: "Tier-1 Board Executive Clearance", color: "border-emerald-400 bg-emerald-950/60 text-emerald-200" },
+              ].map((pillar, idx) => (
                 <motion.div
-                  key={pill.label}
-                  initial={{ scale: 0.85, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
+                  key={pillar.tag}
+                  initial={{ scale: 0.8, y: 20, opacity: 0 }}
+                  animate={{ scale: 1, y: 0, opacity: 1 }}
                   transition={{ delay: idx * 0.15 }}
-                  className="flex items-center gap-2 rounded-full border border-charcoal/20 bg-charcoal px-4 py-2 text-white shadow-md"
+                  className={`flex items-center gap-2.5 rounded-2xl border-2 px-4 py-3 shadow-xl backdrop-blur-md ${pillar.color}`}
                 >
-                  <span className="text-[9px] uppercase tracking-wider text-emerald-400 font-bold">{pill.label}</span>
-                  <span className="text-white/90">{pill.val}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider">{pillar.tag}</span>
+                  <span className="font-bold">✦ {pillar.val}</span>
                 </motion.div>
               ))}
             </motion.div>
           )}
 
-          {/* Shot 4: Brakes Verification Check */}
+          {/* Shot 4: Brakes Cryptographic Forge Check */}
           {shot === 4 && (
             <motion.div
               key="shot-4"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center gap-3 font-mono text-xs"
+              className="flex flex-col items-center gap-4 font-mono text-xs"
             >
-              {/* Brakes Ring */}
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-charcoal bg-white shadow-lg">
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-cyan-400 bg-black/80 shadow-[0_0_40px_rgba(34,211,238,0.5)]">
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                  className="absolute inset-1 rounded-full border-t-2 border-emerald-600"
+                  transition={{ repeat: Infinity, duration: 1.8, ease: "linear" }}
+                  className="absolute inset-1.5 rounded-full border-t-2 border-emerald-400"
                 />
-                <span className="text-[10px] font-bold text-charcoal">BRAKES</span>
+                <span className="text-xs font-bold tracking-widest text-cyan-300">BRAKES</span>
               </div>
-              <div className="rounded-xl border border-charcoal/15 bg-white px-4 py-2 shadow-xs">
-                <span className="text-charcoal/60">Evaluating Security Policy: </span>
-                <span className="font-bold text-emerald-700">Automated Token Re-Issuance Cleared ✓</span>
+              <div className="rounded-2xl border border-cyan-400/40 bg-cyan-950/40 px-5 py-2.5 text-cyan-200 backdrop-blur-md">
+                <span>Security Governance Audit: </span>
+                <strong className="text-emerald-400">Zero-Trust STS Elevation Approved ✓</strong>
               </div>
             </motion.div>
           )}
 
-          {/* Shot 5: ACCESS RESTORED (Clarity and Complete Resolution) */}
+          {/* Shot 5: Cryptographic Master Key & Oceanic Equilibrium */}
           {shot === 5 && (
             <motion.div
               key="shot-5"
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.88, rotateX: -20 }}
+              animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
-              className="w-full max-w-md rounded-2xl border border-charcoal/20 bg-white p-5 text-left shadow-xl"
+              transition={{ type: "spring", stiffness: 180, damping: 18 }}
+              className="relative w-full max-w-md rounded-3xl border-2 border-emerald-400/60 bg-gradient-to-b from-[#0F1B1A] to-[#080E10] p-6 text-left shadow-[0_0_60px_rgba(52,211,153,0.35)]"
             >
-              <div className="flex items-center justify-between border-b border-charcoal/10 pb-2.5 font-mono text-[10px]">
-                <span className="font-bold uppercase text-charcoal">INCIDENT #INC-4402 RESOLVED</span>
-                <span className="font-bold text-emerald-700">1.4s TOTAL ELAPSED ✓</span>
-              </div>
-              <div className="mt-3 space-y-2 font-mono text-xs">
-                <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-2.5 text-emerald-950">
-                  <span className="block font-bold">ACCESS RESTORED</span>
-                  <span className="text-[11px] text-emerald-800">
-                    SAML session re-authenticated. Magic link & WhatsApp OTP delivered to executive device.
+              <div className="flex items-center justify-between border-b border-emerald-400/20 pb-3 font-mono text-[11px]">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
+                  <span className="font-bold tracking-widest text-emerald-300 uppercase">
+                    EQUILIBRIUM RESTORED
                   </span>
                 </div>
-                <div className="flex justify-between text-[11px] text-charcoal/60 pt-1">
-                  <span>Customer Sentiment</span>
-                  <span className="font-bold text-charcoal">Calm · Ticket Closed</span>
+                <span className="font-mono font-bold text-emerald-400">1.4s TOTAL ELAPSED ✓</span>
+              </div>
+
+              <div className="mt-4 space-y-2.5 font-mono text-xs">
+                <div className="flex justify-between py-1 border-b border-white/5">
+                  <span className="text-white/40">Okta SSO Session</span>
+                  <span className="font-bold text-emerald-300">Re-Authenticated (Key #K-4091)</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-white/5">
+                  <span className="text-white/40">VIP Channel</span>
+                  <span className="text-white font-medium">WhatsApp OTP & Direct Magic Link Pushed</span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-white/40">Board Room State</span>
+                  <span className="font-bold text-cyan-300">Executive Access Live (0 Tickets Pending)</span>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
-      {/* Footer Scrubber */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-t border-charcoal/10 pt-3.5 font-mono text-[11px] text-charcoal/50">
-        <div className="flex items-center gap-1">
+      {/* Footer */}
+      <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 font-mono text-[11px] text-white/50">
+        <div className="flex items-center gap-1.5">
           {[0, 1, 2, 3, 4, 5].map((i) => (
             <button
               key={i}
@@ -230,14 +295,15 @@ export function SupportScene() {
                 setShot(i);
               }}
               className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                shot === i ? "w-6 bg-charcoal" : "w-2 bg-charcoal/20 hover:bg-charcoal/40"
+                shot === i ? "w-8 bg-cyan-400 shadow-[0_0_8px_#22d3ee]" : "w-2 bg-white/20 hover:bg-white/40"
               }`}
               title={`Jump to Shot ${i + 1}`}
             />
           ))}
         </div>
-        <div className="text-[10px] uppercase text-charcoal/40">
-          From Noisy Chaos to Verified Resolution
+        <div className="flex items-center gap-2 text-[10px] uppercase text-cyan-300/70">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          <span>High-Pressure Friction → Oceanic Calm</span>
         </div>
       </div>
     </div>
