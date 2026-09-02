@@ -259,7 +259,7 @@ export function GenesisPrologue() {
                 animate={{ opacity: 1, scale: 1, rotateX: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ type: "spring", stiffness: 180, damping: 20 }}
-                className="w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-gradient-to-b from-[#121318] to-[#08080B] p-6 text-left shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+                className="w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-voidSurface p-6 text-left shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
               >
                 <div className="flex items-center justify-between border-b border-vaultAmber/20 pb-3 font-mono text-[11px]">
                   <span className="font-bold text-vaultAmber uppercase tracking-wider">ENTERPRISE OPPORTUNITY READY</span>

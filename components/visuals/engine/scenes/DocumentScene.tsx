@@ -114,7 +114,7 @@ export function DocumentScene() {
                   initial={{ y: 50, opacity: 0 }}
                   animate={{ y: doc.y, x: doc.x, rotate: doc.rotate, opacity: 1 }}
                   transition={{ delay: idx * 0.15, type: "spring" }}
-                  className={`absolute h-44 w-32 rounded-2xl border border-vaultAmber/30 bg-gradient-to-b ${doc.bg} p-3.5 text-left shadow-[0_15px_35px_rgba(0,0,0,0.8)] backdrop-blur-md`}
+                  className={`absolute h-44 w-32 rounded-2xl border border-vaultAmber/30 bg-voidSurface ${doc.bg === 'from-[#181920] to-[#0A0A0E]' ? 'bg-[#0E0F14]' : ''} p-3.5 text-left shadow-[0_15px_35px_rgba(0,0,0,0.8)] backdrop-blur-md`}
                 >
                   <div className="flex items-center justify-between border-b border-white/5 pb-1.5 font-mono text-[8px] text-vaultAmber uppercase">
                     <span>{doc.id.split(".")[1]}</span>
@@ -228,7 +228,7 @@ export function DocumentScene() {
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
-              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-voidSurface p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
             >
               <div className="flex items-center justify-between border-b border-vaultAmber/20 pb-3 font-mono text-[11px]">
                 <div className="flex items-center gap-2">

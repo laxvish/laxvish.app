@@ -225,7 +225,7 @@ export function SalesScene() {
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
-              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-voidSurface p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
             >
               {/* Embossed Corner Brass Pins */}
               <div className="absolute top-3 left-3 h-1.5 w-1.5 rounded-full bg-vaultAmber/60" />

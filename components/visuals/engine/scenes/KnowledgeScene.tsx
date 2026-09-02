@@ -172,7 +172,7 @@ export function KnowledgeScene() {
                     initial={{ scale: 0.8, y: 30, opacity: 0 }}
                     animate={{ scale: 1, y: 0, opacity: 1 }}
                     transition={{ delay: idx * 0.15, type: "spring" }}
-                    className="rounded-2xl border border-vaultAmber/40 bg-gradient-to-b from-[#14151B] to-[#08080B] p-3.5 shadow-xl"
+                    className="rounded-2xl border border-vaultAmber/40 bg-voidSurface p-3.5 shadow-xl"
                   >
                     <div className="flex justify-between text-[8px] text-vaultAmber pb-1">
                       <span>POLICY STAR</span>
@@ -221,7 +221,7 @@ export function KnowledgeScene() {
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
-              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-voidSurface p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
             >
               <div className="flex items-center justify-between border-b border-vaultAmber/20 pb-3 font-mono text-[11px]">
                 <div className="flex items-center gap-2">

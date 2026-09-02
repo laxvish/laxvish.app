@@ -84,7 +84,7 @@ export function FinanceApScene() {
               </motion.span>
             </div>
 
-            <div className="rounded-2xl border border-vaultAmber/30 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 shadow-xl text-left font-mono text-xs max-w-sm w-full">
+            <div className="rounded-2xl border border-vaultAmber/30 bg-voidSurface p-6 shadow-xl text-left font-mono text-xs max-w-sm w-full">
               <div className="flex justify-between border-b border-vaultAmber/15 pb-2">
                 <span className="text-vaultAmber uppercase text-[10px]">ERP Batch Commit</span>
                 <span className="font-bold text-neonCyan">PAYMENT READY</span>

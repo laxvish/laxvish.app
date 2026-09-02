@@ -64,7 +64,7 @@ export function ExecutiveScene() {
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-lg rounded-2xl border border-vaultAmber/30 bg-gradient-to-b from-[#14151B] to-[#08080B] p-8 shadow-xl text-center"
+            className="w-full max-w-lg rounded-2xl border border-vaultAmber/30 bg-voidSurface p-8 shadow-xl text-center"
           >
             <span className="font-mono text-[10px] uppercase text-vaultAmber tracking-widest font-bold">
               EXECUTIVE SIGNAL

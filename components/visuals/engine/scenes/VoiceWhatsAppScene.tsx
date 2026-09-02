@@ -99,7 +99,7 @@ export function VoiceWhatsAppScene() {
               className="grid w-full max-w-lg gap-4 md:grid-cols-2 font-mono text-xs text-left"
             >
               {/* Left Chamber: Analog Vacuum Tube Voice */}
-              <div className="rounded-3xl border border-vaultAmber/40 bg-gradient-to-b from-[#14151B] to-[#08080B] p-4 shadow-xl backdrop-blur-md">
+              <div className="rounded-3xl border border-vaultAmber/40 bg-voidSurface p-4 shadow-xl backdrop-blur-md">
                 <div className="flex justify-between text-[9px] text-vaultAmber uppercase pb-1 border-b border-vaultAmber/20">
                   <span>Analog Voice (PRI-2)</span>
                   <span className="font-bold text-neonCyan">240ms Latency</span>
@@ -114,7 +114,7 @@ export function VoiceWhatsAppScene() {
               </div>
 
               {/* Right Chamber: Digital Quartz WhatsApp */}
-              <div className="rounded-3xl border border-vaultAmber/40 bg-gradient-to-b from-[#14151B] to-[#08080B] p-4 shadow-xl backdrop-blur-md">
+              <div className="rounded-3xl border border-vaultAmber/40 bg-voidSurface p-4 shadow-xl backdrop-blur-md">
                 <div className="flex justify-between text-[9px] text-vaultAmber uppercase pb-1 border-b border-vaultAmber/20">
                   <span>WhatsApp Digital</span>
                   <span className="font-bold text-neonCyan">DPDP Verified</span>
@@ -233,7 +233,7 @@ export function VoiceWhatsAppScene() {
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
-              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-voidSurface p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
             >
               <div className="flex items-center justify-between border-b border-vaultAmber/20 pb-3 font-mono text-[11px]">
                 <div className="flex items-center gap-2">

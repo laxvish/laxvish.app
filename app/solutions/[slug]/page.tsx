@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageHero } from "@/components/sections/depth/PageHero";
-import { AgentTaskSimulator } from "@/components/visuals/simulations/AgentTaskSimulator";
+import { LaxvishConstellationStage } from "@/components/visuals/engine/LaxvishConstellationStage";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { FadeIn, FadeInStagger } from "@/components/ui/FadeIn";
 import {
@@ -94,7 +94,10 @@ export default async function UseCasePage({ params }: PageProps) {
         </FadeIn>
 
         <FadeIn delay={0.1}>
-          <AgentTaskSimulator slug={uc.slug} />
+          <LaxvishConstellationStage
+            initialSlug={uc.slug}
+            showConstellationNav={false}
+          />
         </FadeIn>
       </section>
 

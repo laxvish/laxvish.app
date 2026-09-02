@@ -65,7 +65,7 @@ export function ProcurementScene() {
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md rounded-2xl border border-vaultAmber/30 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 shadow-xl text-left font-mono text-xs"
+            className="w-full max-w-md rounded-2xl border border-vaultAmber/30 bg-voidSurface p-6 shadow-xl text-left font-mono text-xs"
           >
             <div className="flex items-center justify-between border-b border-vaultAmber/15 pb-3 text-[10px] text-vaultAmber uppercase">
               <span>PURCHASE ORDER DISPATCHED</span>

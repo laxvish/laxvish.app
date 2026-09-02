@@ -233,7 +233,7 @@ const finalLightIntensity = isHero
           transition={{ duration: 35 / speedMultiplier, repeat: Infinity, ease: "linear" }}
         >
            <div className={`absolute inset-0 mix-blend-overlay rounded-[inherit] ${
-             theme === "light" ? "bg-gradient-to-br from-black/5" : "bg-gradient-to-br from-vaultAmber/10"
+             theme === "light" ? "bg-black/5" : "bg-vaultAmber/10"
            }`} />
         </motion.div>
 
