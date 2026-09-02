@@ -5,21 +5,21 @@ import { FeaturedAgentsShowcase } from "@/components/sections/FeaturedAgentsShow
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
 import { HowItWorks } from "@/components/sections/HowItWorks";
-import { PillarsGrid } from "@/components/sections/PillarsGrid";
+import { SystemRevealPayoff } from "@/components/visuals/engine/SystemRevealPayoff";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "AI Workers for Indian Businesses — Sales, Support, Operations, Finance",
+  title: "AI Operating System for Indian Enterprises — Sales, Support, Documents, Telephony",
   description:
-    "Laxvish builds AI workers that take over the repetitive work in your business — sales calls, customer support, document processing, finance, IT, and more. Built for Indian businesses. DPDP-ready.",
+    "Laxvish is an intelligent enterprise operating system. The Laxvish Thread enters messy real-world tasks, extracts meaning, coordinates systems, verifies decisions with Brakes, and delivers finished commitments.",
   path: "/",
   keywords: [
-    "ai workers for business",
-    "ai solutions india",
+    "ai operating system india",
+    "laxvish machine",
     "ai sales automation",
     "ai customer support",
     "ai document processing",
-    "ai for indian enterprises",
+    "enterprise ai workers india",
   ],
 });
 
@@ -28,7 +28,7 @@ export default function Home() {
     <>
       <Hero />
       <FeaturedAgentsShowcase />
-      <PillarsGrid />
+      <SystemRevealPayoff />
       <HowItWorks />
       <ContactPanel />
       <FaqAccordion />
