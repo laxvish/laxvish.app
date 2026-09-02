@@ -8,14 +8,17 @@ import { PillarsGrid } from "@/components/sections/PillarsGrid";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Enterprise AI Operating System — Workers, Brain, Brakes",
+  title: "AI Operating System for Indian Enterprises — Sales, Support, Documents, Telephony",
   description:
-    "Laxvish is the enterprise AI operating system that deploys domain AI agents, orchestrates workflows with centralized intelligence, and verifies every outcome. Move from AI experiments to real operations.",
+    "Laxvish is an intelligent enterprise operating system. The Laxvish Thread enters messy real-world tasks, extracts meaning, coordinates systems, verifies decisions with Brakes, and delivers finished commitments.",
   path: "/",
   keywords: [
-    "enterprise ai operating system",
-    "ai workflow platform",
-    "ai orchestration system",
+    "ai operating system india",
+    "laxvish machine",
+    "ai sales automation",
+    "ai customer support",
+    "ai document processing",
+    "enterprise ai workers india",
   ],
 });
 

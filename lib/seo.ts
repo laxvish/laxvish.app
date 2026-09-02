@@ -2,19 +2,25 @@ import type { Metadata } from "next";
 
 const DEFAULT_SITE_URL = "https://www.laxvish.app";
 const SITE_NAME = "Laxvish";
-const DEFAULT_TITLE = "Enterprise AI Operating System";
+const DEFAULT_TITLE = "AI Workers for Indian Businesses";
 const DEFAULT_DESCRIPTION =
-  "Laxvish is the enterprise AI operating system: deploy domain AI agents, orchestrate workflows with centralized intelligence, and verify every outcome with governance-first controls.";
+  "Laxvish builds AI workers that take over the repetitive work in your business — sales, customer support, document processing, finance, IT, and more. Built for Indian enterprises. DPDP-ready.";
 
 const BASE_KEYWORDS = [
-  "enterprise ai operating system",
-  "ai workflow platform",
-  "ai orchestration system",
-  "enterprise ai agents",
-  "ai governance and verification",
-  "ai workflow automation",
-  "enterprise automation ai",
-  "ai compliance tools",
+  "ai for business",
+  "ai workers",
+  "ai automation india",
+  "ai solutions for business",
+  "ai customer support",
+  "ai sales automation",
+  "ai document processing",
+  "ai finance automation",
+  "ai hr automation",
+  "ai helpdesk",
+  "ai voice agent india",
+  "ai whatsapp business",
+  "dpdp compliant ai",
+  "ai for indian enterprises",
 ];
 
 export function getSiteUrl(): string {

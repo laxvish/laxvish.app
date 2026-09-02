@@ -114,10 +114,10 @@ export function ContactPanel() {
     >
       <SystemPanel className="border border-charcoal bg-vaultAmber p-8 sm:p-12 shadow-2xl shadow-charcoal/5">
         <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
-          Start with one clear next step.
+          Let’s talk about your work.
         </h2>
         <p className="mt-6 text-lg text-neonCyan">
-          Pick your path. We only ask for essential business details.
+          Tell us what you want to automate. We’ll show you what’s possible — honestly, in plain language.
         </p>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">

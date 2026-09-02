@@ -18,12 +18,12 @@ export function Footer() {
               Laxvish
             </p>
             <h2 className="mt-6 max-w-sm text-3xl font-normal tracking-tight text-charcoal sm:text-4xl">
-              Enterprise AI OS for accountable execution.
+              AI workers that do the real work in your business.
             </h2>
             <p className="mt-6 max-w-md text-base leading-relaxed text-neonCyan">
-              Build production AI with specialized workers, centralized
-              orchestration, and verification-first controls made for
-              enterprise teams.
+              Take over the repetitive tasks in sales, customer support,
+              document processing, and finance. You stay in control of every
+              decision.
             </p>
             <div className="mt-8">
               <a
@@ -32,7 +32,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className={BOOK_NOW_BUTTON_CLASS}
               >
-                <span>Book Now</span>
+                <span>Book a working session</span>
               </a>
             </div>
           </div>
@@ -61,7 +61,7 @@ export function Footer() {
         </div>
 
         <div className="mt-24 flex flex-col gap-6 border-t border-charcoal/20 pt-8 text-sm font-medium text-neonCyan sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Laxvish. DPDP-first by design.</p>
+          <p>© {new Date().getFullYear()} Laxvish. Built for Indian businesses. DPDP-ready.</p>
           <div className="flex items-center gap-6">
             {SOCIAL_LINKS.map((item) => (
               <a

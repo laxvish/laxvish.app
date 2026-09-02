@@ -25,22 +25,23 @@ export function Hero() {
         <div className="max-w-3xl space-y-10 lg:pr-12 pointer-events-auto">
           <FadeIn delay={0.1} yOffset={10}>
             <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
-              The Enterprise AI Operating System
+              The Laxvish Thread — an operating system for Indian enterprise
             </p>
           </FadeIn>
           
           <FadeIn delay={0.2} yOffset={20}>
             <h1 className="text-[clamp(2.5rem,6vw,5.5rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
-              Deploy AI that executes.<br />
-              <span className="text-neonCyan">Control how it operates.</span>
+              Hire AI workers that do the real work in your business.<br />
+              <span className="text-neonCyan">You stay in control of every decision.</span>
             </h1>
           </FadeIn>
           
           <FadeIn delay={0.3} yOffset={20}>
             <p className="max-w-xl text-base leading-relaxed tracking-wide text-charcoal/70 sm:text-lg">
-              Laxvish is the enterprise AI operating system that combines domain AI agents,
-              workflow orchestration, and verification controls into one production-ready
-              AI workflow platform. Move from experiments to real operations.
+              Laxvish builds AI assistants that take over the repetitive work —
+              sales, customer support, document processing, finance, IT, and
+              more. You stay in control of every decision. Built for Indian
+              businesses. DPDP-ready.
             </p>
           </FadeIn>
           
@@ -53,7 +54,7 @@ export function Hero() {
                 rel="noopener noreferrer"
                 className={BOOK_NOW_BUTTON_CLASS}
               >
-                <span>Book a Demo</span>
+                <span>Book a working session</span>
               </MagneticButton>
               <MagneticButton
                 as={Link}

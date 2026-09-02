@@ -62,7 +62,7 @@ export function Navbar() {
           className={`${BOOK_NOW_BUTTON_CLASS} hidden md:inline-flex`}
           onClick={redirectToDemo}
         >
-          <span>Book Now</span>
+          <span>Talk to us</span>
         </MagneticButton>
         <button
           type="button"
@@ -91,7 +91,7 @@ export function Navbar() {
             className={`${BOOK_NOW_BUTTON_CLASS} mt-6 w-full`}
             onClick={redirectToDemo}
           >
-            Book Now
+            Talk to us
           </button>
         </div>
       ) : null}
