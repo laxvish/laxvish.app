@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageHero } from "@/components/sections/depth/PageHero";
+import { AgentTaskSimulator } from "@/components/visuals/simulations/AgentTaskSimulator";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { FadeIn, FadeInStagger } from "@/components/ui/FadeIn";
 import {
@@ -51,7 +52,7 @@ export default async function UseCasePage({ params }: PageProps) {
         shape="sphere"
       />
 
-      {/* CTA right under the hero */}
+      {/* Quick Action bar */}
       <section className="relative z-10 border-b border-charcoal/10 bg-obsidian">
         <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-center gap-4 px-6 py-8 sm:px-12 lg:px-16">
           <MagneticButton
@@ -65,37 +66,63 @@ export default async function UseCasePage({ params }: PageProps) {
           </MagneticButton>
           <MagneticButton
             as="a"
-            href="#what-it-does"
+            href="#live-simulation"
             className={SECONDARY_HERO_CTA_CLASS}
           >
-            See how it works
+            Watch live simulation
           </MagneticButton>
         </div>
+      </section>
+
+      {/* Live Simulation Workspace section */}
+      <section
+        id="live-simulation"
+        className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-20 sm:px-12 lg:px-16 lg:py-28"
+      >
+        <FadeIn>
+          <div className="mb-12 max-w-3xl space-y-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+              Live Task Simulation
+            </p>
+            <h2 className="text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+              Watch how this AI worker executes in real time.
+            </h2>
+            <p className="text-base leading-relaxed text-charcoal/70 sm:text-lg">
+              Explore every phase from intake and entity extraction to action dispatch and Brakes quality verification.
+            </p>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <AgentTaskSimulator slug={uc.slug} />
+        </FadeIn>
       </section>
 
       {/* What this AI worker does */}
       <section
         id="what-it-does"
-        className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32"
+        className="relative z-10 border-t border-charcoal/10 bg-obsidian"
       >
-        <FadeIn>
-          <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
-            What this AI worker does
-          </h2>
-        </FadeIn>
-        <FadeInStagger className="mt-12 grid gap-6 md:grid-cols-2">
-          {uc.whatItDoes.map((item) => (
-            <div
-              key={item}
-              className="flex items-start gap-4 border-l-2 border-neonCyan/40 bg-white/50 p-6 backdrop-blur-sm"
-            >
-              <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-neonCyan" />
-              <p className="text-base leading-relaxed text-charcoal/80">
-                {item}
-              </p>
-            </div>
-          ))}
-        </FadeInStagger>
+        <div className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
+          <FadeIn>
+            <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+              What this AI worker does
+            </h2>
+          </FadeIn>
+          <FadeInStagger className="mt-12 grid gap-6 md:grid-cols-2">
+            {uc.whatItDoes.map((item) => (
+              <div
+                key={item}
+                className="flex items-start gap-4 border-l-2 border-neonCyan/40 bg-white/50 p-6 backdrop-blur-sm"
+              >
+                <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-neonCyan" />
+                <p className="text-base leading-relaxed text-charcoal/80">
+                  {item}
+                </p>
+              </div>
+            ))}
+          </FadeInStagger>
+        </div>
       </section>
 
       {/* Engagement timeline */}

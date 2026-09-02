@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { FadeIn, FadeInStagger } from "@/components/ui/FadeIn";
 import { SystemPanel } from "@/components/ui/SystemPanel";
+import { AgentTaskSimulator } from "@/components/visuals/simulations/AgentTaskSimulator";
 import {
   getFlagshipUseCases,
   getOtherUseCases,
@@ -11,6 +13,7 @@ import {
 export function UseCaseGrid() {
   const flagship = getFlagshipUseCases();
   const others = getOtherUseCases();
+  const [selectedSlug, setSelectedSlug] = useState(flagship[0]?.slug ?? "sales-automation");
 
   return (
     <section
@@ -50,13 +53,53 @@ export function UseCaseGrid() {
                     {uc.oneLiner}
                   </p>
                   <span className="mt-auto pt-8 text-sm font-medium tracking-wide text-charcoal underline underline-offset-4 decoration-charcoal/20 group-hover:decoration-neonCyan transition-colors duration-300">
-                    See how it works →
+                    See full details & live demo →
                   </span>
                 </SystemPanel>
               </Link>
             </FadeIn>
           ))}
         </FadeInStagger>
+
+        {/* Interactive Live Agent Preview Workbench */}
+        <FadeIn>
+          <div className="mt-24 rounded-3xl border border-charcoal/10 bg-vaultAmber/20 p-6 sm:p-10">
+            <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+              <div>
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+                  Interactive Simulation
+                </p>
+                <h3 className="mt-2 text-2xl font-normal tracking-tight text-charcoal sm:text-3xl">
+                  Watch an AI worker in action right now
+                </h3>
+              </div>
+
+              {/* Tab Selector */}
+              <div className="flex flex-wrap gap-2">
+                {flagship.map((uc) => {
+                  const isSelected = uc.slug === selectedSlug;
+                  return (
+                    <button
+                      key={uc.slug}
+                      type="button"
+                      onClick={() => setSelectedSlug(uc.slug)}
+                      className={`rounded-full px-4 py-2 font-mono text-xs font-medium transition-all ${
+                        isSelected
+                          ? "bg-charcoal text-obsidian shadow-md"
+                          : "border border-charcoal/15 bg-white text-charcoal/70 hover:border-charcoal hover:text-charcoal"
+                      }`}
+                    >
+                      {uc.title.replace("AI ", "")}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Live Terminal Simulator */}
+            <AgentTaskSimulator key={selectedSlug} slug={selectedSlug} />
+          </div>
+        </FadeIn>
 
         {/* Other use cases as a compact list */}
         {others.length > 0 && (
@@ -90,7 +133,7 @@ export function UseCaseGrid() {
               href="/solutions"
               className="inline-flex items-center text-sm font-medium tracking-wide text-charcoal underline underline-offset-4 decoration-charcoal/30 hover:decoration-charcoal"
             >
-              See all automations and what they do →
+              See all 13 automations and what they do →
             </Link>
           </div>
         </FadeIn>
