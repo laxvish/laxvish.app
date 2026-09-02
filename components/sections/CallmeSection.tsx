@@ -1,86 +1,99 @@
 "use client";
 
+// ============================================================================
+// EDITORIAL FEATURE DOSSIER
+// World: editorial white paper — three findings, no rounded cards, no pills.
+// ============================================================================
+
 import Link from "next/link";
-import { FadeIn } from "@/components/ui/FadeIn";
-import { SECONDARY_HERO_CTA_CLASS } from "@/lib/site-navigation";
-import { SystemPanel } from "@/components/ui/SystemPanel";
-import { MagneticButton } from "@/components/ui/MagneticButton";
 
 interface CallmeFeature {
+  index: string;
   title: string;
   description: string;
+  metric: string;
 }
 
 const features: CallmeFeature[] = [
   {
+    index: "01",
     title: "Answers calls naturally",
     description:
-      "Speaks like a real person, understands accents, switches between English and Hindi mid-sentence. Your callers don't feel like they're talking to a robot.",
+      "Speaks like a real person, understands accents, switches between English and Hindi mid-sentence. Your callers don&rsquo;t feel like they&rsquo;re talking to a robot.",
+    metric: "Latency · 240 ms first byte",
   },
   {
+    index: "02",
     title: "Stays inside your rules",
     description:
       "Every call is recorded and logged. Sensitive topics go straight to a human. You set which calls the AI handles and which it must transfer.",
+    metric: "Override paths · 11",
   },
   {
+    index: "03",
     title: "Works with what you have",
     description:
       "Connects to your phone system, your CRM, and your calendar. The AI can book appointments, update records, and hand off to your team when needed.",
+    metric: "Connectors · telephony · CRM · calendar",
   },
 ];
 
 export function CallmeSection() {
   return (
-    <section className="mx-auto w-full max-w-[90rem] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
-      <div className="max-w-2xl">
-        <FadeIn>
-          <p className="font-mono text-xs font-semibold tracking-[0.18em] text-vaultAmber uppercase">
-            CallMe — Voice & WhatsApp
+    <section className="mx-auto w-full max-w-[1440px] border-t border-rule-hair px-6 py-20 sm:px-12 lg:px-16 lg:py-28">
+      <header className="grid grid-cols-1 gap-y-10 lg:grid-cols-12 lg:gap-x-16">
+        <div className="lg:col-span-7">
+          <p className="font-mono text-xs font-medium tracking-[0.18em] text-mark uppercase">
+            CallMe — Voice & WhatsApp Receptionist
           </p>
-        </FadeIn>
-        <FadeIn delay={0.1}>
-          <h2 className="mt-4 text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
+          <h2 className="mt-6 font-serif text-[clamp(2rem,5vw,4rem)] font-normal leading-[1.04] tracking-tight text-deepink">
             An AI receptionist that never puts anyone on hold.
           </h2>
-        </FadeIn>
-        <FadeIn delay={0.2}>
-          <p className="mt-6 text-lg leading-relaxed text-charcoal/70">
-            Answer every phone call and WhatsApp message, in your customer&rsquo;s
-            language, 24/7. Hand off to a human with the full conversation
-            history when it matters.
+        </div>
+        <div className="lg:col-span-4 lg:col-start-9 lg:pt-2">
+          <p className="max-w-md text-base leading-relaxed text-deepink/75">
+            Answer every phone call and WhatsApp message, in your
+            customer&rsquo;s language, 24/7. Hand off to a human with the full
+            conversation history when it matters.
           </p>
-        </FadeIn>
-      </div>
+        </div>
+      </header>
 
-      <div className="mt-20 grid gap-x-8 gap-y-16 md:grid-cols-3 group/grid">
-        {features.map((feature, i) => (
-          <FadeIn key={feature.title} delay={0.1 * (i + 1)}>
-            <SystemPanel
-              as="article"
-              className="group flex h-full flex-col border-t border-vaultAmber/30 pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
-            >
-              <h3 className="text-2xl font-normal tracking-tight text-charcoal">
+      {/* Three feature findings — typographic, NOT identical cards */}
+      <ol className="mt-16 divide-y divide-rule-hair border-t border-rule-hair">
+        {features.map((feature) => (
+          <li
+            key={feature.index}
+            className="grid grid-cols-1 gap-y-3 py-10 lg:grid-cols-[5rem_1fr_2fr] lg:items-baseline lg:gap-x-10"
+          >
+            <span className="font-mono text-xs font-medium tracking-[0.18em] text-mark uppercase">
+              Finding {feature.index}
+            </span>
+            <div>
+              <h3 className="font-serif text-3xl font-normal leading-tight tracking-tight text-deepink">
                 {feature.title}
               </h3>
-              <p className="mt-6 text-base leading-relaxed text-charcoal/70">
+              <p className="mt-4 max-w-md text-base leading-relaxed text-deepink/75">
                 {feature.description}
               </p>
-            </SystemPanel>
-          </FadeIn>
+            </div>
+            <p className="font-mono text-[11px] tracking-[0.18em] text-deepink/55 uppercase">
+              {feature.metric}
+            </p>
+          </li>
         ))}
-      </div>
+      </ol>
 
-      <FadeIn delay={0.5}>
-        <div className="mt-16 flex">
-          <MagneticButton
-            as={Link}
-            href="/solutions/voice-whatsapp"
-            className={SECONDARY_HERO_CTA_CLASS}
-          >
-            See Voice & WhatsApp automation →
-          </MagneticButton>
-        </div>
-      </FadeIn>
+      {/* Direct inline action — no rounded button */}
+      <div className="mt-16 border-t border-deepink/30 pt-8">
+        <Link
+          href="/solutions/voice-whatsapp"
+          className="inline-flex items-center gap-2 border-b border-mark pb-1 font-mono text-xs font-medium tracking-[0.18em] text-mark uppercase transition-colors hover:border-deepink hover:text-deepink"
+        >
+          <span>Read the Voice & WhatsApp dossier</span>
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
     </section>
   );
 }

@@ -1,41 +1,23 @@
-interface LaneProps {
-  items: string[];
-  reverse?: boolean;
-}
+"use client";
 
-function MarqueeLane({ items, reverse = false }: LaneProps) {
-  const loopItems = [...items, ...items];
+// ============================================================================
+// EDITORIAL PATHWAY LEDGER
+// World: station archive — textual listing, never infinite-loop marquees.
+// 16 enterprise pathways listed as a typographic catalog.
+// ============================================================================
 
-  return (
-    <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
-      <div
-        className={`marquee-track ${ reverse ? "marquee-track-right" : "marquee-track-left" }`}
-      >
-        {loopItems.map((item, index) => (
-          <span
-            key={`${item}-${index}`}
-            className="rounded-full border border-vaultAmber/30 bg-voidSurface px-4 py-2 font-mono text-xs text-charcoal/80 sm:px-5 sm:text-sm"
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-const laneA: string[] = [
+const publicRails: string[] = [
   "Bhashini",
   "UIDAI",
   "GSTN",
-  "Open Network",
+  "Open Network for Digital Commerce",
   "RBI Systems",
   "DigiLocker",
   "Account Aggregator",
   "UPI Rails",
 ];
 
-const laneB: string[] = [
+const internalRails: string[] = [
   "ERP Connectors",
   "CRM Signals",
   "Policy Engines",
@@ -48,22 +30,64 @@ const laneB: string[] = [
 
 export function EcosystemMarquee() {
   return (
-    <section className="border-y border-vaultAmber/15 bg-obsidian">
-      <div className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-        <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
-          Ecosystem Pathways
-        </p>
-        <h2 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
-          Ecosystem Pathways, Flowing as One Neural Fabric
-        </h2>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-charcoal/70 sm:text-lg">
-          Laxvish aligns enterprise systems, public rails, and verification loops
-          into one continuously orchestrated signal network.
-        </p>
+    <section className="border-y border-deepink/15">
+      <div className="mx-auto w-full max-w-[1440px] px-6 py-20 sm:px-12 lg:px-16 lg:py-24">
+        <header className="grid grid-cols-1 gap-y-10 lg:grid-cols-12 lg:gap-x-16">
+          <div className="lg:col-span-5">
+            <p className="font-mono text-xs font-medium tracking-[0.18em] text-mark uppercase">
+              Ecosystem Pathways Index
+            </p>
+            <h2 className="mt-6 font-serif text-[clamp(2rem,4.5vw,3rem)] font-normal leading-[1.04] tracking-tight text-deepink">
+              Pathways, listed as they exist in the engine.
+            </h2>
+          </div>
+          <div className="lg:col-span-6 lg:col-start-7">
+            <p className="max-w-md text-base leading-relaxed text-deepink/75">
+              Laxvish aligns enterprise systems, public rails, and verification
+              loops into one continuously orchestrated signal network. Below is
+              the catalog of pathways currently maintained.
+            </p>
+          </div>
+        </header>
 
-        <div className="mt-10 space-y-4">
-          <MarqueeLane items={laneA} />
-          <MarqueeLane items={laneB} reverse />
+        <div className="mt-14 grid grid-cols-1 gap-x-12 gap-y-12 md:grid-cols-2">
+          <ol className="border-t border-rule-hair">
+            <li className="border-b border-rule-hair py-4">
+              <p className="font-mono text-[10px] tracking-[0.18em] text-deepink/55 uppercase">
+                Public Rails
+              </p>
+            </li>
+            {publicRails.map((name, i) => (
+              <li
+                key={name}
+                className="flex items-baseline justify-between border-b border-rule-hair py-2.5"
+              >
+                <span className="font-mono text-[10px] tracking-[0.18em] text-deepink/45 uppercase">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="flex-1 px-4 text-base text-deepink">{name}</span>
+              </li>
+            ))}
+          </ol>
+
+          <ol className="border-t border-rule-hair">
+            <li className="border-b border-rule-hair py-4">
+              <p className="font-mono text-[10px] tracking-[0.18em] text-deepink/55 uppercase">
+                Enterprise Rails
+              </p>
+            </li>
+            {internalRails.map((name, i) => (
+              <li
+                key={name}
+                className="flex items-baseline justify-between border-b border-rule-hair py-2.5"
+              >
+                <span className="font-mono text-[10px] tracking-[0.18em] text-deepink/45 uppercase">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="flex-1 px-4 text-base text-deepink">{name}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>

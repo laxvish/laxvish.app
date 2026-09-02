@@ -193,26 +193,27 @@ export function CareersApplicationPanel() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6 sm:py-16 lg:py-20">
-      <div className="rounded-2xl border border-vaultAmber/25 bg-voidSurface p-6 sm:p-8 ">
-        <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
+    <section className="mx-auto w-full max-w-4xl border-y border-rule-hair px-6 py-16 sm:px-12 lg:py-20">
+      <div className="border-t border-deepink/30 pt-8">
+        <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-mark">
           Apply to Build
         </p>
-        <h2 className="mt-3 text-3xl font-normal leading-tight tracking-tight text-charcoal sm:text-4xl">
+        <h2 className="mt-3 font-serif text-3xl font-normal leading-tight tracking-tight text-deepink sm:text-4xl">
           Apply to build enterprise AI with us
         </h2>
-        <p className="mt-3 text-sm text-charcoal/70">
-          Choose a track and share only the details we need to evaluate your application.
+        <p className="mt-3 text-sm leading-relaxed text-deepink/75">
+          Choose a track and share only the details we need to evaluate your
+          application.
         </p>
-        <p className="mt-2 text-sm text-charcoal/70">
-          Fields marked with <span aria-hidden="true">*</span> are required.
+        <p className="mt-1.5 font-mono text-[10px] tracking-[0.18em] text-deepink/55 uppercase">
+          Fields marked * are required
         </p>
 
-        <form className="mt-7 grid gap-4 sm:grid-cols-2" onSubmit={onSubmit} noValidate>
+        <form className="mt-10 grid gap-y-8 sm:grid-cols-2 sm:gap-x-8" onSubmit={onSubmit} noValidate>
           <div>
             <label
               htmlFor="career-name"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
+              className="block font-mono text-[10px] font-medium tracking-[0.18em] text-deepink/65 uppercase"
             >
               Full name <span aria-hidden="true">*</span>
             </label>
@@ -225,7 +226,7 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.name)}
               aria-describedby={errors.name ? "career-name-error" : undefined}
-              className="w-full rounded-lg border border-vaultAmber/25 bg-obsidian/60 px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
+              className="mt-2 w-full border-b border-deepink/30 bg-transparent py-2 text-sm text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
             />
             {errors.name ? (
               <p id="career-name-error" className="mt-1 text-sm text-[#C46B4E]">
@@ -237,7 +238,7 @@ export function CareersApplicationPanel() {
           <div>
             <label
               htmlFor="career-workEmail"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
+              className="block font-mono text-[10px] font-medium tracking-[0.18em] text-deepink/65 uppercase"
             >
               Email <span aria-hidden="true">*</span>
             </label>
@@ -250,10 +251,10 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.workEmail)}
               aria-describedby={errors.workEmail ? "career-workEmail-error" : undefined}
-              className="w-full rounded-lg border border-vaultAmber/25 bg-obsidian/60 px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
+              className="mt-2 w-full border-b border-deepink/30 bg-transparent py-2 text-sm text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
             />
             {errors.workEmail ? (
-              <p id="career-workEmail-error" className="mt-1 text-sm text-[#C46B4E]">
+              <p id="career-workEmail-error" className="mt-1 font-mono text-[10px] tracking-[0.18em] text-deepink/70 uppercase">
                 {errors.workEmail}
               </p>
             ) : null}
@@ -262,7 +263,7 @@ export function CareersApplicationPanel() {
           <div>
             <label
               htmlFor="career-phone"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
+              className="block font-mono text-[10px] font-medium tracking-[0.18em] text-deepink/65 uppercase"
             >
               Phone <span aria-hidden="true">*</span>
             </label>
@@ -275,7 +276,7 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.phone)}
               aria-describedby={errors.phone ? "career-phone-error" : undefined}
-              className="w-full rounded-lg border border-vaultAmber/25 bg-obsidian/60 px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
+              className="mt-2 w-full border-b border-deepink/30 bg-transparent py-2 text-sm text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
             />
             {errors.phone ? (
               <p id="career-phone-error" className="mt-1 text-sm text-[#C46B4E]">
@@ -287,7 +288,7 @@ export function CareersApplicationPanel() {
           <div>
             <label
               htmlFor="career-roleTrack"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
+              className="block font-mono text-[10px] font-medium tracking-[0.18em] text-deepink/65 uppercase"
             >
               Role track <span aria-hidden="true">*</span>
             </label>
@@ -298,13 +299,13 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.roleTrack)}
               aria-describedby={errors.roleTrack ? "career-roleTrack-error" : undefined}
-              className="w-full rounded-lg border border-vaultAmber/25 bg-obsidian/60 px-4 py-3 text-sm text-charcoal focus:border-vaultAmber focus:outline-none"
+              className="mt-2 w-full border-b border-deepink/30 bg-transparent py-2 text-sm text-deepink outline-none transition-colors duration-200 focus:border-mark"
             >
               <option value="internship">Internship</option>
               <option value="full-time">Full-time job</option>
             </select>
             {errors.roleTrack ? (
-              <p id="career-roleTrack-error" className="mt-1 text-sm text-[#C46B4E]">
+              <p id="career-roleTrack-error" className="mt-1 font-mono text-[10px] tracking-[0.18em] text-deepink/70 uppercase">
                 {errors.roleTrack}
               </p>
             ) : null}
@@ -313,7 +314,7 @@ export function CareersApplicationPanel() {
           <div>
             <label
               htmlFor="career-portfolioUrl"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
+              className="block font-mono text-[10px] font-medium tracking-[0.18em] text-deepink/65 uppercase"
             >
               Portfolio or LinkedIn URL <span aria-hidden="true">*</span>
             </label>
@@ -326,7 +327,7 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.portfolioUrl)}
               aria-describedby={errors.portfolioUrl ? "career-portfolioUrl-error" : undefined}
-              className="w-full rounded-lg border border-vaultAmber/25 bg-obsidian/60 px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
+              className="mt-2 w-full border-b border-deepink/30 bg-transparent py-2 text-sm text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
             />
             {errors.portfolioUrl ? (
               <p id="career-portfolioUrl-error" className="mt-1 text-sm text-[#C46B4E]">
@@ -338,7 +339,7 @@ export function CareersApplicationPanel() {
           <div>
             <label
               htmlFor="career-resumeUrl"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
+              className="block font-mono text-[10px] font-medium tracking-[0.18em] text-deepink/65 uppercase"
             >
               Resume URL <span aria-hidden="true">*</span>
             </label>
@@ -351,10 +352,10 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.resumeUrl)}
               aria-describedby={errors.resumeUrl ? "career-resumeUrl-error" : undefined}
-              className="w-full rounded-lg border border-vaultAmber/25 bg-obsidian/60 px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
+              className="mt-2 w-full border-b border-deepink/30 bg-transparent py-2 text-sm text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
             />
             {errors.resumeUrl ? (
-              <p id="career-resumeUrl-error" className="mt-1 text-sm text-[#C46B4E]">
+              <p id="career-resumeUrl-error" className="mt-1 font-mono text-[10px] tracking-[0.18em] text-deepink/70 uppercase">
                 {errors.resumeUrl}
               </p>
             ) : null}
@@ -363,7 +364,7 @@ export function CareersApplicationPanel() {
           <div className="sm:col-span-2">
             <label
               htmlFor="career-whyJoin"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
+              className="block font-mono text-[10px] font-medium tracking-[0.18em] text-deepink/65 uppercase"
             >
               Why do you want to join Laxvish? <span aria-hidden="true">*</span>
             </label>
@@ -375,7 +376,7 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.whyJoin)}
               aria-describedby={errors.whyJoin ? "career-whyJoin-error" : undefined}
-              className="w-full rounded-lg border border-vaultAmber/25 bg-obsidian/60 px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
+              className="mt-2 w-full border-b border-deepink/30 bg-transparent py-2 text-sm text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
             />
             {errors.whyJoin ? (
               <p id="career-whyJoin-error" className="mt-1 text-sm text-[#C46B4E]">
@@ -398,19 +399,20 @@ export function CareersApplicationPanel() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-2 rounded-full bg-charcoal px-6 py-3 text-sm font-semibold text-obsidian transition-colors duration-200 hover:bg-vaultAmber disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 sm:w-fit cursor-pointer"
+            className="mt-2 cursor-pointer border border-mark bg-mark px-6 py-2.5 font-mono text-xs font-medium tracking-[0.18em] text-cream uppercase transition-colors duration-200 hover:bg-deepink hover:border-deepink disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 sm:w-fit"
           >
             {isSubmitting ? "Submitting..." : "Submit application"}
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-charcoal/70">
-          We review applications based on skills and role fit. Please avoid sharing sensitive personal data beyond what this form requests.
+        <p className="mt-12 max-w-xl border-t border-rule-hair pt-5 font-mono text-[10px] tracking-[0.18em] text-deepink/65 uppercase">
+          We review applications based on skills and role fit. Please avoid
+          sharing sensitive personal data beyond what this form requests.
         </p>
 
         {feedback.status !== "idle" ? (
           <p
-            className={`mt-4 font-mono text-sm ${feedback.status === "success" ? "text-vaultAmber" : "text-[#C46B4E]"}`}
+            className={`mt-4 font-mono text-sm tracking-wide ${ feedback.status === "success" ? "text-mark" : "text-deepink" }`}
             role="status"
             aria-live="polite"
           >

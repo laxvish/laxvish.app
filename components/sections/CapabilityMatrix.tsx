@@ -1,68 +1,113 @@
-interface CapabilityCard {
-  title: string;
-  points: string[];
-  accent: "cyan" | "amber";
+"use client";
+
+// ============================================================================
+// EDITORIAL CAPABILITY LEDGER
+// World: operations memorandum — numbered rules, no card surfaces, no pills.
+// ============================================================================
+
+interface CapabilityRule {
+  index: string;
+  domain: string;
+  rule: string;
+  evidence: string;
 }
 
-const capabilityCards: CapabilityCard[] = [
+const rules: CapabilityRule[] = [
   {
-    title: "Agent Execution",
-    points: [
-      "Domain workers for MSME, AYUSH, and logistics operations",
-      "Task-level automation with explainable actions",
-      "Operational handoff patterns for human review loops",
-    ],
-    accent: "cyan",
+    index: "01",
+    domain: "Agent Execution",
+    rule: "Domain workers for MSME, AYUSH, and logistics operations.",
+    evidence: "Each worker is trained on one specific job; never generalist.",
   },
   {
-    title: "Orchestration Intelligence",
-    points: [
-      "Central coordination across multi-agent workflows",
-      "Context-aware routing for enterprise process states",
-      "Policy-driven sequencing to reduce agent sprawl",
-    ],
-    accent: "amber",
+    index: "02",
+    domain: "Agent Execution",
+    rule: "Task-level automation with explainable actions.",
+    evidence: "Every action logged with rationale, timestamp, and human override path.",
   },
   {
-    title: "Verification & Compliance",
-    points: [
-      "Continuous validation checks before high-impact actions",
-      "Trace-first governance signals for audit visibility",
-      "DPDP-aligned operational controls by default",
-    ],
-    accent: "cyan",
+    index: "03",
+    domain: "Agent Execution",
+    rule: "Operational handoff patterns for human review loops.",
+    evidence: "Configurable thresholds route edge cases to the right human.",
+  },
+  {
+    index: "04",
+    domain: "Orchestration Intelligence",
+    rule: "Central coordination across multi-agent workflows.",
+    evidence: "Brain layer sequences and routes work between specialised workers.",
+  },
+  {
+    index: "05",
+    domain: "Orchestration Intelligence",
+    rule: "Context-aware routing for enterprise process states.",
+    evidence: "Routes based on CRM, ERP, HRIS state — not just keywords.",
+  },
+  {
+    index: "06",
+    domain: "Orchestration Intelligence",
+    rule: "Policy-driven sequencing to reduce agent sprawl.",
+    evidence: "Deterministic ordering when multiple workers are eligible.",
+  },
+  {
+    index: "07",
+    domain: "Verification & Compliance",
+    rule: "Continuous validation checks before high-impact actions.",
+    evidence: "Brakes gate every irreversible commitment.",
+  },
+  {
+    index: "08",
+    domain: "Verification & Compliance",
+    rule: "Trace-first governance signals for audit visibility.",
+    evidence: "Every action emits an immutable trail entry.",
+  },
+  {
+    index: "09",
+    domain: "Verification & Compliance",
+    rule: "DPDP-aligned operational controls by default.",
+    evidence: "Consent, retention, and red-pact rules built in from day one.",
   },
 ];
 
 export function CapabilityMatrix() {
   return (
-    <section className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
-        Three Control Planes · One Platform
-      </p>
-      <h2 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
-        One Platform. Three Control Planes.
-      </h2>
-      <div className="mt-12 grid gap-6 lg:grid-cols-3">
-        {capabilityCards.map((card) => (
-          <article
-            key={card.title}
-            className="rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/40 hover:bg-mist/30"
+    <section className="mx-auto w-full max-w-[1440px] border-t border-rule-hair px-6 py-20 sm:px-12 lg:px-16 lg:py-28">
+      <header className="grid grid-cols-1 gap-y-10 lg:grid-cols-12 lg:gap-x-16">
+        <div className="lg:col-span-5">
+          <p className="font-mono text-xs font-medium tracking-[0.18em] text-mark uppercase">
+            Operations Memorandum
+          </p>
+          <h2 className="mt-6 font-serif text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.04] tracking-tight text-deepink">
+            Three control planes. One platform.
+          </h2>
+        </div>
+        <div className="lg:col-span-6 lg:col-start-7">
+          <p className="max-w-md text-base leading-relaxed text-deepink/75">
+            A complete enumeration — issued once, never silently changed — of
+            every operational rule the Laxvish Thread will and will not do
+            inside a customer enterprise.
+          </p>
+        </div>
+      </header>
+
+      {/* Numbered rules ledger — NO rounded card surfaces */}
+      <div className="mt-16 border-t border-rule-hair">
+        {rules.map((rule) => (
+          <div
+            key={rule.index}
+            className="grid grid-cols-1 gap-y-3 border-b border-rule-hair py-7 lg:grid-cols-[5rem_1fr_2fr] lg:items-baseline lg:gap-x-10"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-charcoal">{card.title}</h3>
-              <span
-                className={`h-2.5 w-2.5 rounded-full ${ card.accent === "cyan" ? "bg-vaultAmber" : "bg-[#C46B4E]" }`}
-              />
+            <span className="font-mono text-xs font-medium tracking-[0.18em] text-mark uppercase">
+              {rule.index}
+            </span>
+            <div className="font-mono text-[10px] tracking-[0.18em] text-deepink/65 uppercase">
+              {rule.domain}
             </div>
-            <ul className="mt-4 space-y-2.5 text-sm text-charcoal/70">
-              {card.points.map((point) => (
-                <li key={point} className="leading-6">
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </article>
+            <p className="max-w-2xl text-base leading-relaxed text-deepink">
+              {rule.rule}{" "}
+              <span className="text-deepink/60">— {rule.evidence}</span>
+            </p>
+          </div>
         ))}
       </div>
     </section>

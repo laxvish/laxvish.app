@@ -1,53 +1,67 @@
+"use client";
+
+// ============================================================================
+// EDITORIAL COMMAND STRIP
+// World: workshop calibration tape, not a SaaS strip.
+// Single editorial row with mono labels. No rounded chips, no pills, no shadows.
+// ============================================================================
+
 interface StripMetric {
   label: string;
   value: string;
 }
 
 const stripMetrics: StripMetric[] = [
-  { label: "Connected Ecosystem Nodes", value: "120+" },
-  { label: "Governed Workflow Templates", value: "45" },
-  { label: "Verification-First Coverage", value: "99.2%" },
+  { label: "Connected Nodes", value: "120+" },
+  { label: "Governed Templates", value: "45" },
+  { label: "Verification Coverage", value: "99.2%" },
 ];
 
 export function EcosystemCommandStrip() {
   return (
-    <section className="border-y border-vaultAmber/20 bg-voidSurface/40">
-      <div className="mx-auto w-full max-w-[96rem] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-xl">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
+    <section className="border-y border-deepink/15">
+      <div className="mx-auto w-full max-w-[1440px] px-6 py-12 sm:px-12 lg:px-16">
+        <div className="grid grid-cols-1 items-baseline gap-x-12 gap-y-8 lg:grid-cols-12">
+          {/* Editorial headline */}
+          <div className="lg:col-span-5">
+            <p className="font-mono text-xs font-medium tracking-[0.18em] text-mark uppercase">
               Activation Layer
             </p>
-            <h3 className="mt-3 text-2xl font-normal tracking-tight text-charcoal sm:text-3xl">
-              Turn Ecosystem Complexity into Verified Execution
+            <h3 className="mt-3 font-serif text-2xl font-normal leading-tight tracking-tight text-deepink sm:text-3xl">
+              Ecosystem complexity, turned into verified execution.
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {/* Editorial metrics — NO rounded chips */}
+          <dl className="grid grid-cols-3 gap-x-6 lg:col-span-5 lg:col-start-6">
             {stripMetrics.map((metric) => (
-              <div
-                key={metric.label}
-                className="rounded-2xl border border-vaultAmber/20 bg-voidSurface px-4 py-3"
-              >
-                <p className="text-lg font-semibold text-vaultAmber font-mono">{metric.value}</p>
-                <p className="mt-1 text-xs text-charcoal/70">{metric.label}</p>
+              <div key={metric.label} className="border-t border-deepink/20 pt-3">
+                <dd className="font-mono text-2xl font-semibold tracking-tight text-deepink">
+                  {metric.value}
+                </dd>
+                <dt className="mt-1 font-mono text-[10px] tracking-[0.18em] text-deepink/55 uppercase">
+                  {metric.label}
+                </dt>
               </div>
             ))}
-          </div>
+          </dl>
 
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              className="rounded-full bg-charcoal px-6 py-3 text-sm font-semibold text-obsidian transition-transform duration-200 hover:bg-vaultAmber hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
+          {/* Action — clearly named, not generic */}
+          <div className="flex flex-col gap-4 lg:col-span-2 lg:items-end lg:pt-1">
+            <a
+              href="/contact"
+              className="inline-flex w-fit items-center gap-2 border-b border-mark pb-1 font-mono text-xs font-medium tracking-[0.16em] text-mark uppercase transition-colors hover:border-deepink hover:text-deepink"
             >
-              Activate Ecosystem Pilot
-            </button>
-            <button
-              type="button"
-              className="border border-mark bg-mark px-6 py-3 text-sm font-medium tracking-wide text-cream transition-colors duration-200 hover:bg-deepink cursor-pointer"
+              <span>Request integration walk-through</span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href="/solutions"
+              className="inline-flex w-fit items-center gap-2 font-mono text-[10px] tracking-[0.18em] text-deepink/65 uppercase transition-colors hover:text-mark"
             >
-              View Integration Blueprint
-            </button>
+              <span>See all 13 capabilities</span>
+              <span aria-hidden="true">→</span>
+            </a>
           </div>
         </div>
       </div>
