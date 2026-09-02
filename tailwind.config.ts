@@ -8,23 +8,50 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        obsidian: "#000000", // pure cinematic void black
-        neonCyan: "#F2F2F2", // lunar titanium silver / starlight
-        vaultAmber: "#B6B09F", // warm champagne / brushed brass / golden thread
-        charcoal: "#EAE4D5", // warm alabaster / parchment typography
-        voidDark: "#070709", // monolithic machine surface
-        voidSurface: "#0E0F14", // elevated titanium chamber
-        voidBorder: "rgba(182, 176, 159, 0.18)", // precision micro-machined seam
-        goldThread: "#C5A880", // the living protagonist thread
+        // Binding brand palette — see AGENTS.md §1
+        cream: "#F2EAE0",          // Surface (base) — Cream Ash, paper
+        mist: "#B4D3D9",           // Surface (elevated) — Mist Teal, panels
+        ink: "#BDA6CE",            // Ink (body) — Lavender Mist, body text
+        mark: "#9B8EC7",           // Mark (brand accent) — Lavender Indigo, action only
+        // Editorial neutrals derived from the palette
+        deepink: "#1A1820",        // High-contrast display ink (warm near-black)
+        deepVoid: "#0E0D12",       // The Thread on cream (a near-black violet)
+        parchment: "#EDE3D2",     // Slightly cooler cream for separators
+        ruleHair: "rgba(157, 142, 199, 0.22)", // Hairline rules — mark at low alpha
+        ruleHairInk: "rgba(189, 166, 206, 0.28)", // Hairline rules — ink at low alpha
+        // Legacy aliases retained so internal references do not break; do not introduce
+        // new usage outside the binding palette.
+        obsidian: "#F2EAE0",       // alias → cream
+        neonCyan: "#BDA6CE",       // alias → ink
+        vaultAmber: "#9B8EC7",     // alias → mark
+        charcoal: "#1A1820",       // alias → deepink
+        voidDark: "#F2EAE0",       // alias → cream
+        voidSurface: "#EDE3D2",    // alias → parchment
+        goldThread: "#9B8EC7",     // alias → mark
+        voidBorder: "rgba(157, 142, 199, 0.22)",
       },
       keyframes: {
         pulseSlow: {
           "0%, 100%": { opacity: "0.6" },
           "50%": { opacity: "0.85" },
         },
+        threadDraw: {
+          "0%": { strokeDashoffset: "1200" },
+          "100%": { strokeDashoffset: "0" },
+        },
+        slowFade: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "pulse-slow": "pulseSlow 4s ease-in-out infinite",
+        "thread-draw": "threadDraw 2.4s ease-out forwards",
+        "slow-fade": "slowFade 900ms ease-out forwards",
+      },
+      fontFamily: {
+        serif: ["var(--font-cormorant)", "Georgia", "Times New Roman", "serif"],
+        mono: ["var(--font-jetbrains)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
     },
   },

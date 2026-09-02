@@ -81,7 +81,7 @@ export default async function UseCasePage({ params }: PageProps) {
       >
         <FadeIn>
           <div className="mb-12 max-w-3xl space-y-4">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
               Live Task Simulation
             </p>
             <h2 className="text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
@@ -116,7 +116,7 @@ export default async function UseCasePage({ params }: PageProps) {
             {uc.whatItDoes.map((item) => (
               <div
                 key={item}
-                className="flex items-start gap-4 rounded-2xl border-l-2 border-vaultAmber/50 bg-voidSurface p-6 backdrop-blur-sm"
+                className="flex items-start gap-4 rounded-2xl border-l-2 border-vaultAmber/50 bg-voidSurface p-6 "
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-vaultAmber" />
                 <p className="text-base leading-relaxed text-charcoal/80">
@@ -190,7 +190,7 @@ export default async function UseCasePage({ params }: PageProps) {
             {uc.control.map((c) => (
               <div
                 key={c}
-                className="flex items-start gap-4 rounded-2xl border border-vaultAmber/15 bg-voidSurface/60 p-6 backdrop-blur-sm"
+                className="flex items-start gap-4 rounded-2xl border border-vaultAmber/15 bg-voidSurface/60 p-6 "
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-vaultAmber" />
                 <p className="text-base leading-relaxed text-charcoal/80">
@@ -213,7 +213,7 @@ export default async function UseCasePage({ params }: PageProps) {
           {uc.faq.map((item) => (
             <details
               key={item.question}
-              className="group rounded-2xl border border-vaultAmber/15 bg-voidSurface p-6 transition-colors hover:bg-white/5"
+              className="group rounded-2xl border border-vaultAmber/15 bg-voidSurface p-6 transition-colors hover:bg-mist/30"
             >
               <summary className="flex cursor-pointer items-center justify-between gap-4 text-left text-base font-medium text-charcoal">
                 <span>{item.question}</span>
@@ -243,7 +243,7 @@ export default async function UseCasePage({ params }: PageProps) {
                 <Link
                   key={r.slug}
                   href={`/solutions/${r.slug}`}
-                  className="group block rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/60 hover:bg-white/5"
+                  className="group block rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/60 hover:bg-mist/30"
                 >
                   <div className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber/70">
                     {r.category}

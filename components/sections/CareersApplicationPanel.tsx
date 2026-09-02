@@ -194,8 +194,8 @@ export function CareersApplicationPanel() {
 
   return (
     <section className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6 sm:py-16 lg:py-20">
-      <div className="rounded-2xl border border-vaultAmber/25 bg-voidSurface p-6 sm:p-8 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)]">
-        <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+      <div className="rounded-2xl border border-vaultAmber/25 bg-voidSurface p-6 sm:p-8 ">
+        <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
           Apply to Build
         </p>
         <h2 className="mt-3 text-3xl font-normal leading-tight tracking-tight text-charcoal sm:text-4xl">

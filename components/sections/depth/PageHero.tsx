@@ -16,7 +16,7 @@ export function PageHero({
     <section className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col justify-center px-6 pt-32 pb-20 sm:px-12 sm:pt-40 lg:px-16">
       <div className="max-w-3xl space-y-8 lg:pr-12">
         <FadeIn delay={0.1} yOffset={10}>
-          <p className="font-mono text-xs font-semibold tracking-[0.25em] text-vaultAmber uppercase">
+          <p className="font-mono text-xs font-semibold tracking-[0.18em] text-vaultAmber uppercase">
             {eyebrow}
           </p>
         </FadeIn>

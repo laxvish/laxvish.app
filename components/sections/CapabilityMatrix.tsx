@@ -37,7 +37,7 @@ const capabilityCards: CapabilityCard[] = [
 export function CapabilityMatrix() {
   return (
     <section className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
         Three Control Planes · One Platform
       </p>
       <h2 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
@@ -47,14 +47,12 @@ export function CapabilityMatrix() {
         {capabilityCards.map((card) => (
           <article
             key={card.title}
-            className="rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/40 hover:bg-white/5"
+            className="rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/40 hover:bg-mist/30"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-charcoal">{card.title}</h3>
               <span
-                className={`h-2.5 w-2.5 rounded-full ${
-                  card.accent === "cyan" ? "bg-vaultAmber" : "bg-[#C46B4E]"
-                }`}
+                className={`h-2.5 w-2.5 rounded-full ${ card.accent === "cyan" ? "bg-vaultAmber" : "bg-[#C46B4E]" }`}
               />
             </div>
             <ul className="mt-4 space-y-2.5 text-sm text-charcoal/70">

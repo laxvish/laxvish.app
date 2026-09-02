@@ -31,26 +31,26 @@ export function KnowledgeScene() {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[#07080B] p-6 text-charcoal sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] border border-vaultAmber/20"
+      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-none bg-[#F2EAE0] p-6 text-charcoal sm:p-10 border border-vaultAmber/20"
       style={{
         perspective: "1000px",
       }}
     >
       {/* Deep Celestial Ambient Lighting */}
-      <div className="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(182,176,159,0.15)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
+      
+      
+      <div className="pointer-events-none absolute inset-0 [background-size:28px_28px] opacity-30" />
 
       {/* Astrolabe Header */}
       <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-b border-vaultAmber/15 pb-4 font-mono text-xs">
         <div className="flex items-center gap-3">
-          <span className="flex h-2 w-2 rounded-full bg-vaultAmber shadow-[0_0_8px_#B6B09F] animate-pulse" />
+          <span className="flex h-2 w-2 rounded-full bg-mark animate-pulse" />
           <span className="font-medium tracking-[0.2em] text-vaultAmber uppercase">
             ARTIFACT IV : THE CONSTELLATION ASTROLABE
           </span>
         </div>
         <div>
-          <span className="rounded-full border border-vaultAmber/30 bg-vaultAmber/10 px-3 py-1 font-mono text-[10px] font-medium text-vaultAmber">
+          <span className="rounded-none border border-mark bg-mark/10 px-3 py-1 font-mono text-[10px] font-medium text-vaultAmber">
             {shot === 0 && "MEMORY VAULT AT REST"}
             {shot === 1 && "4,200+ CORPORATE STARS SUSPENDED"}
             {shot === 2 && "SONAR QUERY PULSE EMITTED"}
@@ -80,10 +80,10 @@ export function KnowledgeScene() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-3"
             >
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber/25 bg-voidSurface backdrop-blur-md">
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber/25 bg-voidSurface ">
                 <span className="h-2.5 w-2.5 rounded-full bg-vaultAmber animate-ping" />
               </div>
-              <p className="font-serif text-sm italic text-charcoal/50 max-w-sm">
+              <p className="font-mono text-sm text-charcoal/50 max-w-sm">
                 4,200 company memories suspended across Notion, SharePoint, and Google Drive.
               </p>
             </motion.div>
@@ -111,7 +111,7 @@ export function KnowledgeScene() {
                       duration: 3.5,
                       delay: (i % 9) * 0.2,
                     }}
-                    className="h-1.5 w-1.5 rounded-full bg-vaultAmber shadow-[0_0_5px_rgba(182,176,159,0.5)]"
+                    className="h-1.5 w-1.5 rounded-full bg-mark"
                   />
                 ))}
               </div>
@@ -130,12 +130,12 @@ export function KnowledgeScene() {
               exit={{ opacity: 0 }}
               className="flex w-full max-w-md flex-col items-center gap-4"
             >
-              <div className="w-full rounded-2xl border border-vaultAmber/25 bg-voidSurface p-4 text-left backdrop-blur-md shadow-2xl">
+              <div className="w-full rounded-2xl border border-vaultAmber/25 bg-voidSurface p-4 text-left ">
                 <div className="flex justify-between font-mono text-[10px] text-vaultAmber uppercase">
                   <span>CELESTIAL QUERY PULSE</span>
                   <span className="font-bold text-neonCyan">14ms SEARCH RADAR</span>
                 </div>
-                <p className="mt-2 font-serif text-sm italic text-charcoal/90">
+                <p className="mt-2 font-mono text-sm text-charcoal/90">
                   &ldquo;What is our travel reimbursement policy for client on-sites exceeding 14 days?&rdquo;
                 </p>
               </div>
@@ -172,7 +172,7 @@ export function KnowledgeScene() {
                     initial={{ scale: 0.8, y: 30, opacity: 0 }}
                     animate={{ scale: 1, y: 0, opacity: 1 }}
                     transition={{ delay: idx * 0.15, type: "spring" }}
-                    className="rounded-2xl border border-vaultAmber/40 bg-voidSurface p-3.5 shadow-xl"
+                    className="rounded-2xl border border-vaultAmber/40 bg-voidSurface p-3.5 "
                   >
                     <div className="flex justify-between text-[8px] text-vaultAmber pb-1">
                       <span>POLICY STAR</span>
@@ -198,7 +198,7 @@ export function KnowledgeScene() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-3 font-mono text-xs"
             >
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber bg-black shadow-[0_0_30px_rgba(182,176,159,0.3)]">
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber bg-black0_0_30px_rgba(157,142,199,0.3)]">
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
@@ -206,7 +206,7 @@ export function KnowledgeScene() {
                 />
                 <span className="text-xs font-bold tracking-widest text-vaultAmber">BRAKES</span>
               </div>
-              <div className="rounded-2xl border border-vaultAmber/30 bg-voidSurface px-5 py-2.5 text-charcoal backdrop-blur-md">
+              <div className="rounded-none border border-mark bg-voidSurface px-5 py-2.5 text-charcoal ">
                 <span className="text-charcoal/70">Access Security Gate: </span>
                 <strong className="text-neonCyan">User RBAC Tier Verified · Zero Hallucination Confirmed ✓</strong>
               </div>
@@ -221,11 +221,11 @@ export function KnowledgeScene() {
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
-              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-voidSurface p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+              className="relative w-full max-w-md rounded-none border border-mark bg-voidSurface p-6 text-left0_20px_60px_rgba(0,0,0,0.9)]"
             >
               <div className="flex items-center justify-between border-b border-vaultAmber/20 pb-3 font-mono text-[11px]">
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-vaultAmber shadow-[0_0_6px_#B6B09F]" />
+                  <span className="h-2 w-2 rounded-full bg-mark" />
                   <span className="font-bold tracking-widest text-vaultAmber uppercase">
                     THE COMPANY REMEMBERS
                   </span>
@@ -237,7 +237,7 @@ export function KnowledgeScene() {
                 <p className="font-serif text-sm leading-relaxed text-charcoal">
                   &ldquo;For client on-site deployments exceeding 14 days, the per-diem increases to <strong className="font-mono text-xs font-bold text-vaultAmber">₹3,500/day</strong> with direct hotel master-billing and weekend travel allowance.&rdquo;
                 </p>
-                <div className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2 text-[11px] text-charcoal border border-vaultAmber/20">
+                <div className="flex items-center justify-between rounded-xl bg-mist/30 px-3 py-2 text-[11px] text-charcoal border border-vaultAmber/20">
                   <span className="text-charcoal/80">Cited: HR-Policy-Handbook-2025.pdf (§4.2, Pg 18)</span>
                   <span className="font-bold text-vaultAmber">RBAC Gated</span>
                 </div>
@@ -258,9 +258,7 @@ export function KnowledgeScene() {
                 setIsAutoPlay(false);
                 setShot(i);
               }}
-              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                shot === i ? "w-8 bg-vaultAmber shadow-[0_0_8px_#B6B09F]" : "w-2 bg-charcoal/20 hover:bg-charcoal/40"
-              }`}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${ shot === i ? "w-8 bg-mark" : "w-2 bg-charcoal/20 hover:bg-charcoal/40" }`}
               title={`Jump to Shot 0${i + 1}`}
             />
           ))}

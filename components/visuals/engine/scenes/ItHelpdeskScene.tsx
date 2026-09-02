@@ -18,7 +18,7 @@ export function ItHelpdeskScene() {
   }, [phase]);
 
   return (
-    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#07080B] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 shadow-2xl">
+    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#F2EAE0] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 ">
       {/* Header */}
       <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-widest border-b border-vaultAmber/15 pb-4">
         <span>Chapter 08 : IT Helpdesk & Nervous System</span>
@@ -41,7 +41,7 @@ export function ItHelpdeskScene() {
               AUTH (STS ROLE TIMEOUT) ✗
             </div>
             <span className="text-vaultAmber">→</span>
-            <div className="rounded-xl bg-voidSurface/40 border border-white/5 px-3.5 py-2 text-charcoal/40">SERVICE</div>
+            <div className="rounded-xl bg-voidSurface/40 border border-rule-hair px-3.5 py-2 text-charcoal/40">SERVICE</div>
           </div>
         )}
 
@@ -50,7 +50,7 @@ export function ItHelpdeskScene() {
             <span className="text-[10px] uppercase text-vaultAmber/60 tracking-wider">
               VALIDATING PAGERDUTY ON-CALL ROSTER & OKTA IDENTITY
             </span>
-            <div className="rounded-full bg-voidSurface border border-vaultAmber/30 px-5 py-2 text-charcoal font-semibold shadow-lg">
+            <div className="rounded-full bg-voidSurface border border-vaultAmber/30 px-5 py-2 text-charcoal font-semibold ">
               Generating 4-Hour Time-Bound STS Elevation Token
             </div>
           </div>
@@ -60,7 +60,7 @@ export function ItHelpdeskScene() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md rounded-2xl border border-vaultAmber/30 bg-voidSurface p-6 shadow-xl text-left font-mono text-xs"
+            className="w-full max-w-md rounded-none border border-mark bg-voidSurface p-6 text-left font-mono text-xs"
           >
             <div className="flex items-center justify-between border-b border-vaultAmber/15 pb-3 text-[10px] text-vaultAmber uppercase">
               <span>SYSTEM RESTORED</span>
@@ -85,7 +85,7 @@ export function ItHelpdeskScene() {
       </div>
 
       {/* Narrative Footer */}
-      <div className="border-t border-vaultAmber/15 pt-4 font-serif text-xs italic text-charcoal/60">
+      <div className="border-t border-vaultAmber/15 pt-4 font-mono text-xs text-charcoal/60">
         No ticket backlog. Diagnosis, intervention, and recovery happen in one unbroken motion.
       </div>
     </div>

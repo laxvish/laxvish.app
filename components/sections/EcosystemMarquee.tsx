@@ -9,9 +9,7 @@ function MarqueeLane({ items, reverse = false }: LaneProps) {
   return (
     <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
       <div
-        className={`marquee-track ${
-          reverse ? "marquee-track-right" : "marquee-track-left"
-        }`}
+        className={`marquee-track ${ reverse ? "marquee-track-right" : "marquee-track-left" }`}
       >
         {loopItems.map((item, index) => (
           <span
@@ -52,7 +50,7 @@ export function EcosystemMarquee() {
   return (
     <section className="border-y border-vaultAmber/15 bg-obsidian">
       <div className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-        <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+        <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
           Ecosystem Pathways
         </p>
         <h2 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">

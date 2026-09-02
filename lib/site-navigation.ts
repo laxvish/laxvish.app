@@ -31,11 +31,14 @@ export const DEFAULT_NEETOCAL_URL =
 export const getBookDemoUrl = (): string =>
   process.env.NEXT_PUBLIC_NEETOCAL_URL ?? DEFAULT_NEETOCAL_URL;
 
+// Binding button system (see AGENTS.md §1, §4). No `rounded-full` cluster, no
+// glow shadow, no glassmorphism, no scale hover. Solid mark fill for action;
+// hairline border for secondary. Hover changes color/border, not shape.
 export const BOOK_NOW_BUTTON_CLASS =
-  "relative inline-flex items-center justify-center bg-charcoal px-8 py-3 text-sm font-medium tracking-wide text-obsidian transition-all duration-300 hover:bg-vaultAmber hover:text-obsidian";
+  "relative inline-flex items-center justify-center bg-mark px-7 py-3 text-sm font-medium tracking-wide text-cream transition-colors duration-200 hover:bg-deepink";
 
 export const SECONDARY_HERO_CTA_CLASS =
-  "inline-flex items-center justify-center border border-charcoal/25 bg-white/5 px-8 py-3 text-sm font-medium tracking-wide text-charcoal transition-all duration-300 hover:border-vaultAmber hover:bg-vaultAmber/10";
+  "inline-flex items-center justify-center border border-deepink/35 bg-transparent px-7 py-3 text-sm font-medium tracking-wide text-deepink transition-colors duration-200 hover:border-mark hover:text-mark";
 
 /**
  * Build the "What we automate" mega-menu group from the use cases.

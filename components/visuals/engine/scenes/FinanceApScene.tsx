@@ -18,7 +18,7 @@ export function FinanceApScene() {
   }, [phase]);
 
   return (
-    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#07080B] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 shadow-2xl">
+    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#F2EAE0] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 ">
       {/* Header */}
       <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-widest border-b border-vaultAmber/15 pb-4">
         <span>Chapter 06 : Finance & AP Reconciliation</span>
@@ -39,7 +39,7 @@ export function FinanceApScene() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 0.9 }}
                 transition={{ delay: idx * 0.15 }}
-                className="rounded-xl border border-vaultAmber/20 bg-voidSurface p-4 shadow-md font-mono text-xs text-charcoal text-center"
+                className="rounded-xl border border-vaultAmber/20 bg-voidSurface p-4 font-mono text-xs text-charcoal text-center"
               >
                 <span className="text-[10px] text-vaultAmber/70 uppercase">Invoice #{idx + 1}</span>
                 <p className="font-bold mt-1 text-neonCyan">{inv}</p>
@@ -57,7 +57,7 @@ export function FinanceApScene() {
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: i * 0.1 }}
-                  className="rounded-full bg-voidSurface border border-vaultAmber/30 px-4 py-2 text-charcoal font-medium shadow-md"
+                  className="rounded-full bg-voidSurface border border-vaultAmber/30 px-4 py-2 text-charcoal font-medium "
                 >
                   {token}
                 </motion.div>
@@ -73,7 +73,7 @@ export function FinanceApScene() {
             className="flex flex-col items-center gap-4 text-center"
           >
             {/* The Thread Circle Stamp */}
-            <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-vaultAmber bg-voidSurface shadow-xl">
+            <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-vaultAmber bg-voidSurface ">
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -84,7 +84,7 @@ export function FinanceApScene() {
               </motion.span>
             </div>
 
-            <div className="rounded-2xl border border-vaultAmber/30 bg-voidSurface p-6 shadow-xl text-left font-mono text-xs max-w-sm w-full">
+            <div className="rounded-none border border-mark bg-voidSurface p-6 text-left font-mono text-xs max-w-sm w-full">
               <div className="flex justify-between border-b border-vaultAmber/15 pb-2">
                 <span className="text-vaultAmber uppercase text-[10px]">ERP Batch Commit</span>
                 <span className="font-bold text-neonCyan">PAYMENT READY</span>
@@ -105,7 +105,7 @@ export function FinanceApScene() {
       </div>
 
       {/* Narrative Footer */}
-      <div className="border-t border-vaultAmber/15 pt-4 font-serif text-xs italic text-charcoal/60">
+      <div className="border-t border-vaultAmber/15 pt-4 font-mono text-xs text-charcoal/60">
         Everything unnecessary fades. The essential obligations snap into verified accounting state.
       </div>
     </div>

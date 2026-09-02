@@ -50,7 +50,7 @@ export default function SolutionsPage() {
             <div key={category} className="space-y-8">
               <FadeIn>
                 <div className="max-w-3xl space-y-3 border-b border-vaultAmber/20 pb-6">
-                  <div className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+                  <div className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
                     {category}
                   </div>
                   <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight text-charcoal">
@@ -67,7 +67,7 @@ export default function SolutionsPage() {
                   <Link
                     key={uc.slug}
                     href={`/solutions/${uc.slug}`}
-                    className="group block rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/60 hover:bg-white/5"
+                    className="group block rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/60 hover:bg-mist/30"
                   >
                     <h3 className="text-lg font-medium text-charcoal group-hover:text-vaultAmber transition-colors">
                       {uc.title}

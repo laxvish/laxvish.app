@@ -18,7 +18,7 @@ export function ExecutiveScene() {
   }, [phase]);
 
   return (
-    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#07080B] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 shadow-2xl">
+    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#F2EAE0] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 ">
       {/* Header */}
       <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-widest border-b border-vaultAmber/15 pb-4">
         <span>Chapter 09 : Executive Intelligence</span>
@@ -40,7 +40,7 @@ export function ExecutiveScene() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: i * 0.08 }}
-                  className="rounded-full bg-voidSurface border border-vaultAmber/20 px-3 py-1 shadow-sm text-charcoal"
+                  className="rounded-full bg-voidSurface border border-vaultAmber/20 px-3 py-1 text-charcoal"
                 >
                   {stream}
                 </motion.span>
@@ -54,7 +54,7 @@ export function ExecutiveScene() {
             <span className="font-mono text-[10px] uppercase text-vaultAmber/60 tracking-wider">
               DISCARDING UNNECESSARY NOISE · SYNTHESIZING COMPANY STATE
             </span>
-            <div className="rounded-full bg-voidSurface border border-vaultAmber/40 px-6 py-2.5 font-mono text-xs text-charcoal font-semibold shadow-lg">
+            <div className="rounded-full bg-voidSurface border border-vaultAmber/40 px-6 py-2.5 font-mono text-xs text-charcoal font-semibold ">
               Federating BigQuery + Stripe + CRM
             </div>
           </div>
@@ -64,12 +64,12 @@ export function ExecutiveScene() {
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-lg rounded-2xl border border-vaultAmber/30 bg-voidSurface p-8 shadow-xl text-center"
+            className="w-full max-w-lg rounded-none border border-mark bg-voidSurface p-8 text-center"
           >
             <span className="font-mono text-[10px] uppercase text-vaultAmber tracking-widest font-bold">
               EXECUTIVE SIGNAL
             </span>
-            <p className="mt-3 font-serif text-lg italic text-charcoal leading-relaxed">
+            <p className="mt-3 font-mono text-lg text-charcoal leading-relaxed">
               &ldquo;Revenue is accelerating (+14.2% YoY), but self-serve onboarding conversion is slowing at step 3.&rdquo;
             </p>
             <div className="mt-6 flex items-center justify-between border-t border-vaultAmber/15 pt-3 font-mono text-[10px] text-charcoal/70">
@@ -81,7 +81,7 @@ export function ExecutiveScene() {
       </div>
 
       {/* Narrative Footer */}
-      <div className="border-t border-vaultAmber/15 pt-4 font-serif text-xs italic text-charcoal/60">
+      <div className="border-t border-vaultAmber/15 pt-4 font-mono text-xs text-charcoal/60">
         Thousands of scattered facts become one clear decision. That is executive intelligence.
       </div>
     </div>

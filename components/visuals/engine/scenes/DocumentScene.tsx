@@ -31,26 +31,26 @@ export function DocumentScene() {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[#07080B] p-6 text-charcoal sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] border border-vaultAmber/20"
+      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-none bg-[#F2EAE0] p-6 text-charcoal sm:p-10 border border-vaultAmber/20"
       style={{
         perspective: "1000px",
       }}
     >
       {/* Ambient Champagne Gold Lighting */}
-      <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(182,176,159,0.15)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
+      
+      
+      <div className="pointer-events-none absolute inset-0 [background-size:28px_28px] opacity-30" />
 
       {/* Machined Header */}
       <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-b border-vaultAmber/15 pb-4 font-mono text-xs">
         <div className="flex items-center gap-3">
-          <span className="flex h-2 w-2 rounded-full bg-vaultAmber shadow-[0_0_8px_#B6B09F] animate-pulse" />
+          <span className="flex h-2 w-2 rounded-full bg-mark animate-pulse" />
           <span className="font-medium tracking-[0.2em] text-vaultAmber uppercase">
             ARTIFACT III : THE TACTILE LEDGER PRISM
           </span>
         </div>
         <div>
-          <span className="rounded-full border border-vaultAmber/30 bg-vaultAmber/10 px-3 py-1 font-mono text-[10px] font-medium text-vaultAmber">
+          <span className="rounded-none border border-mark bg-mark/10 px-3 py-1 font-mono text-[10px] font-medium text-vaultAmber">
             {shot === 0 && "STANDBY · OPTICAL PRISM STAGE"}
             {shot === 1 && "3-LAYER ISOMETRIC STRATA INGESTED"}
             {shot === 2 && "RAY OF TRUTH PIERCING PARCHMENT"}
@@ -80,7 +80,7 @@ export function DocumentScene() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-3"
             >
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-vaultAmber/25 bg-voidSurface backdrop-blur-md">
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-vaultAmber/25 bg-voidSurface ">
                 <svg className="h-8 w-8 text-vaultAmber" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
@@ -89,7 +89,7 @@ export function DocumentScene() {
                   <polyline points="10 9 9 9 8 9" />
                 </svg>
               </div>
-              <p className="font-serif text-sm italic text-charcoal/50 max-w-sm">
+              <p className="font-mono text-sm text-charcoal/50 max-w-sm">
                 Optical prism ready. Multi-format bills, challans, and POs welcomed.
               </p>
             </motion.div>
@@ -114,9 +114,9 @@ export function DocumentScene() {
                   initial={{ y: 50, opacity: 0 }}
                   animate={{ y: doc.y, x: doc.x, rotate: doc.rotate, opacity: 1 }}
                   transition={{ delay: idx * 0.15, type: "spring" }}
-                  className={`absolute h-44 w-32 rounded-2xl border border-vaultAmber/30 bg-voidSurface ${doc.bg === 'from-[#181920] to-[#0A0A0E]' ? 'bg-[#0E0F14]' : ''} p-3.5 text-left shadow-[0_15px_35px_rgba(0,0,0,0.8)] backdrop-blur-md`}
+                  className={`absolute h-44 w-32 rounded-none border border-mark bg-voidSurface ${doc.bg === 'from-[#181920] to-[#0A0A0E]' ? 'bg-[#EDE3D2]' : ''} p-3.5 text-left0_15px_35px_rgba(0,0,0,0.8)] `}
                 >
-                  <div className="flex items-center justify-between border-b border-white/5 pb-1.5 font-mono text-[8px] text-vaultAmber uppercase">
+                  <div className="flex items-center justify-between border-b border-rule-hair pb-1.5 font-mono text-[8px] text-vaultAmber uppercase">
                     <span>{doc.id.split(".")[1]}</span>
                     <span className="h-1.5 w-1.5 rounded-full bg-vaultAmber" />
                   </div>
@@ -149,16 +149,16 @@ export function DocumentScene() {
                   y1="50"
                   x2="500"
                   y2="50"
-                  stroke="#B6B09F"
+                  stroke="#9B8EC7"
                   strokeWidth="2.5"
-                  filter="drop-shadow(0 0 10px rgba(182,176,159,0.85))"
+                  filter="drop-shadow(0 0 10px rgba(157,142,199,0.85))"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 1 }}
                 />
-                <circle cx="120" cy="50" r="5" fill="#B6B09F" />
-                <circle cx="250" cy="50" r="6" fill="#FFFFFF" />
-                <circle cx="380" cy="50" r="5" fill="#B6B09F" />
+                <circle cx="120" cy="50" r="5" fill="#9B8EC7" />
+                <circle cx="250" cy="50" r="6" fill="#1A1820" />
+                <circle cx="380" cy="50" r="5" fill="#9B8EC7" />
               </svg>
               <span className="font-mono text-xs font-semibold text-vaultAmber">
                 RAY OF TRUTH ALIGNING TAX CODES, QUANTITIES, & TOTALS ACROSS STRATA
@@ -187,7 +187,7 @@ export function DocumentScene() {
                   initial={{ scale: 0.8, y: 25, opacity: 0 }}
                   animate={{ scale: 1, y: 0, opacity: 1 }}
                   transition={{ delay: idx * 0.12 }}
-                  className="flex items-center gap-2 rounded-2xl border border-vaultAmber/30 bg-voidSurface px-4 py-2.5 shadow-xl backdrop-blur-md text-charcoal"
+                  className="flex items-center gap-2 rounded-none border border-mark bg-voidSurface px-4 py-2.5 text-charcoal"
                 >
                   <span className="text-[9px] font-bold uppercase tracking-wider text-vaultAmber">{pill.tag}:</span>
                   <span className="font-semibold text-neonCyan">{pill.val}</span>
@@ -205,7 +205,7 @@ export function DocumentScene() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-3 font-mono text-xs"
             >
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber bg-black shadow-[0_0_30px_rgba(182,176,159,0.3)]">
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber bg-black0_0_30px_rgba(157,142,199,0.3)]">
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
@@ -213,7 +213,7 @@ export function DocumentScene() {
                 />
                 <span className="text-xs font-bold tracking-widest text-vaultAmber">BRAKES</span>
               </div>
-              <div className="rounded-2xl border border-vaultAmber/30 bg-voidSurface px-5 py-2.5 text-charcoal backdrop-blur-md">
+              <div className="rounded-none border border-mark bg-voidSurface px-5 py-2.5 text-charcoal ">
                 <span className="text-charcoal/70">3-Way Matrix Reconciliation: </span>
                 <strong className="text-neonCyan">PO #PO-4401 = DC #992 = INV #104 (Zero Variance) ✓</strong>
               </div>
@@ -228,11 +228,11 @@ export function DocumentScene() {
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
-              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-voidSurface p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+              className="relative w-full max-w-md rounded-none border border-mark bg-voidSurface p-6 text-left0_20px_60px_rgba(0,0,0,0.9)]"
             >
               <div className="flex items-center justify-between border-b border-vaultAmber/20 pb-3 font-mono text-[11px]">
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-vaultAmber shadow-[0_0_6px_#B6B09F]" />
+                  <span className="h-2 w-2 rounded-full bg-mark" />
                   <span className="font-bold tracking-widest text-vaultAmber uppercase">
                     3-WAY MATCH COMMITTED
                   </span>
@@ -241,11 +241,11 @@ export function DocumentScene() {
               </div>
 
               <div className="mt-4 space-y-2.5 font-mono text-xs">
-                <div className="flex justify-between py-1 border-b border-white/5">
+                <div className="flex justify-between py-1 border-b border-rule-hair">
                   <span className="text-charcoal/40">Reconciled Total</span>
                   <span className="font-semibold text-charcoal">₹1,46,320.00 (100% Match)</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-white/5">
+                <div className="flex justify-between py-1 border-b border-rule-hair">
                   <span className="text-charcoal/40">Tax Input Claim</span>
                   <span className="font-bold text-vaultAmber">₹26,337.60 Validated on Portal</span>
                 </div>
@@ -270,9 +270,7 @@ export function DocumentScene() {
                 setIsAutoPlay(false);
                 setShot(i);
               }}
-              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                shot === i ? "w-8 bg-vaultAmber shadow-[0_0_8px_#B6B09F]" : "w-2 bg-charcoal/20 hover:bg-charcoal/40"
-              }`}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${ shot === i ? "w-8 bg-mark" : "w-2 bg-charcoal/20 hover:bg-charcoal/40" }`}
               title={`Jump to Shot 0${i + 1}`}
             />
           ))}

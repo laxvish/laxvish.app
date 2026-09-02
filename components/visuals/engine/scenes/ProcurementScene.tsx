@@ -18,7 +18,7 @@ export function ProcurementScene() {
   }, [phase]);
 
   return (
-    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#07080B] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 shadow-2xl">
+    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#F2EAE0] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 ">
       {/* Header */}
       <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-widest border-b border-vaultAmber/15 pb-4">
         <span>Chapter 11 : Autonomous Procurement</span>
@@ -40,7 +40,7 @@ export function ProcurementScene() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 0.9 }}
                   transition={{ delay: idx * 0.15 }}
-                  className="rounded-xl border border-vaultAmber/20 bg-voidSurface p-4 shadow-md text-center"
+                  className="rounded-xl border border-vaultAmber/20 bg-voidSurface p-4 text-center"
                 >
                   <span className="text-[10px] text-vaultAmber/70 uppercase">Supplier #{idx + 1}</span>
                   <p className="font-bold mt-1 text-neonCyan">{supp}</p>
@@ -55,7 +55,7 @@ export function ProcurementScene() {
             <span className="text-[10px] text-vaultAmber/60 uppercase tracking-wider">
               EVALUATING PRICE + DELIVERY SLA + HISTORICAL RELIABILITY
             </span>
-            <div className="rounded-full bg-voidSurface border border-vaultAmber/30 px-6 py-2 text-charcoal font-semibold shadow-lg">
+            <div className="rounded-full bg-voidSurface border border-vaultAmber/30 px-6 py-2 text-charcoal font-semibold ">
               CompuAge Direct wins on Total Value Score (Saved ₹1,00,000)
             </div>
           </div>
@@ -65,7 +65,7 @@ export function ProcurementScene() {
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md rounded-2xl border border-vaultAmber/30 bg-voidSurface p-6 shadow-xl text-left font-mono text-xs"
+            className="w-full max-w-md rounded-none border border-mark bg-voidSurface p-6 text-left font-mono text-xs"
           >
             <div className="flex items-center justify-between border-b border-vaultAmber/15 pb-3 text-[10px] text-vaultAmber uppercase">
               <span>PURCHASE ORDER DISPATCHED</span>
@@ -90,7 +90,7 @@ export function ProcurementScene() {
       </div>
 
       {/* Narrative Footer */}
-      <div className="border-t border-vaultAmber/15 pt-4 font-serif text-xs italic text-charcoal/60">
+      <div className="border-t border-vaultAmber/15 pt-4 font-mono text-xs text-charcoal/60">
         The procurement workflow chooses itself through evidence, without manual quote juggling.
       </div>
     </div>

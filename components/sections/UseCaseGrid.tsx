@@ -22,7 +22,7 @@ export function UseCaseGrid() {
         {/* The Grand Creative Narrative */}
         <FadeIn>
           <div className="max-w-3xl space-y-6">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
               The Workforce, Reimagined
             </p>
             <h2 className="text-[clamp(2.5rem,6vw,4rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
@@ -59,7 +59,7 @@ export function UseCaseGrid() {
         <div className="mt-28">
           <FadeIn>
             <div className="max-w-2xl">
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
                 Flagship Deployments
               </p>
               <h3 className="mt-2 text-2xl font-normal tracking-tight text-charcoal sm:text-3xl">
@@ -72,7 +72,7 @@ export function UseCaseGrid() {
             {flagship.map((uc) => (
               <FadeIn key={uc.slug}>
                 <Link href={`/solutions/${uc.slug}`} className="block h-full">
-                  <SystemPanel className="group flex h-full flex-col rounded-2xl border border-vaultAmber/20 bg-voidSurface p-8 transition-all duration-500 hover:border-vaultAmber/50 hover:bg-white/5 sm:p-10">
+                  <SystemPanel className="group flex h-full flex-col rounded-2xl border border-vaultAmber/20 bg-voidSurface p-8 transition-all duration-500 hover:border-vaultAmber/50 hover:bg-mist/30 sm:p-10">
                     <div className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
                       {uc.category}
                     </div>

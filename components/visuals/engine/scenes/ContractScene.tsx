@@ -18,7 +18,7 @@ export function ContractScene() {
   }, [phase]);
 
   return (
-    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#07080B] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 shadow-2xl">
+    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#F2EAE0] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 ">
       {/* Header */}
       <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-widest border-b border-vaultAmber/15 pb-4">
         <span>Chapter 07 : Contract Intelligence</span>
@@ -52,11 +52,7 @@ export function ContractScene() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: idx * 0.15 }}
-                  className={`rounded-xl border px-4 py-2.5 shadow-md font-medium ${
-                    clause.includes("RISK")
-                      ? "border-[#A8583E]/60 bg-[#1A0E0A] text-charcoal"
-                      : "border-vaultAmber/30 bg-voidSurface text-charcoal"
-                  }`}
+                  className={`rounded-xl border px-4 py-2.5 font-medium ${ clause.includes("RISK") ? "border-[#A8583E]/60 bg-[#1A0E0A] text-charcoal" : "border-vaultAmber/30 bg-voidSurface text-charcoal" }`}
                 >
                   {clause}
                 </motion.div>
@@ -69,7 +65,7 @@ export function ContractScene() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md rounded-2xl border border-vaultAmber/30 bg-voidSurface p-6 shadow-xl text-left"
+            className="w-full max-w-md rounded-none border border-mark bg-voidSurface p-6 text-left"
           >
             <div className="flex items-center justify-between border-b border-vaultAmber/15 pb-3 font-mono text-[10px] text-vaultAmber uppercase">
               <span>CONTRACT DISTILLED</span>
@@ -98,7 +94,7 @@ export function ContractScene() {
       </div>
 
       {/* Narrative Footer */}
-      <div className="border-t border-vaultAmber/15 pt-4 font-serif text-xs italic text-charcoal/60">
+      <div className="border-t border-vaultAmber/15 pt-4 font-mono text-xs text-charcoal/60">
         Laxvish sees what is buried inside the work and exposes the underlying commitments.
       </div>
     </div>

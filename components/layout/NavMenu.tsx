@@ -12,7 +12,7 @@ const getLinkClassName = (isActive: boolean): string =>
   [
     "rounded-full px-3 py-1.5 text-sm transition-colors duration-200 font-mono text-xs",
     isActive
-      ? "bg-white/10 text-vaultAmber font-semibold"
+      ? "bg-mist/40 text-vaultAmber font-semibold"
       : "text-charcoal/80 hover:text-vaultAmber",
   ].join(" ");
 

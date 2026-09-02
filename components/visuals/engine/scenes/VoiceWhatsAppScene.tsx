@@ -31,26 +31,26 @@ export function VoiceWhatsAppScene() {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[#07080B] p-6 text-charcoal sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] border border-vaultAmber/20"
+      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-none bg-[#F2EAE0] p-6 text-charcoal sm:p-10 border border-vaultAmber/20"
       style={{
         perspective: "1000px",
       }}
     >
       {/* Ambient Warm Tungsten/Champagne Backlight */}
-      <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(182,176,159,0.15)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
+      
+      
+      <div className="pointer-events-none absolute inset-0 [background-size:28px_28px] opacity-30" />
 
       {/* Loom Header */}
       <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-b border-vaultAmber/15 pb-4 font-mono text-xs">
         <div className="flex items-center gap-3">
-          <span className="flex h-2 w-2 rounded-full bg-vaultAmber shadow-[0_0_8px_#B6B09F] animate-pulse" />
+          <span className="flex h-2 w-2 rounded-full bg-mark animate-pulse" />
           <span className="font-medium tracking-[0.2em] text-vaultAmber uppercase">
             ARTIFACT V : THE HARMONIC DUAL-STREAM LOOM
           </span>
         </div>
         <div>
-          <span className="rounded-full border border-vaultAmber/30 bg-vaultAmber/10 px-3 py-1 font-mono text-[10px] font-medium text-vaultAmber">
+          <span className="rounded-none border border-mark bg-mark/10 px-3 py-1 font-mono text-[10px] font-medium text-vaultAmber">
             {shot === 0 && "DUAL HARMONIC CHAMBERS READY"}
             {shot === 1 && "ANALOG VACUUM TUBE + DIGITAL QUARTZ"}
             {shot === 2 && "BRAIDED THREAD WEAVING VECTORS"}
@@ -80,10 +80,10 @@ export function VoiceWhatsAppScene() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-3"
             >
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-vaultAmber/25 bg-voidSurface backdrop-blur-md">
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-vaultAmber/25 bg-voidSurface ">
                 <span className="h-2.5 w-2.5 rounded-full bg-vaultAmber animate-ping" />
               </div>
-              <p className="font-serif text-sm italic text-charcoal/50 max-w-sm">
+              <p className="font-mono text-sm text-charcoal/50 max-w-sm">
                 Dual telephony lines and WhatsApp webhook streams balanced in the loom.
               </p>
             </motion.div>
@@ -99,12 +99,12 @@ export function VoiceWhatsAppScene() {
               className="grid w-full max-w-lg gap-4 md:grid-cols-2 font-mono text-xs text-left"
             >
               {/* Left Chamber: Analog Vacuum Tube Voice */}
-              <div className="rounded-3xl border border-vaultAmber/40 bg-voidSurface p-4 shadow-xl backdrop-blur-md">
+              <div className="rounded-none border border-mark bg-voidSurface p-4 ">
                 <div className="flex justify-between text-[9px] text-vaultAmber uppercase pb-1 border-b border-vaultAmber/20">
                   <span>Analog Voice (PRI-2)</span>
                   <span className="font-bold text-neonCyan">240ms Latency</span>
                 </div>
-                <p className="mt-2.5 font-serif text-xs italic text-charcoal leading-relaxed">
+                <p className="mt-2.5 font-mono text-xs text-charcoal leading-relaxed">
                   &ldquo;Reschedule my clinic appointment for tomorrow afternoon...&rdquo;
                 </p>
                 <div className="mt-4 flex items-center gap-1.5">
@@ -114,12 +114,12 @@ export function VoiceWhatsAppScene() {
               </div>
 
               {/* Right Chamber: Digital Quartz WhatsApp */}
-              <div className="rounded-3xl border border-vaultAmber/40 bg-voidSurface p-4 shadow-xl backdrop-blur-md">
+              <div className="rounded-none border border-mark bg-voidSurface p-4 ">
                 <div className="flex justify-between text-[9px] text-vaultAmber uppercase pb-1 border-b border-vaultAmber/20">
                   <span>WhatsApp Digital</span>
                   <span className="font-bold text-neonCyan">DPDP Verified</span>
                 </div>
-                <p className="mt-2.5 font-serif text-xs italic text-charcoal leading-relaxed">
+                <p className="mt-2.5 font-mono text-xs text-charcoal leading-relaxed">
                   &ldquo;Patient ID: P-88219 (Vikram Patel). Please confirm Dr. Rao slot.&rdquo;
                 </p>
                 <div className="mt-4 flex items-center gap-1.5">
@@ -143,11 +143,11 @@ export function VoiceWhatsAppScene() {
                 {/* Voice filament */}
                 <motion.path
                   d="M 20,25 Q 150,5 250,50 T 480,75"
-                  stroke="#B6B09F"
+                  stroke="#9B8EC7"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   fill="none"
-                  filter="drop-shadow(0 0 8px rgba(182,176,159,0.8))"
+                  filter="drop-shadow(0 0 8px rgba(157,142,199,0.8))"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 1 }}
@@ -155,7 +155,7 @@ export function VoiceWhatsAppScene() {
                 {/* WhatsApp filament */}
                 <motion.path
                   d="M 20,75 Q 150,95 250,50 T 480,25"
-                  stroke="#EAE4D5"
+                  stroke="#1A1820"
                   strokeWidth="2"
                   strokeLinecap="round"
                   fill="none"
@@ -164,7 +164,7 @@ export function VoiceWhatsAppScene() {
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 1, delay: 0.15 }}
                 />
-                <circle cx="250" cy="50" r="6" fill="#FFFFFF" />
+                <circle cx="250" cy="50" r="6" fill="#1A1820" />
               </svg>
               <span className="font-mono text-xs font-semibold text-vaultAmber tracking-wider">
                 BRAIDED THREAD WEAVING ANALOG VOICE & DIGITAL TEXT INTO ONE REALITY
@@ -192,7 +192,7 @@ export function VoiceWhatsAppScene() {
                   initial={{ scale: 0.8, y: 20, opacity: 0 }}
                   animate={{ scale: 1, y: 0, opacity: 1 }}
                   transition={{ delay: idx * 0.12 }}
-                  className="flex items-center gap-2 rounded-2xl border border-vaultAmber/30 bg-voidSurface px-4 py-2.5 shadow-xl backdrop-blur-md text-charcoal"
+                  className="flex items-center gap-2 rounded-none border border-mark bg-voidSurface px-4 py-2.5 text-charcoal"
                 >
                   <span className="text-[9px] font-bold uppercase tracking-wider text-vaultAmber">{pill.tag}:</span>
                   <span className="font-semibold text-neonCyan">✦ {pill.val}</span>
@@ -210,7 +210,7 @@ export function VoiceWhatsAppScene() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-3 font-mono text-xs"
             >
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber bg-black shadow-[0_0_30px_rgba(182,176,159,0.3)]">
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber bg-black0_0_30px_rgba(157,142,199,0.3)]">
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
@@ -218,7 +218,7 @@ export function VoiceWhatsAppScene() {
                 />
                 <span className="text-xs font-bold tracking-widest text-vaultAmber">BRAKES</span>
               </div>
-              <div className="rounded-2xl border border-vaultAmber/30 bg-voidSurface px-5 py-2.5 text-charcoal backdrop-blur-md">
+              <div className="rounded-none border border-mark bg-voidSurface px-5 py-2.5 text-charcoal ">
                 <span className="text-charcoal/70">Clinical Conflict Check & DPDP Redaction: </span>
                 <strong className="text-neonCyan">Dr. Rao Slot Available · Audio PII Encrypted ✓</strong>
               </div>
@@ -233,11 +233,11 @@ export function VoiceWhatsAppScene() {
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
-              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-voidSurface p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+              className="relative w-full max-w-md rounded-none border border-mark bg-voidSurface p-6 text-left0_20px_60px_rgba(0,0,0,0.9)]"
             >
               <div className="flex items-center justify-between border-b border-vaultAmber/20 pb-3 font-mono text-[11px]">
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-vaultAmber shadow-[0_0_6px_#B6B09F]" />
+                  <span className="h-2 w-2 rounded-full bg-mark" />
                   <span className="font-bold tracking-widest text-vaultAmber uppercase">
                     ONE CUSTOMER TRUTH COMMITTED
                   </span>
@@ -246,11 +246,11 @@ export function VoiceWhatsAppScene() {
               </div>
 
               <div className="mt-4 space-y-2.5 font-mono text-xs">
-                <div className="flex justify-between py-1 border-b border-white/5">
+                <div className="flex justify-between py-1 border-b border-rule-hair">
                   <span className="text-charcoal/40">Hospital EMR Slot</span>
                   <span className="font-medium text-charcoal">Tomorrow 3:30 PM (Dr. Rao, Cardiology)</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-white/5">
+                <div className="flex justify-between py-1 border-b border-rule-hair">
                   <span className="text-charcoal/40">WhatsApp Dispatch</span>
                   <span className="text-vaultAmber font-semibold">Official Calendar Pass Delivered</span>
                 </div>
@@ -275,9 +275,7 @@ export function VoiceWhatsAppScene() {
                 setIsAutoPlay(false);
                 setShot(i);
               }}
-              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                shot === i ? "w-8 bg-vaultAmber shadow-[0_0_8px_#B6B09F]" : "w-2 bg-charcoal/20 hover:bg-charcoal/40"
-              }`}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${ shot === i ? "w-8 bg-mark" : "w-2 bg-charcoal/20 hover:bg-charcoal/40" }`}
               title={`Jump to Shot 0${i + 1}`}
             />
           ))}

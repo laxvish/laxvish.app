@@ -65,7 +65,7 @@ export function LaxvishThread({
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="pointer-events-none absolute inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-charcoal to-transparent shadow-[0_0_8px_rgba(17,17,17,0.4)] z-20"
+          className="pointer-events-none absolute inset-x-0 h-[1.5px] bg-mark z-20"
         />
       </div>
     );

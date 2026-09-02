@@ -1,43 +1,53 @@
 "use client";
 
 import { type MouseEvent, type ReactNode } from "react";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
-import { ExecutionPhase, ValidationPhase } from "@/lib/motion-system";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 
-interface MagneticButtonProps {
+/**
+ * PressButton — the binding interactive primitive.
+ *
+ * Replaces the LLM MagneticButton (scale 1.05 hover, scale 0.95 tap,
+ * rounded-full default, glow shadow). Allowed: a quiet press-down
+ * (scale 0.985) on tap, color/border change on hover, no scale-up
+ * on hover (F3 in AGENTS.md §4).
+ */
+interface PressButtonProps {
   children: ReactNode;
   className?: string;
   as?: any;
-  [key: string]: any;
+  href?: string;
+  target?: string;
+  rel?: string;
+  onClick?: (e: MouseEvent<HTMLElement>) => void;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  tabIndex?: number;
+  "aria-hidden"?: boolean;
+  "aria-expanded"?: boolean;
+  "aria-controls"?: string;
+  autoComplete?: string;
 }
 
-export function MagneticButton({
+export function PressButton({
   children,
   className,
   as: Component = "button",
   ...props
-}: MagneticButtonProps) {
+}: PressButtonProps) {
   const prefersReducedMotion = useReducedMotion();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 100, damping: 25 });
   const springY = useSpring(y, { stiffness: 100, damping: 25 });
-  const magneticEnabled = !prefersReducedMotion;
+  const motionEnabled = !prefersReducedMotion;
 
   const onMouseMove = (event: MouseEvent<HTMLElement>) => {
-    if (!magneticEnabled) {
-      return;
-    }
+    if (!motionEnabled) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetX = event.clientX - rect.left - rect.width / 2;
     const offsetY = event.clientY - rect.top - rect.height / 2;
-    x.set(offsetX * 0.3);
-    y.set(offsetY * 0.3);
+    x.set(offsetX * 0.12); // smaller than the original — gentle, not theatrical
+    y.set(offsetY * 0.12);
   };
 
   const onMouseLeave = () => {
@@ -50,26 +60,23 @@ export function MagneticButton({
   return (
     <MotionComponent
       {...props}
-      style={magneticEnabled ? { x: springX, y: springY } : undefined}
+      style={motionEnabled ? { x: springX, y: springY } : undefined}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      whileHover={{
-        scale: 1.05,
-        transition: { 
-          duration: ExecutionPhase.duration.micro, 
-          ease: ExecutionPhase.ease 
-        }
-      }}
-      whileTap={{
-        scale: 0.95, // Halt before complete, slight compression
-        transition: { 
-          duration: ValidationPhase.duration.standard, 
-          ease: ValidationPhase.ease 
-        }
-      }}
-      className={className ?? `rounded-full border border-vaultAmber bg-transparent px-5 py-2 text-sm font-medium text-vaultAmber transition-shadow duration-200 hover:shadow-[0_0_18px_rgba(182,176,159,0.38)]`}
+      whileTap={
+        motionEnabled
+          ? {
+              scale: 0.985, // press-down only — no hover scale-up
+              transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] },
+            }
+          : undefined
+      }
+      className={className}
     >
       {children}
     </MotionComponent>
   );
 }
+
+// Backward-compatible alias.
+export const MagneticButton = PressButton;

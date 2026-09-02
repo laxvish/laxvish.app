@@ -42,24 +42,41 @@ export function FaqAccordion() {
       id="faq"
       className="mx-auto w-full max-w-4xl px-6 py-24 sm:px-12 lg:py-32"
     >
-      <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
-        Common questions.
-      </h2>
-      <p className="mt-4 max-w-2xl text-base leading-relaxed text-charcoal/70 sm:text-lg">
-        If your question isn&rsquo;t here, just ask on the call. We answer honestly.
-      </p>
-      <div className="mt-12 flex flex-col border-t border-vaultAmber/20">
+      <div className="max-w-3xl space-y-6">
+        <p className="font-mono text-xs font-medium tracking-[0.2em] text-mark uppercase">
+          Frequently asked
+        </p>
+        <h2 className="text-4xl font-normal leading-[1.05] tracking-tight text-deepink sm:text-5xl">
+          Common questions.
+        </h2>
+        <p className="text-base leading-relaxed text-deepink/70 sm:text-lg">
+          If your question isn&rsquo;t here, just ask on the call. We answer
+          honestly.
+        </p>
+      </div>
+
+      <div className="mt-16 border-t border-rule-hair">
         {faqItems.map((item, index) => (
           <details
             key={item.question}
             open={index === 0}
-            className="group border-b border-vaultAmber/15 py-6 transition-colors hover:bg-white/5 px-4 rounded-xl"
+            className="group border-b border-rule-hair py-6"
           >
-            <summary className="cursor-pointer list-none text-xl font-normal text-charcoal outline-none marker:hidden flex justify-between items-center">
-              <span>{item.question}</span>
-              <span className="text-vaultAmber text-sm transition-transform group-open:rotate-45">+</span>
+            <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 outline-none marker:hidden">
+              <span className="font-mono text-xs tracking-[0.18em] text-mark pt-1.5 uppercase">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="flex-1 text-xl font-normal leading-tight tracking-tight text-deepink sm:text-2xl">
+                {item.question}
+              </span>
+              <span
+                aria-hidden="true"
+                className="font-mono text-base text-mark transition-transform duration-200 group-open:rotate-45"
+              >
+                +
+              </span>
             </summary>
-            <p className="mt-4 max-w-3xl text-base leading-relaxed text-charcoal/80">
+            <p className="mt-4 ml-12 max-w-2xl text-base leading-relaxed text-deepink/80">
               {item.answer}
             </p>
           </details>

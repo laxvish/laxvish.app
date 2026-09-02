@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FadeIn } from "@/components/ui/FadeIn";
+import { EditorialReveal } from "@/components/ui/FadeIn";
 import { GenesisPrologue } from "@/components/visuals/engine/GenesisPrologue";
 import { SalesScene } from "@/components/visuals/engine/scenes/SalesScene";
 import { SupportScene } from "@/components/visuals/engine/scenes/SupportScene";
@@ -10,295 +10,207 @@ import { KnowledgeScene } from "@/components/visuals/engine/scenes/KnowledgeScen
 import { VoiceWhatsAppScene } from "@/components/visuals/engine/scenes/VoiceWhatsAppScene";
 import { LivingNetworkStage } from "@/components/visuals/engine/LivingNetworkStage";
 
+interface Chapter {
+  number: string;
+  category: string;
+  title: string;
+  body: string;
+  href: string;
+  linkLabel: string;
+  metrics: { label: string; value: string }[];
+  scene: React.ReactNode;
+  visualSide: "left" | "right" | "full";
+}
+
+const chapters: Chapter[] = [
+  {
+    number: "01",
+    category: "Revenue & Growth",
+    title: "Sales & Lead Engine",
+    body: "An inbound inquiry arrives by voice call or WhatsApp. The Thread enters the audio stream, extracts fleet scale and timeline, crystallizes a qualified enterprise opportunity, and syncs directly with your CRM and rep calendar.",
+    href: "/solutions/sales-automation",
+    linkLabel: "Explore Sales Engine",
+    metrics: [
+      { label: "Response", value: "< 2 min" },
+      { label: "ICP fit", value: "96.4% Tier-1" },
+      { label: "CRM sync", value: "HubSpot · SF" },
+    ],
+    scene: <SalesScene />,
+    visualSide: "right",
+  },
+  {
+    number: "02",
+    category: "Customer Operations",
+    title: "Customer Support Desk",
+    body: "Panicked customer messages across WhatsApp, email, and live chat create noisy backlogs. The Thread sweeps through, isolates root causes, verifies identity against SAML SSO, and restores executive access with zero wait time.",
+    href: "/solutions/customer-support",
+    linkLabel: "Explore Support Desk",
+    metrics: [
+      { label: "Resolution", value: "1.4s live" },
+      { label: "Language", value: "Hinglish · multi" },
+      { label: "Verification", value: "Brakes-gated" },
+    ],
+    scene: <SupportScene />,
+    visualSide: "left",
+  },
+  {
+    number: "03",
+    category: "Finance & Ledger",
+    title: "Intelligent Document Parser",
+    body: "An invoice arrives as a PDF. The Thread separates the three layers of truth — header, line items, totals — and issues an embossed 3-way match token that your accounts payable team can verify in one glance.",
+    href: "/solutions/document-processing",
+    linkLabel: "Explore Document Parser",
+    metrics: [
+      { label: "Accuracy", value: "99.4%" },
+      { label: "Layers", value: "Header · items · total" },
+      { label: "Tokens", value: "3-way match" },
+    ],
+    scene: <DocumentScene />,
+    visualSide: "full",
+  },
+  {
+    number: "04",
+    category: "Organizational Memory",
+    title: "Internal Knowledge Assistant",
+    body: "Instead of searching across 4,200 scattered documents in Notion, SharePoint, Google Drive, and PDFs, your team asks in plain language. A query pulse awakens only the relevant policy nodes and presents one calm, citation-verified answer.",
+    href: "/solutions/internal-knowledge",
+    linkLabel: "Explore Knowledge Assistant",
+    metrics: [
+      { label: "Memory index", value: "4,200+ docs" },
+      { label: "Query speed", value: "14 ms latency" },
+      { label: "Governance", value: "RBAC gated" },
+    ],
+    scene: <KnowledgeScene />,
+    visualSide: "right",
+  },
+  {
+    number: "05",
+    category: "Telephony & Messaging",
+    title: "Voice & WhatsApp Receptionist",
+    body: "Two separate streams — a live phone call and a WhatsApp thread — converge into one customer truth. The Thread keeps the voice channel and the message channel in lockstep, with full context handoff to a human when needed.",
+    href: "/solutions/voice-whatsapp",
+    linkLabel: "Explore Voice & WhatsApp",
+    metrics: [
+      { label: "Channels", value: "Voice + WhatsApp" },
+      { label: "Truth core", value: "Single record" },
+      { label: "Handoff", value: "Context-rich" },
+    ],
+    scene: <VoiceWhatsAppScene />,
+    visualSide: "full",
+  },
+];
+
+function ChapterBlock({ chapter }: { chapter: Chapter }) {
+  const narrative = (
+    <div className="space-y-6">
+      <div className="flex items-baseline gap-4">
+        <span className="font-mono text-xs font-medium tracking-[0.18em] text-mark uppercase">
+          {chapter.number}
+        </span>
+        <span className="font-mono text-xs tracking-[0.18em] text-deepink/60 uppercase">
+          {chapter.category}
+        </span>
+      </div>
+      <h3 className="text-3xl font-normal leading-[1.05] tracking-tight text-deepink sm:text-4xl">
+        {chapter.title}
+      </h3>
+      <p className="max-w-md text-base leading-relaxed text-deepink/75 sm:text-lg">
+        {chapter.body}
+      </p>
+      <dl className="grid grid-cols-3 gap-x-4 border-y border-rule-hair py-5 font-mono text-xs">
+        {chapter.metrics.map((m) => (
+          <div key={m.label}>
+            <dt className="text-[10px] tracking-[0.18em] text-deepink/50 uppercase">
+              {m.label}
+            </dt>
+            <dd className="mt-1.5 text-sm font-medium text-deepink">{m.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <Link
+        href={chapter.href}
+        className="group inline-flex items-center gap-2 border-b border-mark pb-1 font-mono text-xs font-medium tracking-[0.16em] text-mark uppercase transition-colors duration-200 hover:text-deepink hover:border-deepink cursor-pointer"
+      >
+        <span>{chapter.linkLabel}</span>
+        <span aria-hidden="true">→</span>
+      </Link>
+    </div>
+  );
+
+  if (chapter.visualSide === "full") {
+    return (
+      <div className="space-y-10">
+        {narrative}
+        <div className="border border-rule-hair bg-cream p-3">
+          {chapter.scene}
+        </div>
+      </div>
+    );
+  }
+
+  const visual = (
+    <div className="border border-rule-hair bg-cream p-3">{chapter.scene}</div>
+  );
+
+  return (
+    <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
+      {chapter.visualSide === "left" ? (
+        <>
+          <div className="lg:col-span-7">{visual}</div>
+          <div className="lg:col-span-5 lg:pt-12">{narrative}</div>
+        </>
+      ) : (
+        <>
+          <div className="lg:col-span-5 lg:pt-12">{narrative}</div>
+          <div className="lg:col-span-7">{visual}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function FeaturedAgentsShowcase() {
   return (
-    <section id="the-machine" className="relative z-10 border-y border-vaultAmber/15 bg-obsidian">
+    <section
+      id="the-machine"
+      className="relative z-10 border-y border-rule-hair bg-parchment"
+    >
       <div className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
-        {/* Section Manifesto */}
-        <FadeIn>
-          <div className="max-w-3xl space-y-4">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
-              The Workforce, Reimagined
-            </p>
-            <h2 className="text-[clamp(2.5rem,5.5vw,4.25rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
-              Work enters. Intelligence moves. Work comes back finished.
-            </h2>
-            <p className="max-w-xl text-base leading-relaxed tracking-wide text-charcoal/70 sm:text-lg">
-              You are not browsing a feature list. You are observing an intelligent enterprise operating system at work. Watch the Laxvish Thread enter messy real-world tasks, extract meaning, coordinate systems, verify decisions, and deliver finished commitments.
-            </p>
-          </div>
-        </FadeIn>
-
-        {/* 1. Genesis Stage: The Universe Coming Alive */}
-        <div className="mt-16 sm:mt-20">
-          <FadeIn>
-            <GenesisPrologue />
-          </FadeIn>
+        {/* Section manifesto — single column, not card grid */}
+        <div className="max-w-3xl space-y-5">
+          <p className="font-mono text-xs font-medium tracking-[0.2em] text-mark uppercase">
+            The Workforce, Reimagined
+          </p>
+          <h2 className="text-[clamp(2.5rem,5.5vw,4.25rem)] font-normal leading-[1.05] tracking-tight text-deepink">
+            Work enters. Intelligence moves. Work comes back finished.
+          </h2>
+          <p className="max-w-2xl text-base leading-relaxed text-deepink/75 sm:text-lg">
+            You are not browsing a feature list. You are observing an
+            intelligent enterprise operating system at work. Watch the Laxvish
+            Thread enter messy real-world tasks, extract meaning, coordinate
+            systems, verify decisions, and deliver finished commitments.
+          </p>
         </div>
 
-        {/* 2. Five Flagship Cinematic Chapters with Alternating Compositions */}
-        <div className="mt-32 space-y-36">
-          {/* Chapter 01: Sales & Lead Engine (Text Left, Animation Right) */}
-          <div className="relative">
-            <FadeIn>
-              <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-                {/* Left: Narrative Column */}
-                <div className="space-y-6 lg:col-span-5">
-                  <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
-                    <span className="font-bold text-vaultAmber">01</span>
-                    <span>/</span>
-                    <span className="uppercase tracking-wider">REVENUE & GROWTH</span>
-                  </div>
-
-                  <h3 className="text-3xl font-normal tracking-tight text-charcoal sm:text-4xl">
-                    Sales & Lead Engine
-                  </h3>
-
-                  <p className="font-serif text-lg italic text-charcoal/80">
-                    &ldquo;Conversations quietly become enterprise opportunities.&rdquo;
-                  </p>
-
-                  <p className="text-sm leading-relaxed text-charcoal/70 sm:text-base">
-                    When an inbound inquiry arrives by voice call or WhatsApp, the Thread enters the audio stream. It extracts fleet scale, timeline, and budget parameters, crystallizes a qualified enterprise opportunity, and syncs directly with your CRM and rep calendar.
-                  </p>
-
-                  {/* Key Metrics */}
-                  <div className="grid grid-cols-3 gap-3 border-y border-vaultAmber/15 py-4 font-mono text-xs">
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">Response</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">&lt; 2 mins</span>
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">ICP Fit</span>
-                      <span className="font-bold text-vaultAmber mt-0.5 block">96.4% Tier-1</span>
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">CRM Sync</span>
-                      <span className="font-bold text-neonCyan mt-0.5 block">HubSpot / SF</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Link
-                      href="/solutions/sales-automation"
-                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
-                    >
-                      <span>Explore Sales Engine specification</span>
-                      <span>→</span>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Right: Cinematic Visual */}
-                <div className="lg:col-span-7">
-                  <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
-                    <SalesScene />
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Chapter 02: Customer Support Desk (Animation Left, Text Right) */}
-          <div className="relative">
-            <FadeIn>
-              <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-                {/* Left: Cinematic Visual */}
-                <div className="lg:col-span-7 lg:order-1 order-2">
-                  <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
-                    <SupportScene />
-                  </div>
-                </div>
-
-                {/* Right: Narrative Column */}
-                <div className="space-y-6 lg:col-span-5 lg:order-2 order-1">
-                  <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
-                    <span className="font-bold text-vaultAmber">02</span>
-                    <span>/</span>
-                    <span className="uppercase tracking-wider">CUSTOMER OPERATIONS</span>
-                  </div>
-
-                  <h3 className="text-3xl font-normal tracking-tight text-charcoal sm:text-4xl">
-                    Customer Support Desk
-                  </h3>
-
-                  <p className="font-serif text-lg italic text-charcoal/80">
-                    &ldquo;Chaos becomes clarity in seconds.&rdquo;
-                  </p>
-
-                  <p className="text-sm leading-relaxed text-charcoal/70 sm:text-base">
-                    Panicked customer messages across WhatsApp, email, and live chat create noisy backlogs. The Thread sweeps through the tickets, isolates root causes, verifies identity against SAML SSO, and restores executive access with zero wait time.
-                  </p>
-
-                  {/* Key Metrics */}
-                  <div className="grid grid-cols-3 gap-3 border-y border-vaultAmber/15 py-4 font-mono text-xs">
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">Resolution</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">1.4s Live</span>
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">Language</span>
-                      <span className="font-bold text-vaultAmber mt-0.5 block">Hinglish / Multi</span>
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">Verification</span>
-                      <span className="font-bold text-neonCyan mt-0.5 block">Brakes Gated</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Link
-                      href="/solutions/customer-support"
-                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
-                    >
-                      <span>Explore Support Desk specification</span>
-                      <span>→</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Chapter 03: Document Intelligence (Full-Width Immersive Stage) */}
-          <div className="relative">
-            <FadeIn>
-              <div className="space-y-8">
-                <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-                  <div className="max-w-2xl space-y-2">
-                    <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
-                      <span className="font-bold text-vaultAmber">03</span>
-                      <span>/</span>
-                      <span className="uppercase tracking-wider">FINANCE & LEDGER</span>
-                    </div>
-                    <h3 className="text-3xl font-normal tracking-tight text-charcoal sm:text-4xl">
-                      Intelligent Document Parser
-                    </h3>
-                    <p className="font-serif text-lg italic text-charcoal/80">
-                      &ldquo;Animate understanding, not just optical character recognition.&rdquo;
-                    </p>
-                  </div>
-
-                  <Link
-                    href="/solutions/document-processing"
-                    className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
-                  >
-                    <span>Explore Document Parser specification</span>
-                    <span>→</span>
-                  </Link>
-                </div>
-
-                {/* Full Width Cinematic Container */}
-                <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
-                  <DocumentScene />
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Chapter 04: Internal Knowledge (Expansive Memory Field) */}
-          <div className="relative">
-            <FadeIn>
-              <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-                {/* Left: Narrative Column */}
-                <div className="space-y-6 lg:col-span-5">
-                  <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
-                    <span className="font-bold text-vaultAmber">04</span>
-                    <span>/</span>
-                    <span className="uppercase tracking-wider">ORGANIZATIONAL MEMORY</span>
-                  </div>
-
-                  <h3 className="text-3xl font-normal tracking-tight text-charcoal sm:text-4xl">
-                    Internal Knowledge Assistant
-                  </h3>
-
-                  <p className="font-serif text-lg italic text-charcoal/80">
-                    &ldquo;The company remembers.&rdquo;
-                  </p>
-
-                  <p className="text-sm leading-relaxed text-charcoal/70 sm:text-base">
-                    Instead of searching across 4,200 scattered documents in Notion, SharePoint, Google Drive, and PDFs, your team asks in plain language. A radiant query pulse awakens only the relevant policy nodes and presents one calm, citation-verified answer.
-                  </p>
-
-                  {/* Key Metrics */}
-                  <div className="grid grid-cols-3 gap-3 border-y border-vaultAmber/15 py-4 font-mono text-xs">
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">Memory Index</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">4,200+ Docs</span>
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">Query Speed</span>
-                      <span className="font-bold text-vaultAmber mt-0.5 block">14ms Latency</span>
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-charcoal/40 uppercase">Governance</span>
-                      <span className="font-bold text-neonCyan mt-0.5 block">RBAC Gated</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Link
-                      href="/solutions/internal-knowledge"
-                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
-                    >
-                      <span>Explore Knowledge Assistant specification</span>
-                      <span>→</span>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Right: Expansive Memory Visual */}
-                <div className="lg:col-span-7">
-                  <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
-                    <KnowledgeScene />
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Chapter 05: Voice & WhatsApp Convergence (Symmetrical Sided Stage) */}
-          <div className="relative">
-            <FadeIn>
-              <div className="space-y-8">
-                <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-                  <div className="max-w-2xl space-y-2">
-                    <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
-                      <span className="font-bold text-vaultAmber">05</span>
-                      <span>/</span>
-                      <span className="uppercase tracking-wider">TELEPHONY & MESSAGING</span>
-                    </div>
-                    <h3 className="text-3xl font-normal tracking-tight text-charcoal sm:text-4xl">
-                      CallMe Voice & WhatsApp Receptionist
-                    </h3>
-                    <p className="font-serif text-lg italic text-charcoal/80">
-                      &ldquo;Two separate streams becoming one customer truth.&rdquo;
-                    </p>
-                  </div>
-
-                  <Link
-                    href="/solutions/voice-whatsapp"
-                    className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
-                  >
-                    <span>Explore Voice & WhatsApp specification</span>
-                    <span>→</span>
-                  </Link>
-                </div>
-
-                {/* Symmetrical Dual-Stream Container */}
-                <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
-                  <VoiceWhatsAppScene />
-                </div>
-              </div>
-            </FadeIn>
-          </div>
+        {/* 1. Genesis Prologue — the opening scene */}
+        <div className="mt-20">
+          <GenesisPrologue />
         </div>
 
-        {/* 3. The Living Extended Intelligence Network Stage */}
+        {/* 2. Five Flagship Chapters — single column, varied visual positions */}
+        <div className="mt-32 space-y-32">
+          {chapters.map((chapter) => (
+            <EditorialReveal key={chapter.number}>
+              <ChapterBlock chapter={chapter} />
+            </EditorialReveal>
+          ))}
+        </div>
+
+        {/* 3. The Living Network — the extended field */}
         <div className="mt-36">
-          <FadeIn>
+          <EditorialReveal>
             <LivingNetworkStage />
-          </FadeIn>
+          </EditorialReveal>
         </div>
       </div>
     </section>

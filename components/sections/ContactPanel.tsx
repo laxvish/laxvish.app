@@ -2,9 +2,9 @@
 
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { motion } from "framer-motion";
-import { ExecutionPhase, ValidationPhase } from "@/lib/motion-system";
 import type { LeadCaptureAction } from "@/lib/enterpriseVault";
-import { SystemPanel } from "@/components/ui/SystemPanel";
+import { PaperPanel } from "@/components/ui/SystemPanel";
+import { EditorialReveal } from "@/components/ui/FadeIn";
 
 interface ContactFormData {
   name: string;
@@ -57,9 +57,7 @@ export function ContactPanel() {
     try {
       const response = await fetch("/api/lead-capture", {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
           name: formData.name,
           workEmail: formData.workEmail,
@@ -80,10 +78,7 @@ export function ContactPanel() {
       if (!response.ok || !payload.ok) {
         const message =
           payload.errors?.join(" ") || payload.message || "Submission failed.";
-        setFeedback({
-          status: "error",
-          message,
-        });
+        setFeedback({ status: "error", message });
         setIsSubmitting(false);
         return;
       }
@@ -110,117 +105,139 @@ export function ContactPanel() {
   return (
     <section
       id="contact"
-      className="mx-auto w-full max-w-4xl px-6 py-24 sm:px-12 lg:py-32"
+      className="mx-auto w-full max-w-5xl px-6 py-24 sm:px-12 lg:py-32"
     >
-      <SystemPanel className="border border-vaultAmber/25 bg-voidSurface p-8 sm:p-12 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)]">
-        <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
-          Let&rsquo;s talk about your work.
-        </h2>
-        <p className="mt-4 text-base text-charcoal/70 sm:text-lg">
-          Tell us what you want to automate. We&rsquo;ll show you what&rsquo;s possible — honestly.
-        </p>
-
-        <div className="mt-10 grid gap-4 sm:grid-cols-2">
-          <motion.button
-            type="button"
-            onClick={() => setAction("pilot")}
-            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
-            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className={`rounded-2xl border p-5 text-left text-sm font-medium tracking-wide transition-all cursor-pointer ${
-              action === "pilot"
-                ? "border-vaultAmber bg-white/10 text-charcoal shadow-lg"
-                : "border-vaultAmber/20 bg-voidSurface/60 text-charcoal/70 hover:border-vaultAmber/50"
-            }`}
-          >
-            <span className="block font-bold text-neonCyan">I want to try it on my work</span>
-            <span className="mt-1 block text-xs font-normal text-charcoal/60">
-              A 4-week pilot with clear success criteria
-            </span>
-          </motion.button>
-          <motion.button
-            type="button"
-            onClick={() => setAction("blueprint")}
-            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
-            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className={`rounded-2xl border p-5 text-left text-sm font-medium tracking-wide transition-all cursor-pointer ${
-              action === "blueprint"
-                ? "border-vaultAmber bg-white/10 text-charcoal shadow-lg"
-                : "border-vaultAmber/20 bg-voidSurface/60 text-charcoal/70 hover:border-vaultAmber/50"
-            }`}
-          >
-            <span className="block font-bold text-neonCyan">Show me how it would fit</span>
-            <span className="mt-1 block text-xs font-normal text-charcoal/60">
-              An architecture review for your business
-            </span>
-          </motion.button>
-        </div>
-
-        <form className="mt-8 grid gap-6 sm:grid-cols-2" onSubmit={onSubmit}>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={updateField("name")}
-            placeholder="Name"
-            required
-            className="border-b border-vaultAmber/30 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
-          />
-          <input
-            type="email"
-            value={formData.workEmail}
-            onChange={updateField("workEmail")}
-            placeholder="Work Email"
-            required
-            className="border-b border-vaultAmber/30 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
-          />
-          <input
-            type="text"
-            value={formData.company}
-            onChange={updateField("company")}
-            placeholder="Company"
-            required
-            className="border-b border-vaultAmber/30 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
-          />
-          <input
-            type="text"
-            value={formData.website}
-            onChange={updateField("website")}
-            tabIndex={-1}
-            autoComplete="off"
-            aria-hidden="true"
-            className="hidden"
-          />
-          <textarea
-            value={formData.useCase}
-            onChange={updateField("useCase")}
-            placeholder="What work do you want to automate?"
-            required
-            rows={4}
-            className="border-b border-vaultAmber/30 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none sm:col-span-2"
-          />
-          <motion.button
-            type="submit"
-            disabled={isSubmitting}
-            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
-            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className="mt-6 inline-flex items-center justify-center bg-charcoal px-8 py-4 text-sm font-semibold tracking-wide text-obsidian transition-colors duration-300 disabled:opacity-50 hover:bg-vaultAmber sm:col-span-2 sm:w-auto sm:justify-start rounded-full cursor-pointer"
-          >
-            {isSubmitting ? "Capturing..." : actionLabels[action]}
-          </motion.button>
-        </form>
-
-        {feedback.status !== "idle" ? (
-          <p
-            className={`mt-6 text-sm font-medium tracking-wide ${
-              feedback.status === "success"
-                ? "text-vaultAmber"
-                : "text-red-400"
-            }`}
-          >
-            {feedback.message}
-            {feedback.referenceId ? ` Reference: ${feedback.referenceId}` : ""}
+      <EditorialReveal>
+        <PaperPanel className="border border-rule-hair bg-cream p-8 sm:p-14">
+          <p className="font-mono text-xs font-medium tracking-[0.2em] text-mark uppercase">
+            Contact
           </p>
-        ) : null}
-      </SystemPanel>
+          <h2 className="mt-4 text-4xl font-normal leading-[1.05] tracking-tight text-deepink sm:text-5xl">
+            Let&rsquo;s talk about your work.
+          </h2>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-deepink/75 sm:text-lg">
+            Tell us what you want to automate. We&rsquo;ll show you what&rsquo;s
+            possible — honestly, in plain language.
+          </p>
+
+          <fieldset className="mt-12">
+            <legend className="font-mono text-xs font-medium tracking-[0.18em] text-deepink/60 uppercase">
+              What are you here for?
+            </legend>
+            <div className="mt-4 grid gap-px bg-rule-hair sm:grid-cols-2">
+              <motion.button
+                type="button"
+                onClick={() => setAction("pilot")}
+                whileTap={{ scale: 0.985 }}
+                className={`cursor-pointer text-left p-6 transition-colors duration-200 ${ action === "pilot" ? "bg-mist text-deepink" : "bg-cream text-deepink/75 hover:bg-parchment" }`}
+              >
+                <span className="block font-mono text-xs tracking-[0.18em] text-mark uppercase">
+                  Pilot
+                </span>
+                <span className="mt-3 block text-xl font-normal leading-tight tracking-tight">
+                  I want to try it on my work
+                </span>
+                <span className="mt-2 block text-sm text-deepink/65">
+                  A 4-week pilot with clear success criteria.
+                </span>
+              </motion.button>
+              <motion.button
+                type="button"
+                onClick={() => setAction("blueprint")}
+                whileTap={{ scale: 0.985 }}
+                className={`cursor-pointer text-left p-6 transition-colors duration-200 ${ action === "blueprint" ? "bg-mist text-deepink" : "bg-cream text-deepink/75 hover:bg-parchment" }`}
+              >
+                <span className="block font-mono text-xs tracking-[0.18em] text-mark uppercase">
+                  Blueprint
+                </span>
+                <span className="mt-3 block text-xl font-normal leading-tight tracking-tight">
+                  Show me how it would fit
+                </span>
+                <span className="mt-2 block text-sm text-deepink/65">
+                  An architecture review for your business.
+                </span>
+              </motion.button>
+            </div>
+          </fieldset>
+
+          <form className="mt-12 grid gap-x-8 gap-y-8 sm:grid-cols-2" onSubmit={onSubmit}>
+            <label className="block">
+              <span className="block font-mono text-xs tracking-[0.18em] text-deepink/60 uppercase">
+                Name
+              </span>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={updateField("name")}
+                required
+                className="mt-2 w-full border-b border-rule-hair-ink bg-transparent py-2 text-base text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
+              />
+            </label>
+            <label className="block">
+              <span className="block font-mono text-xs tracking-[0.18em] text-deepink/60 uppercase">
+                Work email
+              </span>
+              <input
+                type="email"
+                value={formData.workEmail}
+                onChange={updateField("workEmail")}
+                required
+                className="mt-2 w-full border-b border-rule-hair-ink bg-transparent py-2 text-base text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
+              />
+            </label>
+            <label className="block">
+              <span className="block font-mono text-xs tracking-[0.18em] text-deepink/60 uppercase">
+                Company
+              </span>
+              <input
+                type="text"
+                value={formData.company}
+                onChange={updateField("company")}
+                required
+                className="mt-2 w-full border-b border-rule-hair-ink bg-transparent py-2 text-base text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
+              />
+            </label>
+            <input
+              type="text"
+              value={formData.website}
+              onChange={updateField("website")}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="hidden"
+            />
+            <label className="block sm:col-span-2">
+              <span className="block font-mono text-xs tracking-[0.18em] text-deepink/60 uppercase">
+                What work do you want to automate?
+              </span>
+              <textarea
+                value={formData.useCase}
+                onChange={updateField("useCase")}
+                required
+                rows={4}
+                className="mt-2 w-full border-b border-rule-hair-ink bg-transparent py-2 text-base text-deepink outline-none transition-colors duration-200 focus:border-mark placeholder:text-deepink/30"
+              />
+            </label>
+            <motion.button
+              type="submit"
+              disabled={isSubmitting}
+              whileTap={{ scale: 0.985 }}
+              className="mt-2 inline-flex w-fit items-center justify-center bg-mark px-7 py-3 text-sm font-medium tracking-wide text-cream transition-colors duration-200 hover:bg-deepink disabled:opacity-50 sm:col-span-2 cursor-pointer"
+            >
+              {isSubmitting ? "Capturing..." : actionLabels[action]}
+            </motion.button>
+          </form>
+
+          {feedback.status !== "idle" ? (
+            <p
+              className={`mt-6 font-mono text-sm tracking-wide ${ feedback.status === "success" ? "text-mark" : "text-red-700" }`}
+            >
+              {feedback.message}
+              {feedback.referenceId ? ` Reference: ${feedback.referenceId}` : ""}
+            </p>
+          ) : null}
+        </PaperPanel>
+      </EditorialReveal>
     </section>
   );
 }

@@ -1,10 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
-import { DecisionPhase } from "@/lib/motion-system";
+import { type ReactNode } from "react";
 
-interface FadeInProps {
+/**
+ * EditorialReveal — the binding motion primitive.
+ *
+ * Replaces the LLM fade-up-on-scroll default (F1, F3, F6 in AGENTS.md §4).
+ * Allowed motion: a single slow opacity fade (700–1000ms) and a small,
+ * considered vertical shift of ≤ 8px. No scale. No blur entrance. No
+ * mechanical stagger.
+ */
+interface EditorialRevealProps {
   children: ReactNode;
   delay?: number;
   duration?: number;
@@ -13,48 +20,20 @@ interface FadeInProps {
   yOffset?: number;
 }
 
-const variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.96, filter: "blur(6px)" },
-  visible: (delay: number) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: {
-      duration: DecisionPhase.duration.system,
-      delay: delay + DecisionPhase.delay,
-      ease: DecisionPhase.ease,
-    },
-  }),
-};
-
-export function FadeIn({
+export function EditorialReveal({
   children,
   delay = 0,
-  duration = DecisionPhase.duration.system,
+  duration = 0.8,
   once = true,
   className = "",
-  yOffset = 30,
-}: FadeInProps) {
+  yOffset = 8,
+}: EditorialRevealProps) {
   return (
     <motion.div
-      initial="hidden"
-      whileInView="visible"
+      initial={{ opacity: 0, y: yOffset }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once, margin: "-40px" }}
-      variants={{
-        hidden: { opacity: 0, y: yOffset, scale: 0.96, filter: "blur(6px)" },
-        visible: {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          filter: "blur(0px)",
-          transition: {
-            duration,
-            delay: delay + DecisionPhase.delay,
-            ease: DecisionPhase.ease,
-          },
-        },
-      }}
+      transition={{ duration, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
@@ -62,19 +41,20 @@ export function FadeIn({
   );
 }
 
-interface FadeInStaggerProps {
-  children: ReactNode;
-  className?: string;
-  staggerDelay?: number;
-  once?: boolean;
-}
+// Backward-compatible aliases for code that still imports FadeIn / FadeInStagger.
+export const FadeIn = EditorialReveal;
 
 export function FadeInStagger({
   children,
   className = "",
-  staggerDelay = 0.1,
+  staggerDelay = 0.08,
   once = true,
-}: FadeInStaggerProps) {
+}: {
+  children: ReactNode;
+  className?: string;
+  staggerDelay?: number;
+  once?: boolean;
+}) {
   return (
     <motion.div
       initial="hidden"
@@ -84,10 +64,7 @@ export function FadeInStagger({
         hidden: { opacity: 0 },
         visible: {
           opacity: 1,
-          transition: {
-            staggerChildren: staggerDelay,
-            delayChildren: DecisionPhase.delay,
-          },
+          transition: { staggerChildren: staggerDelay },
         },
       }}
       className={className}
@@ -96,4 +73,3 @@ export function FadeInStagger({
     </motion.div>
   );
 }
-

@@ -2,25 +2,33 @@
 @import "tailwindcss";
 
 :root {
-  --color-obsidian: #000000;
-  --color-vault-amber: #B6B09F;
-  --color-charcoal: #EAE4D5;
-  --color-neon-cyan: #F2F2F2;
-  --color-gold-thread: #C5A880;
+  /* Binding palette — see AGENTS.md §1 */
+  --color-cream: #F2EAE0;
+  --color-mist: #B4D3D9;
+  --color-ink: #BDA6CE;
+  --color-mark: #9B8EC7;
+  --color-deepink: #1A1820;
+  --color-parchment: #EDE3D2;
+}
+
+html, body {
+  background-color: #F2EAE0;
+  color: #1A1820;
 }
 
 body {
-  @apply bg-obsidian text-charcoal antialiased;
-  background-color: #000000;
-  color: #EAE4D5;
+  @apply antialiased;
   font-family: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
   overflow-x: hidden;
+  background-color: #F2EAE0;
+  color: #1A1820;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
   font-weight: 400;
   letter-spacing: -0.015em;
+  color: #1A1820;
 }
 
 .font-sans {
@@ -28,53 +36,77 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::selection {
-  background-color: #B6B09F;
-  color: #000000;
+  background-color: #9B8EC7;
+  color: #F2EAE0;
 }
 
-.hero-void {
-  background: #000000;
+/* Page base — editorial paper */
+.paper {
+  background-color: #F2EAE0;
 }
 
-.hero-void-mesh {
-  background-image: radial-gradient(rgba(182, 176, 159, 0.12) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.6;
+.paper-mist {
+  background-color: #B4D3D9;
 }
 
-/* Cinematic film grain & letterbox subtle styling */
-.cinematic-vignette {
-  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+.paper-parchment {
+  background-color: #EDE3D2;
 }
 
-/* Custom minimal dark scrollbar */
+/* Hairline rule — for editorial print feel */
+.rule-hair {
+  border-color: rgba(157, 142, 199, 0.22);
+}
+
+.rule-hair-ink {
+  border-color: rgba(189, 166, 206, 0.28);
+}
+
+/* The Thread — a single mark-colored hairline SVG element.
+   Used in flagship scenes to trace the protagonist filament. */
+.thread-mark {
+  stroke: #9B8EC7;
+  fill: none;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+}
+
+/* Subtle parchment grain via SVG noise (printed-paper feel) */
+.paper-grain {
+  background-image: radial-gradient(rgba(26, 24, 32, 0.045) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Quiet section divider — used between chapters */
+.chapter-rule {
+  height: 1px;
+  background: rgba(157, 142, 199, 0.22);
+}
+
+/* Custom minimal scrollbar — neutral paper-on-paper */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: #F2EAE0;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(182, 176, 159, 0.25);
+  background: rgba(157, 142, 199, 0.32);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(182, 176, 159, 0.45);
+  background: rgba(157, 142, 199, 0.55);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-void-mesh {
+  .paper-grain {
     animation: none;
   }
 }
 
 @media (forced-colors: active) {
-  .hero-void {
+  .paper {
     background: Canvas;
-  }
-
-  .hero-void-mesh {
-    background: none;
   }
 }

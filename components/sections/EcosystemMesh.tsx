@@ -35,7 +35,7 @@ const meshCards: MeshCard[] = [
 export function EcosystemMesh() {
   return (
     <section className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
         The Living Intelligence Mesh
       </p>
       <h2 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
@@ -50,7 +50,7 @@ export function EcosystemMesh() {
         {meshCards.map((card) => (
           <article
             key={card.domain}
-            className="rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/40 hover:bg-white/5"
+            className="rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/40 hover:bg-mist/30"
           >
             <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber/80">
               {card.domain}

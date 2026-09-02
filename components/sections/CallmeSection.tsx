@@ -34,7 +34,7 @@ export function CallmeSection() {
     <section className="mx-auto w-full max-w-[90rem] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
       <div className="max-w-2xl">
         <FadeIn>
-          <p className="font-mono text-xs font-semibold tracking-[0.25em] text-vaultAmber uppercase">
+          <p className="font-mono text-xs font-semibold tracking-[0.18em] text-vaultAmber uppercase">
             CallMe — Voice & WhatsApp
           </p>
         </FadeIn>
