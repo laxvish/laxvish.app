@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AIFabric } from "@/components/ui/AIFabric";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { MagneticButton } from "@/components/ui/MagneticButton";
-import { SignatureMachine } from "@/components/ui/SignatureMachine";
+import { AnsweringMoon } from "@/components/ui/AnsweringMoon";
 import {
   BOOK_NOW_BUTTON_CLASS,
   SECONDARY_HERO_CTA_CLASS,
@@ -14,9 +14,9 @@ import {
 /**
  * Hero — Control Surface establishing shot.
  *
- * Asymmetric split: copy left, the signature machine cross-section right.
- * The headline is capped at two lines and the section fits the first
- * viewport. The machine carries all motion; the copy holds still.
+ * Asymmetric split: copy left, the Answering Moon right, over the restored
+ * Intelligence Field. The headline is capped at two lines and the section
+ * fits the first viewport. The moon carries the motion; the copy holds still.
  */
 export function Hero() {
   const bookDemoUrl = getBookDemoUrl();
@@ -89,9 +89,9 @@ export function Hero() {
           </FadeIn>
         </div>
 
-        {/* ——— Machine column (carries the motion) ——— */}
+        {/* ——— The Answering Moon (carries the motion) ——— */}
         <FadeIn delay={0.25} yOffset={24} className="hidden lg:block">
-          <SignatureMachine />
+          <AnsweringMoon />
         </FadeIn>
       </div>
     </section>
