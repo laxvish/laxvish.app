@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { SECONDARY_HERO_CTA_CLASS } from "@/lib/site-navigation";
-import { SystemPanel } from "@/components/ui/SystemPanel";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 
 interface CallmeFeature {
@@ -15,71 +14,81 @@ const features: CallmeFeature[] = [
   {
     title: "Realtime Voice AI",
     description:
-      "Natural speech recognition and generation for fluid, human-like conversations. An enterprise AI voice agent that callers interact with naturally.",
+      "Natural speech recognition and generation for fluid, human-like conversations.",
   },
   {
     title: "Enterprise Controls",
     description:
-      "Call recording, compliance logging, escalation paths, and policy enforcement. AI voice automation with governance built into every conversation.",
+      "Call recording, compliance logging, escalation paths, and policy enforcement.",
   },
   {
     title: "Workflow Integration",
     description:
-      "Trigger actions, update records, and hand off to human agents seamlessly. A conversational AI system connected to your existing workflows.",
+      "Trigger actions, update records, and hand off to human agents inside your workflows.",
   },
 ];
 
+/**
+ * CallMe — split composition (copy + spec list left, machine detail right).
+ *
+ * Deliberately NOT a second three-column card row: the numbered spec list
+ * keeps the control-surface grammar and breaks the repeated layout family.
+ */
 export function CallmeSection() {
   return (
-    <section className="mx-auto w-full max-w-[90rem] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
-      <div className="max-w-2xl">
-        <FadeIn>
-          <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
-            CallMe — Enterprise AI Voice Agent
-          </p>
-        </FadeIn>
-        <FadeIn delay={0.1}>
-          <h2 className="mt-6 text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
-            Voice AI for enterprise conversations.
-          </h2>
-        </FadeIn>
-        <FadeIn delay={0.2}>
-          <p className="mt-6 text-lg leading-relaxed text-neonCyan">
-            Deploy an enterprise AI voice agent that handles calls with natural conversation,
-            compliance-grade controls, and seamless workflow integration.
-          </p>
-        </FadeIn>
-      </div>
-
-      <div className="mt-20 grid gap-x-8 gap-y-16 md:grid-cols-3 group/grid">
-        {features.map((feature, i) => (
-          <FadeIn key={feature.title} delay={0.1 * (i + 1)}>
-            <SystemPanel
-              as="article"
-              className="group flex h-full flex-col border-t border-charcoal pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
-            >
-              <h3 className="text-2xl font-normal tracking-tight text-charcoal">
-                {feature.title}
-              </h3>
-              <p className="mt-6 text-base leading-relaxed text-neonCyan">
-                {feature.description}
-              </p>
-            </SystemPanel>
+    <section className="relative z-10 border-y border-charcoal/10 bg-vaultAmber">
+      <div className="mx-auto grid w-full max-w-[1440px] gap-16 px-6 py-24 sm:px-12 lg:grid-cols-2 lg:px-16 lg:py-32">
+        <div>
+          <FadeIn>
+            <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+              CallMe — Enterprise AI Voice Agent
+            </p>
           </FadeIn>
-        ))}
-      </div>
-
-      <FadeIn delay={0.5}>
-        <div className="mt-16 flex">
-          <MagneticButton
-            as={Link}
-            href="/callme"
-            className={SECONDARY_HERO_CTA_CLASS}
-          >
-            Explore CallMe
-          </MagneticButton>
+          <FadeIn delay={0.1}>
+            <h2 className="mt-6 text-[clamp(2rem,3.5vw,3rem)] font-normal leading-[1.06] tracking-[-0.02em] text-charcoal">
+              Voice AI for enterprise conversations.
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-charcoal/70 sm:text-lg">
+              Deploy an enterprise AI voice agent that handles calls with natural
+              conversation, compliance-grade controls, and seamless workflow
+              integration.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.3}>
+            <div className="mt-10">
+              <MagneticButton as={Link} href="/callme" className={SECONDARY_HERO_CTA_CLASS}>
+                Explore CallMe
+              </MagneticButton>
+            </div>
+          </FadeIn>
         </div>
-      </FadeIn>
+
+        {/* Numbered spec list — hairline rows, no cards */}
+        <FadeIn delay={0.2}>
+          <ul className="border-t border-charcoal">
+            {features.map((feature, i) => (
+              <li
+                key={feature.title}
+                className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-charcoal/20 py-7"
+              >
+                <span className="text-sm font-medium tracking-[0.2em] text-neonCyan">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="text-xl font-normal tracking-tight text-charcoal">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-2 max-w-md text-base leading-relaxed text-charcoal/70">
+                    {feature.description}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </FadeIn>
+      </div>
     </section>
   );
 }
