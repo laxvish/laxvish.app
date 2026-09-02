@@ -62,9 +62,9 @@ export function PillarsGrid() {
             <Link href={pillar.href} className="block h-full">
               <SystemPanel
                 as="article"
-                className="group flex h-full flex-col border-t border-charcoal pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
+                className="group flex h-full flex-col border-t border-vaultAmber/30 pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
               >
-                <p className="text-sm font-medium text-neonCyan">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
                   {pillar.benefit}
                 </p>
                 <h3 className="mt-3 text-2xl font-normal tracking-tight text-charcoal">
@@ -73,7 +73,7 @@ export function PillarsGrid() {
                 <p className="mt-6 text-base leading-relaxed tracking-wide text-charcoal/70">
                   {pillar.description}
                 </p>
-                <span className="mt-auto pt-8 text-sm font-medium tracking-wide text-charcoal underline underline-offset-4 decoration-charcoal/20 group-hover:decoration-charcoal transition-colors duration-300">
+                <span className="mt-auto pt-8 font-mono text-xs font-semibold tracking-widest uppercase text-vaultAmber underline underline-offset-4 decoration-vaultAmber/30 transition-colors duration-300">
                   Learn more
                 </span>
               </SystemPanel>
@@ -92,7 +92,7 @@ export function PillarsGrid() {
           the work safe.{" "}
           <Link
             href="/workers"
-            className="font-medium text-neonCyan underline underline-offset-4 hover:text-charcoal"
+            className="font-mono text-xs font-semibold uppercase tracking-widest text-vaultAmber underline underline-offset-4 hover:text-charcoal"
           >
             See how they fit together
           </Link>

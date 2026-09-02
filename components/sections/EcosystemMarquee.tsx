@@ -16,7 +16,7 @@ function MarqueeLane({ items, reverse = false }: LaneProps) {
         {loopItems.map((item, index) => (
           <span
             key={`${item}-${index}`}
-            className="rounded-full border border-neonCyan/45 bg-charcoal/30 px-4 py-2 text-xs text-charcoal/80 sm:px-5 sm:text-sm"
+            className="rounded-full border border-vaultAmber/30 bg-voidSurface px-4 py-2 font-mono text-xs text-charcoal/80 sm:px-5 sm:text-sm"
           >
             {item}
           </span>
@@ -50,17 +50,20 @@ const laneB: string[] = [
 
 export function EcosystemMarquee() {
   return (
-    <section className="border-y border-charcoal/20 bg-[#F6F1F1]/25">
+    <section className="border-y border-vaultAmber/15 bg-obsidian">
       <div className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-        <h2 className="text-2xl font-bold text-charcoal [font-family:var(--font-space-grotesk)] sm:text-3xl lg:text-4xl">
+        <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+          Ecosystem Pathways
+        </p>
+        <h2 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
           Ecosystem Pathways, Flowing as One Neural Fabric
         </h2>
-        <p className="mt-4 max-w-2xl text-sm leading-6 text-charcoal/70 sm:text-base">
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-charcoal/70 sm:text-lg">
           Laxvish aligns enterprise systems, public rails, and verification loops
           into one continuously orchestrated signal network.
         </p>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-10 space-y-4">
           <MarqueeLane items={laneA} />
           <MarqueeLane items={laneB} reverse />
         </div>

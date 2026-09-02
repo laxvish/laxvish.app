@@ -26,34 +26,37 @@ export function VerificationPanel() {
   return (
     <section className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
       <div className="max-w-3xl">
-        <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
+        <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+          Operational Trust · Live Telemetry
+        </p>
+        <h2 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
           Operational Trust, Live.
         </h2>
-        <p className="mt-4 text-charcoal/70">
+        <p className="mt-4 max-w-xl text-base leading-relaxed text-charcoal/70">
           Verification isn&apos;t a sidecar. It runs as a continuous signal layer
           across every critical workflow.
         </p>
       </div>
 
-      <div className="mt-8 grid gap-5 md:grid-cols-3">
+      <div className="mt-12 grid gap-6 md:grid-cols-3">
         {signals.map((signal) => (
           <article
             key={signal.title}
-            className="rounded-xl border border-charcoal/20 bg-[#F6F1F1]/30 p-5 transition-transform duration-300 hover:-translate-y-0.5"
+            className="rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/50 hover:bg-white/5"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-charcoal">{signal.title}</h3>
+              <h3 className="text-base font-semibold text-charcoal">{signal.title}</h3>
               <span
-                className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${
+                className={`rounded-full border px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider ${
                   signal.accent === "cyan"
-                    ? "border-neonCyan/40 text-neonCyan"
-                    : "border-vaultAmber/40 text-vaultAmber"
+                    ? "border-vaultAmber/40 text-vaultAmber"
+                    : "border-[#C46B4E]/40 text-[#C46B4E]"
                 }`}
               >
                 Live
               </span>
             </div>
-            <p className="mt-4 text-xs leading-5 text-charcoal/70">{signal.metric}</p>
+            <p className="mt-4 font-mono text-xs leading-relaxed text-charcoal/70">{signal.metric}</p>
           </article>
         ))}
       </div>

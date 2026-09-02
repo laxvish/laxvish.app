@@ -14,15 +14,15 @@ export function PageHero({
 }: PageHeroProps) {
   return (
     <section className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col justify-center px-6 pt-32 pb-20 sm:px-12 sm:pt-40 lg:px-16">
-      <div className="max-w-3xl space-y-10 lg:pr-12">
+      <div className="max-w-3xl space-y-8 lg:pr-12">
         <FadeIn delay={0.1} yOffset={10}>
-          <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+          <p className="font-mono text-xs font-semibold tracking-[0.25em] text-vaultAmber uppercase">
             {eyebrow}
           </p>
         </FadeIn>
         
         <FadeIn delay={0.2} yOffset={20}>
-          <h1 className="text-[clamp(2.5rem,6vw,4rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+          <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
             {title}
           </h1>
         </FadeIn>

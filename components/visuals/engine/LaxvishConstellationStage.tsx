@@ -96,10 +96,10 @@ export function LaxvishConstellationStage({
                 key={ch.slug}
                 type="button"
                 onClick={() => setActiveSlug(ch.slug)}
-                className={`rounded-full px-4 py-2 font-mono text-xs transition-all duration-300 ${
+                className={`rounded-full border px-4 py-2 font-mono text-xs transition-all duration-300 cursor-pointer ${
                   isActive
-                    ? "bg-charcoal text-white shadow-md font-semibold"
-                    : "border border-charcoal/10 bg-white/80 text-charcoal/60 hover:border-charcoal/30 hover:text-charcoal"
+                    ? "border-vaultAmber bg-vaultAmber/15 text-vaultAmber font-semibold shadow-md"
+                    : "border-vaultAmber/20 bg-voidSurface text-charcoal/70 hover:border-vaultAmber/50 hover:text-vaultAmber"
                 }`}
               >
                 {ch.name}
@@ -110,7 +110,7 @@ export function LaxvishConstellationStage({
       )}
 
       {/* Cinematic Stage Wrapper with Double-Bezel Architecture */}
-      <div className="group relative rounded-[2.5rem] p-2 bg-charcoal/5 ring-1 ring-charcoal/10 shadow-2xl transition-all duration-700">
+      <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] transition-all duration-700">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeSlug}

@@ -16,13 +16,13 @@ export function UseCaseGrid() {
   return (
     <section
       id="what-we-automate"
-      className="relative z-10 border-y border-charcoal/10 bg-obsidian"
+      className="relative z-10 border-y border-vaultAmber/15 bg-obsidian"
     >
       <div className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
         {/* The Grand Creative Narrative */}
         <FadeIn>
           <div className="max-w-3xl space-y-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
               The Workforce, Reimagined
             </p>
             <h2 className="text-[clamp(2.5rem,6vw,4rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
@@ -39,7 +39,7 @@ export function UseCaseGrid() {
           <div className="mt-16">
             <div className="mb-6 flex flex-col justify-between gap-2 md:flex-row md:items-end">
               <div>
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
                   The Living System
                 </p>
                 <h3 className="text-xl font-normal tracking-tight text-charcoal sm:text-2xl">
@@ -59,7 +59,7 @@ export function UseCaseGrid() {
         <div className="mt-28">
           <FadeIn>
             <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
                 Flagship Deployments
               </p>
               <h3 className="mt-2 text-2xl font-normal tracking-tight text-charcoal sm:text-3xl">
@@ -68,21 +68,21 @@ export function UseCaseGrid() {
             </div>
           </FadeIn>
 
-          <FadeInStagger className="mt-12 grid gap-8 md:grid-cols-2">
+          <FadeInStagger className="mt-12 grid gap-6 md:grid-cols-2">
             {flagship.map((uc) => (
               <FadeIn key={uc.slug}>
                 <Link href={`/solutions/${uc.slug}`} className="block h-full">
-                  <SystemPanel className="group flex h-full flex-col border border-charcoal/15 bg-white p-8 transition-colors hover:border-neonCyan sm:p-10">
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+                  <SystemPanel className="group flex h-full flex-col rounded-2xl border border-vaultAmber/20 bg-voidSurface p-8 transition-all duration-500 hover:border-vaultAmber/50 hover:bg-white/5 sm:p-10">
+                    <div className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
                       {uc.category}
                     </div>
-                    <h4 className="mt-4 text-2xl font-normal tracking-tight text-charcoal group-hover:text-neonCyan sm:text-3xl">
+                    <h4 className="mt-4 text-2xl font-normal tracking-tight text-charcoal group-hover:text-vaultAmber sm:text-3xl transition-colors">
                       {uc.title}
                     </h4>
                     <p className="mt-6 text-base leading-relaxed text-charcoal/70 sm:text-lg">
                       {uc.oneLiner}
                     </p>
-                    <span className="mt-auto pt-8 text-sm font-medium tracking-wide text-charcoal underline underline-offset-4 decoration-charcoal/20 group-hover:decoration-neonCyan transition-colors duration-300">
+                    <span className="mt-auto pt-8 font-mono text-xs font-semibold tracking-widest uppercase text-vaultAmber underline underline-offset-4 decoration-vaultAmber/30 transition-colors duration-300">
                       View full briefing & outcomes →
                     </span>
                   </SystemPanel>
@@ -95,8 +95,8 @@ export function UseCaseGrid() {
         {/* Other use cases as a compact list */}
         {others.length > 0 && (
           <FadeIn>
-            <div className="mt-20 border-t border-charcoal/10 pt-12">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-charcoal/50">
+            <div className="mt-20 border-t border-vaultAmber/15 pt-12">
+              <p className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-charcoal/50">
                 All 13 Capabilities
               </p>
               <ul className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -104,9 +104,9 @@ export function UseCaseGrid() {
                   <li key={uc.slug}>
                     <Link
                       href={`/solutions/${uc.slug}`}
-                      className="group block py-2 text-base text-charcoal/80 transition-colors hover:text-neonCyan"
+                      className="group block py-2 text-base text-charcoal/80 transition-colors hover:text-vaultAmber"
                     >
-                      <span className="border-b border-transparent group-hover:border-neonCyan">
+                      <span className="border-b border-transparent group-hover:border-vaultAmber">
                         {uc.title}
                       </span>
                     </Link>
@@ -122,7 +122,7 @@ export function UseCaseGrid() {
           <div className="mt-12">
             <Link
               href="/solutions"
-              className="inline-flex items-center text-sm font-medium tracking-wide text-charcoal underline underline-offset-4 decoration-charcoal/30 hover:decoration-charcoal"
+              className="inline-flex items-center font-mono text-xs font-semibold uppercase tracking-widest text-vaultAmber underline underline-offset-4 decoration-vaultAmber/30 hover:decoration-vaultAmber"
             >
               See all 13 automations index →
             </Link>

@@ -35,30 +35,33 @@ const meshCards: MeshCard[] = [
 export function EcosystemMesh() {
   return (
     <section className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-      <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-vaultAmber">
+        The Living Intelligence Mesh
+      </p>
+      <h2 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
         The Intelligence Mesh Behind Enterprise Execution
       </h2>
-      <p className="mt-4 max-w-2xl text-sm leading-6 text-charcoal/70">
+      <p className="mt-4 max-w-2xl text-base leading-relaxed text-charcoal/70">
         Every node is governed, every pathway is observable, and every action can
         be traced to business outcomes.
       </p>
 
-      <div className="mt-10 grid gap-5 lg:grid-cols-2">
+      <div className="mt-12 grid gap-6 lg:grid-cols-2">
         {meshCards.map((card) => (
           <article
             key={card.domain}
-            className="rounded-2xl border border-charcoal/20 bg-[#F6F1F1]/30 p-6"
+            className="rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/40 hover:bg-white/5"
           >
-            <p className="text-xs uppercase tracking-[0.18em] text-neonCyan/90">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber/80">
               {card.domain}
             </p>
-            <p className="mt-3 text-base font-medium text-neonCyan">{card.signal}</p>
-            <p className="mt-2 text-sm text-[#AFD3E2]">{card.outcome}</p>
+            <p className="mt-3 text-base font-medium text-charcoal">{card.signal}</p>
+            <p className="mt-2 font-mono text-xs text-charcoal/70">{card.outcome}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {card.pathways.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-charcoal/30 px-3 py-1 text-xs text-charcoal/70"
+                  className="rounded-full border border-vaultAmber/25 bg-vaultAmber/5 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-charcoal/80"
                 >
                   {tag}
                 </span>

@@ -34,17 +34,17 @@ export function CallmeSection() {
     <section className="mx-auto w-full max-w-[90rem] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
       <div className="max-w-2xl">
         <FadeIn>
-          <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+          <p className="font-mono text-xs font-semibold tracking-[0.25em] text-vaultAmber uppercase">
             CallMe — Voice & WhatsApp
           </p>
         </FadeIn>
         <FadeIn delay={0.1}>
-          <h2 className="mt-6 text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
+          <h2 className="mt-4 text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
             An AI receptionist that never puts anyone on hold.
           </h2>
         </FadeIn>
         <FadeIn delay={0.2}>
-          <p className="mt-6 text-lg leading-relaxed text-neonCyan">
+          <p className="mt-6 text-lg leading-relaxed text-charcoal/70">
             Answer every phone call and WhatsApp message, in your customer&rsquo;s
             language, 24/7. Hand off to a human with the full conversation
             history when it matters.
@@ -57,12 +57,12 @@ export function CallmeSection() {
           <FadeIn key={feature.title} delay={0.1 * (i + 1)}>
             <SystemPanel
               as="article"
-              className="group flex h-full flex-col border-t border-charcoal pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
+              className="group flex h-full flex-col border-t border-vaultAmber/30 pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
             >
               <h3 className="text-2xl font-normal tracking-tight text-charcoal">
                 {feature.title}
               </h3>
-              <p className="mt-6 text-base leading-relaxed text-neonCyan">
+              <p className="mt-6 text-base leading-relaxed text-charcoal/70">
                 {feature.description}
               </p>
             </SystemPanel>

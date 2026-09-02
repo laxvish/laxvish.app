@@ -77,7 +77,7 @@ export function PageBlocks({
                       key={point}
                       className="flex items-start gap-4 text-base leading-relaxed text-charcoal/70"
                     >
-                      <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-charcoal/40" />
+                      <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-vaultAmber" />
                       {point}
                     </li>
                   ))}
@@ -90,7 +90,7 @@ export function PageBlocks({
 
       {/* Solution Section */}
       {solutionHeadline && (
-        <section className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10 border-t border-charcoal/10">
+        <section className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10 border-t border-vaultAmber/15">
           <FadeIn>
             <div className="max-w-3xl space-y-8">
               <h2 className="text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
@@ -110,7 +110,7 @@ export function PageBlocks({
               <FadeIn key={item.title}>
                 <SystemPanel
                   as="article"
-                  className="group flex h-full flex-col border-t border-charcoal pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
+                  className="group flex h-full flex-col border-t border-vaultAmber/30 pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
                 >
                   <h3 className="text-2xl font-normal tracking-tight text-charcoal">
                     {item.title}
@@ -127,7 +127,7 @@ export function PageBlocks({
 
       {/* How It Works */}
       {howItWorks && howItWorks.length > 0 && (
-        <section className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10 border-t border-charcoal/10">
+        <section className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10 border-t border-vaultAmber/15">
           <FadeIn>
             <h2 className="text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
               How it works.
@@ -136,8 +136,8 @@ export function PageBlocks({
           <FadeInStagger className="mt-20 grid gap-x-8 gap-y-16 md:grid-cols-3">
             {howItWorks.map((item) => (
               <FadeIn key={item.step}>
-                <div className="flex flex-col border-l border-charcoal/20 pl-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+                <div className="flex flex-col border-l border-vaultAmber/30 pl-6">
+                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
                     Step {item.step}
                   </p>
                   <h3 className="mt-4 text-2xl font-normal tracking-tight text-charcoal">
@@ -155,7 +155,7 @@ export function PageBlocks({
 
       {/* Use Cases */}
       {useCases && useCases.length > 0 && (
-        <section className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10 border-t border-charcoal/10">
+        <section className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10 border-t border-vaultAmber/15">
           <FadeIn>
             <h2 className="text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
               Built for real scenarios.
@@ -166,7 +166,7 @@ export function PageBlocks({
               <FadeIn key={item.scenario}>
                 <SystemPanel
                   as="article"
-                  className="group flex h-full flex-col border-t border-charcoal pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
+                  className="group flex h-full flex-col border-t border-vaultAmber/30 pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
                 >
                   <h3 className="text-2xl font-normal tracking-tight text-charcoal">
                     {item.scenario}
@@ -183,7 +183,7 @@ export function PageBlocks({
 
       {/* Differentiation */}
       {differentiationHeadline && differentiationPoints && (
-        <section className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10 border-t border-charcoal/10">
+        <section className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10 border-t border-vaultAmber/15">
           <FadeIn>
             <h2 className="text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
               {differentiationHeadline}
@@ -192,7 +192,7 @@ export function PageBlocks({
           <FadeInStagger className="mt-20 grid gap-x-8 gap-y-16 md:grid-cols-3">
             {differentiationPoints.map((item) => (
               <FadeIn key={item.point}>
-                <div className="flex flex-col border-l border-charcoal/20 pl-6">
+                <div className="flex flex-col border-l border-vaultAmber/30 pl-6">
                   <h3 className="text-xl font-normal tracking-tight text-charcoal">
                     {item.point}
                   </h3>
@@ -208,7 +208,7 @@ export function PageBlocks({
 
       {/* Outcomes */}
       <FadeIn className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10">
-        <div className="border-t border-charcoal pt-16">
+        <div className="border-t border-vaultAmber/20 pt-16">
           <h3 className="text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
             Expected outcomes
           </h3>
@@ -216,9 +216,9 @@ export function PageBlocks({
             {outcomes.map((item) => (
               <div
                 key={item.metric}
-                className="flex flex-col border-l border-charcoal/20 pl-6"
+                className="flex flex-col border-l border-vaultAmber/30 pl-6"
               >
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
                   {item.metric}
                 </p>
                 <p className="mt-4 text-[clamp(2rem,3vw,2.5rem)] font-normal text-charcoal tracking-tight">
@@ -234,12 +234,12 @@ export function PageBlocks({
       {ctaHeadline && (
         <section className="mx-auto w-full max-w-[90rem] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10">
           <FadeIn yOffset={40}>
-            <SystemPanel className="border border-charcoal bg-vaultAmber p-12 text-center sm:p-20 shadow-2xl shadow-charcoal/5">
+            <SystemPanel className="border border-vaultAmber/25 bg-voidSurface p-12 text-center sm:p-20 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.9)]">
               <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
                 {ctaHeadline}
               </h2>
               {ctaDescription && (
-                <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-neonCyan">
+                <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-charcoal/70">
                   {ctaDescription}
                 </p>
               )}
@@ -270,8 +270,8 @@ export function PageBlocks({
       {internalLinks && internalLinks.length > 0 && (
         <section className="mx-auto w-full max-w-[1440px] px-6 pb-24 sm:px-12 lg:px-16 lg:pb-32 relative z-10">
           <FadeIn>
-            <div className="border-t border-charcoal/10 pt-12">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan mb-6">
+            <div className="border-t border-vaultAmber/15 pt-12">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber mb-6">
                 Explore more
               </p>
               <div className="flex flex-wrap gap-4">
@@ -279,7 +279,7 @@ export function PageBlocks({
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm font-medium tracking-wide text-charcoal underline underline-offset-4 decoration-charcoal/20 hover:decoration-charcoal transition-colors duration-300"
+                    className="font-mono text-xs font-medium tracking-wide text-charcoal underline underline-offset-4 decoration-vaultAmber/30 hover:text-vaultAmber transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
