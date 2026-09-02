@@ -26,6 +26,7 @@ export default function BrainPage() {
         title={content.title}
         summary={content.summary}
         shape="icosahedron"
+        stamp="ORCHESTRATION LAYER // LIVE"
       />
       <PageBlocks
         details={content.details}

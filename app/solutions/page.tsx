@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/sections/depth/PageHero";
-import { FadeIn, FadeInStagger } from "@/components/ui/FadeIn";
+import { EditorialReveal } from "@/components/ui/FadeIn";
 import { buildPageMetadata } from "@/lib/seo";
 import {
   getUseCasesByCategory,
@@ -31,9 +31,15 @@ const CATEGORY_INTRO: Record<UseCaseCategory, string> = {
     "Move faster on the work your finance and compliance teams do every day — with full audit trails.",
 };
 
+/**
+ * The catalog. Thirteen capabilities as a numbered ledger — mono index,
+ * serif title, one honest line, and the worker file link. No card wall,
+ * no rounded-2xl, no "Learn more" echo. See docs/DIRECTORS_TREATMENT.md C3.
+ */
 export default function SolutionsPage() {
   const grouped = getUseCasesByCategory();
   const categories = Object.keys(grouped) as UseCaseCategory[];
+  let index = 0;
 
   return (
     <>
@@ -41,49 +47,60 @@ export default function SolutionsPage() {
         eyebrow="What we automate"
         title="AI workers for every part of your business."
         summary="Pick the work you want to take off your team's plate. We'll show you what the AI worker does, how it's controlled, and what it costs."
-        shape="sphere"
+        stamp="CATALOG // 13 CAPABILITIES"
       />
 
-      <section className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
-        <FadeInStagger className="space-y-24">
-          {categories.map((category) => (
-            <div key={category} className="space-y-8">
-              <FadeIn>
-                <div className="max-w-3xl space-y-3 border-b border-vaultAmber/20 pb-6">
-                  <div className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-vaultAmber">
-                    {category}
-                  </div>
-                  <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight text-charcoal">
-                    {category}
-                  </h2>
-                  <p className="text-base leading-relaxed text-charcoal/70 sm:text-lg">
-                    {CATEGORY_INTRO[category]}
-                  </p>
-                </div>
-              </FadeIn>
+      <section className="relative z-10 mx-auto w-full max-w-[1440px] px-6 pb-24 sm:px-12 lg:px-16 lg:pb-32">
+        {categories.map((category) => (
+          <div key={category} className="border-t border-rule-hair">
+            {/* Category band — editorial divider, not a card */}
+            <div className="grid gap-4 py-10 sm:grid-cols-[16rem_1fr] sm:items-baseline sm:gap-10">
+              <h2 className="font-serif text-2xl font-normal leading-tight tracking-tight text-deepink sm:text-3xl">
+                {category}
+              </h2>
+              <p className="max-w-xl text-base leading-relaxed text-deepink/65">
+                {CATEGORY_INTRO[category]}
+              </p>
+            </div>
 
-              <FadeInStagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {grouped[category].map((uc) => (
+            {/* Ledger rows */}
+            <div className="border-t border-rule-hair">
+              {grouped[category].map((uc) => {
+                index += 1;
+                const n = String(index).padStart(2, "0");
+                return (
                   <Link
                     key={uc.slug}
                     href={`/solutions/${uc.slug}`}
-                    className="group block rounded-2xl border border-vaultAmber/20 bg-voidSurface p-6 transition-all duration-500 hover:border-vaultAmber/60 hover:bg-mist/30"
+                    className="group grid items-baseline gap-x-6 gap-y-2 border-b border-rule-hair py-6 sm:grid-cols-[4rem_18rem_1fr] sm:gap-x-10"
                   >
-                    <h3 className="text-lg font-medium text-charcoal group-hover:text-vaultAmber transition-colors">
+                    <span className="font-mono text-xs tracking-[0.14em] text-mark/70">
+                      {n}
+                    </span>
+                    <span className="text-xl font-normal tracking-tight text-deepink transition-colors duration-300 group-hover:text-mark sm:text-2xl">
                       {uc.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-charcoal/70">
-                      {uc.oneLiner}
-                    </p>
-                    <div className="mt-6 font-mono text-xs font-semibold uppercase tracking-widest text-vaultAmber">
-                      Learn more →
-                    </div>
+                    </span>
+                    <span className="flex items-baseline justify-between gap-6 text-base text-deepink/65">
+                      <span>{uc.oneLiner}</span>
+                      <span
+                        aria-hidden="true"
+                        className="hidden h-px w-10 shrink-0 self-center bg-mark/40 transition-all duration-500 group-hover:w-20 group-hover:bg-mark sm:block"
+                      />
+                    </span>
                   </Link>
-                ))}
-              </FadeInStagger>
+                );
+              })}
             </div>
-          ))}
-        </FadeInStagger>
+          </div>
+        ))}
+
+        {/* Catalog sign-off */}
+        <EditorialReveal>
+          <p className="mt-14 max-w-2xl border-l border-mark/50 pl-6 font-mono text-[11px] leading-relaxed tracking-wide text-deepink/55 uppercase">
+            Thirteen workers and counting. If your work is not on this list,
+            name it on the first call. We build the ones that matter.
+          </p>
+        </EditorialReveal>
       </section>
     </>
   );

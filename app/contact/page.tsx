@@ -20,6 +20,7 @@ export default function ContactPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
+        stamp="CHANNEL // RESPONSE < 1 DAY"
       />
       <ContactPanel />
     </>

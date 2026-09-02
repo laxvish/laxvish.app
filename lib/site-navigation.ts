@@ -130,16 +130,11 @@ export const FOOTER_GROUPS: FooterGroup[] = [
     ],
   },
   {
-    title: "Platform",
+    title: "Platform & Trust",
     links: [
       { label: "Workers", href: "/workers", kind: "primary" },
       { label: "Brain", href: "/brain", kind: "primary" },
       { label: "Brakes", href: "/brakes", kind: "primary" },
-    ],
-  },
-  {
-    title: "Trust",
-    links: [
       { label: "Security & Trust", href: "/security-trust", kind: "support" },
       { label: "Privacy", href: "/privacy", kind: "support" },
       { label: "Terms", href: "/terms", kind: "support" },
