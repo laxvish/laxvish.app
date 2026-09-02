@@ -5,6 +5,7 @@ import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
 import { PillarsGrid } from "@/components/sections/PillarsGrid";
+import { ProofBand } from "@/components/sections/ProofBand";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -27,6 +28,7 @@ export default function Home() {
     <>
       <Hero />
       <PillarsGrid />
+      <ProofBand />
       <CallmeSection />
       <ContactPanel />
       <FaqAccordion />
