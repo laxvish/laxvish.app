@@ -18,11 +18,11 @@ export function ReportingAnalyticsScene() {
   }, [phase]);
 
   return (
-    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#FAF8F5] p-8 text-charcoal sm:p-12">
+    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#07080B] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 shadow-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between font-mono text-[11px] text-charcoal/40 uppercase tracking-widest border-b border-charcoal/10 pb-4">
+      <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-widest border-b border-vaultAmber/15 pb-4">
         <span>Chapter 13 : Narrative Analytics</span>
-        <span>
+        <span className="text-charcoal/60">
           {phase === "noise" && "420,000 Unorganized Data Points"}
           {phase === "patterns" && "The Thread Sweeping into Patterns"}
           {phase === "insights" && "3 Essential Insights Remain"}
@@ -40,7 +40,7 @@ export function ReportingAnalyticsScene() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: i * 0.05 }}
-                  className="p-1"
+                  className="p-1 text-vaultAmber/40"
                 >
                   {num}
                 </motion.span>
@@ -51,13 +51,13 @@ export function ReportingAnalyticsScene() {
 
         {phase === "patterns" && (
           <div className="flex flex-col items-center gap-3 font-mono text-xs">
-            <span className="text-[10px] text-charcoal/40 uppercase">
+            <span className="text-[10px] text-vaultAmber/60 uppercase tracking-wider">
               EXTRACTING MATHEMATICAL CORRELATIONS & GAAP DRIFT
             </span>
-            <div className="flex gap-3">
-              <div className="rounded-full bg-charcoal px-4 py-1.5 text-white">Revenue: +14.2%</div>
-              <div className="rounded-full bg-charcoal px-4 py-1.5 text-white">CAC: ₹2,140 (-12%)</div>
-              <div className="rounded-full bg-charcoal px-4 py-1.5 text-white">Conversion: 8.4%</div>
+            <div className="flex flex-wrap gap-2.5 justify-center">
+              <div className="rounded-full bg-voidSurface border border-vaultAmber/30 px-4 py-1.5 text-charcoal">Revenue: +14.2%</div>
+              <div className="rounded-full bg-voidSurface border border-vaultAmber/30 px-4 py-1.5 text-charcoal">CAC: ₹2,140 (-12%)</div>
+              <div className="rounded-full bg-voidSurface border border-vaultAmber/30 px-4 py-1.5 text-charcoal">Conversion: 8.4%</div>
             </div>
           </div>
         )}
@@ -66,13 +66,13 @@ export function ReportingAnalyticsScene() {
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md rounded-2xl border border-charcoal/15 bg-white p-6 shadow-xl text-left font-mono text-xs"
+            className="w-full max-w-md rounded-2xl border border-vaultAmber/30 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 shadow-xl text-left font-mono text-xs"
           >
-            <div className="flex items-center justify-between border-b border-charcoal/10 pb-3 text-[10px] text-charcoal/40 uppercase">
+            <div className="flex items-center justify-between border-b border-vaultAmber/15 pb-3 text-[10px] text-vaultAmber uppercase">
               <span>WEEKLY EXECUTIVE BRIEF</span>
-              <span className="font-bold text-emerald-700">Delivered Mon 8:01 AM</span>
+              <span className="font-bold text-neonCyan">Delivered Mon 8:01 AM</span>
             </div>
-            <div className="mt-4 space-y-2 text-charcoal/80">
+            <div className="mt-4 space-y-2 text-charcoal/90">
               <p>1. Revenue rose 14.2% WoW driven by enterprise expansions.</p>
               <p>2. Blended CAC fell to ₹2,140 with organic referral strength.</p>
               <p>3. Zero mathematical variance across GAAP ledger sheets.</p>
@@ -82,7 +82,7 @@ export function ReportingAnalyticsScene() {
       </div>
 
       {/* Narrative Footer */}
-      <div className="border-t border-charcoal/10 pt-4 font-serif text-xs italic text-charcoal/60">
+      <div className="border-t border-vaultAmber/15 pt-4 font-serif text-xs italic text-charcoal/60">
         The system doesn&rsquo;t stop at &ldquo;here is a dashboard.&rdquo; It ends with &ldquo;now you know what matters.&rdquo;
       </div>
     </div>

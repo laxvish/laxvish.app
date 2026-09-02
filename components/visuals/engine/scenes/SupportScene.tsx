@@ -31,50 +31,50 @@ export function SupportScene() {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[#080B12] p-6 text-white sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border border-cyan-500/20"
+      className="relative flex min-h-[480px] w-full flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[#07080B] p-6 text-charcoal sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] border border-vaultAmber/20"
       style={{
         perspective: "1000px",
       }}
     >
-      {/* Dynamic Ambient Lighting: Red Alert transitioning to Deep Cyan/Indigo Calm */}
+      {/* Dynamic Ambient Lighting: Heat dissolving into Champagne/Silver Equilibrium */}
       <div
-        className={`pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full blur-[100px] transition-all duration-1000 ${
-          shot === 1 ? "bg-red-600/25" : "bg-cyan-500/15"
+        className={`pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full blur-[120px] transition-all duration-1000 ${
+          shot === 1 ? "bg-[#8C4E36]/20" : "bg-vaultAmber/10"
         }`}
       />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-blue-600/10 blur-[100px]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#06b6d4_0.75px,transparent_0.75px)] [background-size:24px_24px] opacity-[0.05]" />
+      <div className="pointer-events-none absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(182,176,159,0.15)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
 
       {/* Titanium Crucible Header */}
-      <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4 font-mono text-xs">
+      <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-b border-vaultAmber/15 pb-4 font-mono text-xs">
         <div className="flex items-center gap-3">
           <span
-            className={`flex h-2.5 w-2.5 rounded-full transition-colors duration-500 ${
+            className={`flex h-2 w-2 rounded-full transition-colors duration-500 ${
               shot === 1
-                ? "bg-red-500 shadow-[0_0_10px_#ef4444] animate-ping"
-                : "bg-cyan-400 shadow-[0_0_10px_#22d3ee] animate-pulse"
+                ? "bg-[#C46B4E] shadow-[0_0_8px_#C46B4E] animate-ping"
+                : "bg-vaultAmber shadow-[0_0_8px_#B6B09F] animate-pulse"
             }`}
           />
-          <span className="font-bold tracking-[0.2em] text-cyan-300 uppercase">
+          <span className="font-medium tracking-[0.2em] text-vaultAmber uppercase">
             ARTIFACT II : THE PRESSURE CRUCIBLE
           </span>
         </div>
 
         {/* Analog Pressure Meter */}
         <div className="flex items-center gap-3">
-          <span className="text-[10px] text-white/50 uppercase">Crucible PSI:</span>
-          <div className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 font-mono text-xs">
+          <span className="text-[10px] text-charcoal/50 uppercase">Crucible PSI:</span>
+          <div className="flex items-center gap-1.5 rounded-full border border-vaultAmber/30 bg-voidSurface px-3 py-1 font-mono text-xs">
             <span
-              className={`font-bold transition-colors ${
-                shot === 1 ? "text-red-400" : shot === 5 ? "text-emerald-400" : "text-cyan-300"
+              className={`font-semibold transition-colors ${
+                shot === 1 ? "text-[#E08A6F]" : shot === 5 ? "text-neonCyan" : "text-vaultAmber"
               }`}
             >
-              {shot === 0 && "0 PSI · STABLE"}
-              {shot === 1 && "98 PSI · CRITICAL SPIKE"}
-              {shot === 2 && "62 PSI · DAMPENING"}
-              {shot === 3 && "24 PSI · CONDENSING"}
-              {shot === 4 && "6 PSI · BRAKES LOCK"}
-              {shot === 5 && "0 PSI · ABSOLUTE EQUILIBRIUM ✓"}
+              {shot === 0 && "0.0 PSI · STABLE VACUUM"}
+              {shot === 1 && "98.4 PSI · CRITICAL SPIKE"}
+              {shot === 2 && "62.0 PSI · DAMPENING WAVE"}
+              {shot === 3 && "24.5 PSI · CONDENSING PILLARS"}
+              {shot === 4 && "6.0 PSI · BRAKES LOCK"}
+              {shot === 5 && "0.0 PSI · ABSOLUTE EQUILIBRIUM ✓"}
             </span>
           </div>
         </div>
@@ -83,10 +83,10 @@ export function SupportScene() {
       {/* 3D Spatial Canvas */}
       <motion.div
         animate={{
-          rotateX: -mousePos.y * 12,
-          rotateY: mousePos.x * 12,
+          rotateX: -mousePos.y * 10,
+          rotateY: mousePos.x * 10,
         }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        transition={{ type: "spring", stiffness: 200, damping: 25 }}
         className="relative z-10 my-auto flex w-full flex-col items-center justify-center py-6 text-center"
       >
         <AnimatePresence mode="wait">
@@ -99,56 +99,56 @@ export function SupportScene() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-3"
             >
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-500/10 backdrop-blur-md">
-                <span className="h-3 w-3 rounded-full bg-cyan-400 animate-ping" />
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber/25 bg-voidSurface backdrop-blur-md">
+                <span className="h-2.5 w-2.5 rounded-full bg-vaultAmber animate-ping" />
               </div>
-              <p className="font-serif text-sm italic text-cyan-100/60 max-w-sm">
+              <p className="font-serif text-sm italic text-charcoal/50 max-w-sm">
                 The crucible rests in vacuum. Ready to absorb enterprise friction.
               </p>
             </motion.div>
           )}
 
-          {/* Shot 1: Chaotic Misaligned Red Distress Shards */}
+          {/* Shot 1: Distress Shards under Heat */}
           {shot === 1 && (
             <motion.div
               key="shot-1"
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="relative flex w-full max-w-md flex-col gap-3 font-mono text-xs"
+              className="relative flex w-full max-w-md flex-col gap-2.5 font-mono text-xs"
             >
               <motion.div
-                animate={{ x: [-3, 3, -3], rotate: [-2, -3, -2] }}
-                transition={{ repeat: Infinity, duration: 0.3 }}
-                className="rounded-2xl border-2 border-red-500/80 bg-red-950/70 p-3.5 text-left text-red-100 shadow-[0_0_25px_rgba(239,68,68,0.4)]"
+                animate={{ x: [-2, 2, -2], rotate: [-1, -2, -1] }}
+                transition={{ repeat: Infinity, duration: 0.4 }}
+                className="rounded-2xl border border-[#A8583E]/50 bg-[#1A0E0A] p-3.5 text-left text-charcoal shadow-[0_0_20px_rgba(168,88,62,0.25)]"
               >
-                <div className="flex justify-between text-[9px] text-red-300/60 pb-1">
+                <div className="flex justify-between text-[9px] text-[#C46B4E] pb-1">
                   <span>DISPATCH STREAM #994</span>
-                  <span className="font-bold text-red-400">SEVERITY 1</span>
+                  <span className="font-bold">SEVERITY 1</span>
                 </div>
                 &ldquo;I can&rsquo;t login to the production dashboard since 9:00 AM!&rdquo;
               </motion.div>
 
               <motion.div
-                animate={{ x: [3, -3, 3], rotate: [2, 1, 2] }}
-                transition={{ repeat: Infinity, duration: 0.35, delay: 0.1 }}
-                className="rounded-2xl border-2 border-amber-500/80 bg-amber-950/70 p-3.5 text-left text-amber-100 shadow-[0_0_25px_rgba(245,158,11,0.3)]"
+                animate={{ x: [2, -2, 2], rotate: [1, 0, 1] }}
+                transition={{ repeat: Infinity, duration: 0.45, delay: 0.1 }}
+                className="rounded-2xl border border-vaultAmber/40 bg-voidSurface p-3.5 text-left text-charcoal shadow-lg"
               >
-                <div className="flex justify-between text-[9px] text-amber-300/60 pb-1">
+                <div className="flex justify-between text-[9px] text-vaultAmber pb-1">
                   <span>WHATSAPP VIP ESCALATION</span>
-                  <span className="font-bold text-amber-400">UNRESOLVED</span>
+                  <span className="font-bold">UNRESOLVED</span>
                 </div>
                 &ldquo;Password reset link never arrived in my inbox or phone.&rdquo;
               </motion.div>
 
               <motion.div
-                animate={{ y: [-2, 2, -2], rotate: [-1, 0, -1] }}
-                transition={{ repeat: Infinity, duration: 0.25, delay: 0.2 }}
-                className="rounded-2xl border-2 border-rose-500/80 bg-rose-950/70 p-3.5 text-left text-rose-100 shadow-[0_0_25px_rgba(244,63,94,0.4)] font-semibold"
+                animate={{ y: [-2, 2, -2] }}
+                transition={{ repeat: Infinity, duration: 0.35, delay: 0.2 }}
+                className="rounded-2xl border border-[#A8583E]/60 bg-[#1A0E0A] p-3.5 text-left text-charcoal shadow-[0_0_20px_rgba(168,88,62,0.25)]"
               >
-                <div className="flex justify-between text-[9px] text-rose-300/60 pb-1">
+                <div className="flex justify-between text-[9px] text-[#C46B4E] pb-1">
                   <span>EXECUTIVE BOARD ALERT</span>
-                  <span className="font-bold text-rose-300">URGENT (15 MINS)</span>
+                  <span className="font-bold">URGENT (15 MINS)</span>
                 </div>
                 &ldquo;Need access immediately! Annual Board Meeting starts in 15 mins!&rdquo;
               </motion.div>
@@ -165,14 +165,13 @@ export function SupportScene() {
               className="relative flex w-full max-w-lg flex-col items-center justify-center py-4"
             >
               <svg viewBox="0 0 500 100" className="h-24 w-full overflow-visible">
-                {/* Magnetic Wave Barrier */}
                 <motion.path
                   d="M 20,50 Q 150,5 250,50 T 480,50"
-                  stroke="#22D3EE"
-                  strokeWidth="3.5"
+                  stroke="#B6B09F"
+                  strokeWidth="2.5"
                   strokeLinecap="round"
                   fill="none"
-                  filter="drop-shadow(0 0 15px rgba(34,211,238,0.9))"
+                  filter="drop-shadow(0 0 10px rgba(182,176,159,0.85))"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 1.2, ease: "easeInOut" }}
@@ -180,13 +179,13 @@ export function SupportScene() {
                 <motion.circle
                   cx="250"
                   cy="50"
-                  r="7"
-                  fill="#22D3EE"
-                  animate={{ scale: [1, 1.5, 1], boxShadow: ["0 0 20px #22D3EE"] }}
-                  transition={{ repeat: Infinity, duration: 1 }}
+                  r="6"
+                  fill="#B6B09F"
+                  animate={{ scale: [1, 1.4, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.2 }}
                 />
               </svg>
-              <span className="font-mono text-xs font-bold tracking-wider text-cyan-300">
+              <span className="font-mono text-xs font-semibold tracking-wider text-vaultAmber">
                 MAGNETIC DAMPENING FIELD ENGAGED · TRACING ROOT CAUSE
               </span>
             </motion.div>
@@ -202,19 +201,19 @@ export function SupportScene() {
               className="flex flex-wrap items-center justify-center gap-3 font-mono text-xs"
             >
               {[
-                { tag: "IDENTITY", val: "rajiv@apexcap.in (Verified Okta SSO)", color: "border-cyan-400 bg-cyan-950/60 text-cyan-200" },
-                { tag: "AUTH FAULT", val: "SAML Session Revoked by Timeout", color: "border-amber-400 bg-amber-950/60 text-amber-200" },
-                { tag: "TARGET ROLE", val: "Tier-1 Board Executive Clearance", color: "border-emerald-400 bg-emerald-950/60 text-emerald-200" },
+                { tag: "IDENTITY", val: "rajiv@apexcap.in (Verified Okta SSO)" },
+                { tag: "AUTH FAULT", val: "SAML Session Revoked by Timeout" },
+                { tag: "TARGET ROLE", val: "Tier-1 Board Executive Clearance" },
               ].map((pillar, idx) => (
                 <motion.div
                   key={pillar.tag}
                   initial={{ scale: 0.8, y: 20, opacity: 0 }}
                   animate={{ scale: 1, y: 0, opacity: 1 }}
                   transition={{ delay: idx * 0.15 }}
-                  className={`flex items-center gap-2.5 rounded-2xl border-2 px-4 py-3 shadow-xl backdrop-blur-md ${pillar.color}`}
+                  className="flex items-center gap-2.5 rounded-2xl border border-vaultAmber/30 bg-voidSurface px-4 py-3 shadow-xl backdrop-blur-md text-charcoal"
                 >
-                  <span className="text-[9px] font-bold uppercase tracking-wider">{pillar.tag}</span>
-                  <span className="font-bold">✦ {pillar.val}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-vaultAmber">{pillar.tag}:</span>
+                  <span className="font-semibold text-neonCyan">{pillar.val}</span>
                 </motion.div>
               ))}
             </motion.div>
@@ -229,17 +228,17 @@ export function SupportScene() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-4 font-mono text-xs"
             >
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-cyan-400 bg-black/80 shadow-[0_0_40px_rgba(34,211,238,0.5)]">
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-vaultAmber bg-black shadow-[0_0_30px_rgba(182,176,159,0.3)]">
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1.8, ease: "linear" }}
-                  className="absolute inset-1.5 rounded-full border-t-2 border-emerald-400"
+                  transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                  className="absolute inset-1.5 rounded-full border-t border-vaultAmber"
                 />
-                <span className="text-xs font-bold tracking-widest text-cyan-300">BRAKES</span>
+                <span className="text-xs font-bold tracking-widest text-vaultAmber">BRAKES</span>
               </div>
-              <div className="rounded-2xl border border-cyan-400/40 bg-cyan-950/40 px-5 py-2.5 text-cyan-200 backdrop-blur-md">
-                <span>Security Governance Audit: </span>
-                <strong className="text-emerald-400">Zero-Trust STS Elevation Approved ✓</strong>
+              <div className="rounded-2xl border border-vaultAmber/30 bg-voidSurface px-5 py-2.5 text-charcoal backdrop-blur-md">
+                <span className="text-charcoal/70">Security Governance Audit: </span>
+                <strong className="text-neonCyan">Zero-Trust STS Elevation Approved ✓</strong>
               </div>
             </motion.div>
           )}
@@ -248,34 +247,34 @@ export function SupportScene() {
           {shot === 5 && (
             <motion.div
               key="shot-5"
-              initial={{ opacity: 0, scale: 0.88, rotateX: -20 }}
+              initial={{ opacity: 0, scale: 0.9, rotateX: -15 }}
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ type: "spring", stiffness: 180, damping: 18 }}
-              className="relative w-full max-w-md rounded-3xl border-2 border-emerald-400/60 bg-gradient-to-b from-[#0F1B1A] to-[#080E10] p-6 text-left shadow-[0_0_60px_rgba(52,211,153,0.35)]"
+              transition={{ type: "spring", stiffness: 180, damping: 20 }}
+              className="relative w-full max-w-md rounded-3xl border border-vaultAmber/40 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 text-left shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
             >
-              <div className="flex items-center justify-between border-b border-emerald-400/20 pb-3 font-mono text-[11px]">
+              <div className="flex items-center justify-between border-b border-vaultAmber/20 pb-3 font-mono text-[11px]">
                 <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
-                  <span className="font-bold tracking-widest text-emerald-300 uppercase">
+                  <span className="h-2 w-2 rounded-full bg-vaultAmber shadow-[0_0_6px_#B6B09F]" />
+                  <span className="font-bold tracking-widest text-vaultAmber uppercase">
                     EQUILIBRIUM RESTORED
                   </span>
                 </div>
-                <span className="font-mono font-bold text-emerald-400">1.4s TOTAL ELAPSED ✓</span>
+                <span className="font-mono font-bold text-neonCyan">1.4s TOTAL ELAPSED ✓</span>
               </div>
 
               <div className="mt-4 space-y-2.5 font-mono text-xs">
                 <div className="flex justify-between py-1 border-b border-white/5">
-                  <span className="text-white/40">Okta SSO Session</span>
-                  <span className="font-bold text-emerald-300">Re-Authenticated (Key #K-4091)</span>
+                  <span className="text-charcoal/40">Okta SSO Session</span>
+                  <span className="font-medium text-vaultAmber">Re-Authenticated (Key #K-4091)</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-white/5">
-                  <span className="text-white/40">VIP Channel</span>
-                  <span className="text-white font-medium">WhatsApp OTP & Direct Magic Link Pushed</span>
+                  <span className="text-charcoal/40">VIP Channel</span>
+                  <span className="text-charcoal">WhatsApp OTP & Direct Magic Link Pushed</span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-white/40">Board Room State</span>
-                  <span className="font-bold text-cyan-300">Executive Access Live (0 Tickets Pending)</span>
+                  <span className="text-charcoal/40">Board Room State</span>
+                  <span className="font-bold text-neonCyan">Executive Access Live (0 Tickets Pending)</span>
                 </div>
               </div>
             </motion.div>
@@ -284,8 +283,8 @@ export function SupportScene() {
       </motion.div>
 
       {/* Footer */}
-      <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 font-mono text-[11px] text-white/50">
-        <div className="flex items-center gap-1.5">
+      <div className="relative z-20 flex flex-wrap items-center justify-between gap-3 border-t border-vaultAmber/15 pt-4 font-mono text-[11px] text-charcoal/50">
+        <div className="flex items-center gap-2">
           {[0, 1, 2, 3, 4, 5].map((i) => (
             <button
               key={i}
@@ -294,15 +293,15 @@ export function SupportScene() {
                 setIsAutoPlay(false);
                 setShot(i);
               }}
-              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                shot === i ? "w-8 bg-cyan-400 shadow-[0_0_8px_#22d3ee]" : "w-2 bg-white/20 hover:bg-white/40"
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                shot === i ? "w-8 bg-vaultAmber shadow-[0_0_8px_#B6B09F]" : "w-2 bg-charcoal/20 hover:bg-charcoal/40"
               }`}
-              title={`Jump to Shot ${i + 1}`}
+              title={`Jump to Shot 0${i + 1}`}
             />
           ))}
         </div>
-        <div className="flex items-center gap-2 text-[10px] uppercase text-cyan-300/70">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        <div className="flex items-center gap-2 text-[10px] uppercase text-vaultAmber/80">
+          <span className="h-1.5 w-1.5 rounded-full bg-vaultAmber" />
           <span>High-Pressure Friction → Oceanic Calm</span>
         </div>
       </div>

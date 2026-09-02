@@ -14,7 +14,7 @@ export function Hero() {
   const bookDemoUrl = getBookDemoUrl();
 
   return (
-    <section className="relative isolate overflow-hidden border-b border-charcoal/10 bg-obsidian">
+    <section className="relative isolate overflow-hidden border-b border-vaultAmber/15 bg-obsidian">
       {/* Immersive Intelligence Field Background */}
       <AIFabric />
 
@@ -24,7 +24,7 @@ export function Hero() {
         {/* Left-aligned typography to leave the right side of the fabric visible */}
         <div className="max-w-3xl space-y-10 lg:pr-12 pointer-events-auto">
           <FadeIn delay={0.1} yOffset={10}>
-            <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+            <p className="font-mono text-xs font-semibold tracking-[0.25em] text-vaultAmber uppercase">
               AI workers for Indian businesses
             </p>
           </FadeIn>

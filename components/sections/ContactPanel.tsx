@@ -112,28 +112,28 @@ export function ContactPanel() {
       id="contact"
       className="mx-auto w-full max-w-4xl px-6 py-24 sm:px-12 lg:py-32"
     >
-      <SystemPanel className="border border-charcoal bg-vaultAmber p-8 sm:p-12 shadow-2xl shadow-charcoal/5">
+      <SystemPanel className="border border-vaultAmber/25 bg-voidSurface p-8 sm:p-12 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)]">
         <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
           Let&rsquo;s talk about your work.
         </h2>
-        <p className="mt-6 text-lg text-neonCyan">
+        <p className="mt-4 text-base text-charcoal/70 sm:text-lg">
           Tell us what you want to automate. We&rsquo;ll show you what&rsquo;s possible — honestly.
         </p>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
           <motion.button
             type="button"
             onClick={() => setAction("pilot")}
             whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
             whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className={`border px-6 py-4 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
+            className={`rounded-2xl border p-5 text-left text-sm font-medium tracking-wide transition-all cursor-pointer ${
               action === "pilot"
-                ? "border-charcoal bg-charcoal text-obsidian"
-                : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
+                ? "border-vaultAmber bg-white/10 text-charcoal shadow-lg"
+                : "border-vaultAmber/20 bg-voidSurface/60 text-charcoal/70 hover:border-vaultAmber/50"
             }`}
           >
-            <span className="block">I want to try it on my work</span>
-            <span className="mt-1 block text-xs font-normal opacity-70">
+            <span className="block font-bold text-neonCyan">I want to try it on my work</span>
+            <span className="mt-1 block text-xs font-normal text-charcoal/60">
               A 4-week pilot with clear success criteria
             </span>
           </motion.button>
@@ -142,14 +142,14 @@ export function ContactPanel() {
             onClick={() => setAction("blueprint")}
             whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
             whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className={`border px-6 py-4 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
+            className={`rounded-2xl border p-5 text-left text-sm font-medium tracking-wide transition-all cursor-pointer ${
               action === "blueprint"
-                ? "border-charcoal bg-charcoal text-obsidian"
-                : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
+                ? "border-vaultAmber bg-white/10 text-charcoal shadow-lg"
+                : "border-vaultAmber/20 bg-voidSurface/60 text-charcoal/70 hover:border-vaultAmber/50"
             }`}
           >
-            <span className="block">Show me how it would fit</span>
-            <span className="mt-1 block text-xs font-normal opacity-70">
+            <span className="block font-bold text-neonCyan">Show me how it would fit</span>
+            <span className="mt-1 block text-xs font-normal text-charcoal/60">
               An architecture review for your business
             </span>
           </motion.button>
@@ -162,7 +162,7 @@ export function ContactPanel() {
             onChange={updateField("name")}
             placeholder="Name"
             required
-            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
+            className="border-b border-vaultAmber/30 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
           />
           <input
             type="email"
@@ -170,7 +170,7 @@ export function ContactPanel() {
             onChange={updateField("workEmail")}
             placeholder="Work Email"
             required
-            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
+            className="border-b border-vaultAmber/30 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
           />
           <input
             type="text"
@@ -178,7 +178,7 @@ export function ContactPanel() {
             onChange={updateField("company")}
             placeholder="Company"
             required
-            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
+            className="border-b border-vaultAmber/30 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none"
           />
           <input
             type="text"
@@ -195,14 +195,14 @@ export function ContactPanel() {
             placeholder="What work do you want to automate?"
             required
             rows={4}
-            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none sm:col-span-2"
+            className="border-b border-vaultAmber/30 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-charcoal/40 focus:border-vaultAmber focus:outline-none sm:col-span-2"
           />
           <motion.button
             type="submit"
             disabled={isSubmitting}
             whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
             whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className="mt-6 inline-flex items-center justify-center bg-charcoal px-8 py-4 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 disabled:opacity-50 hover:bg-neonCyan sm:col-span-2 sm:w-auto sm:justify-start"
+            className="mt-6 inline-flex items-center justify-center bg-charcoal px-8 py-4 text-sm font-semibold tracking-wide text-obsidian transition-colors duration-300 disabled:opacity-50 hover:bg-vaultAmber sm:col-span-2 sm:w-auto sm:justify-start rounded-full cursor-pointer"
           >
             {isSubmitting ? "Capturing..." : actionLabels[action]}
           </motion.button>
@@ -212,8 +212,8 @@ export function ContactPanel() {
           <p
             className={`mt-6 text-sm font-medium tracking-wide ${
               feedback.status === "success"
-                ? "text-charcoal"
-                : "text-red-700"
+                ? "text-vaultAmber"
+                : "text-red-400"
             }`}
           >
             {feedback.message}

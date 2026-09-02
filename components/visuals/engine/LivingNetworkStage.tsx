@@ -36,7 +36,7 @@ const NETWORK_NODES: NetworkNode[] = [
     vignetteStory: "The Thread scans daily business noise across CRM, ERP, and HRIS, eliminating vanity metrics to formulate an executive morning brief.",
     x: 50,
     y: 14,
-    color: "#F59E0B",
+    color: "#B6B09F",
   },
   {
     id: "finance",
@@ -48,7 +48,7 @@ const NETWORK_NODES: NetworkNode[] = [
     vignetteStory: "The Thread visits incoming bills, matches line items to POs, verifies tax math, and prepares batch payouts in Tally / SAP.",
     x: 18,
     y: 36,
-    color: "#10B981",
+    color: "#C5A880",
   },
   {
     id: "marketing",
@@ -60,7 +60,7 @@ const NETWORK_NODES: NetworkNode[] = [
     vignetteStory: "The Thread synchronizes ad accounts, synthesizes content tailored to ICP segments, and tracks attribution across channels.",
     x: 82,
     y: 36,
-    color: "#EC4899",
+    color: "#D8CDB6",
   },
   {
     id: "procurement",
@@ -72,7 +72,7 @@ const NETWORK_NODES: NetworkNode[] = [
     vignetteStory: "The Thread evaluates competing vendor proposals, extracts hidden delivery fees, selects the optimal bid, and issues the PO.",
     x: 20,
     y: 65,
-    color: "#3B82F6",
+    color: "#A39E8F",
   },
   {
     id: "hr",
@@ -84,7 +84,7 @@ const NETWORK_NODES: NetworkNode[] = [
     vignetteStory: "The Thread checks handbook policies, reviews remaining employee leave balances, and logs approved requests directly in HRMS.",
     x: 80,
     y: 65,
-    color: "#8B5CF6",
+    color: "#EAE4D5",
   },
   {
     id: "contract",
@@ -96,7 +96,7 @@ const NETWORK_NODES: NetworkNode[] = [
     vignetteStory: "The Thread isolates non-standard indemnities and uncapped liabilities, scoring contract risk before legal sign-off.",
     x: 28,
     y: 88,
-    color: "#EF4444",
+    color: "#C48A6F",
   },
   {
     id: "it",
@@ -108,7 +108,7 @@ const NETWORK_NODES: NetworkNode[] = [
     vignetteStory: "The Thread intercepts outage alerts, isolates failing API endpoints, executes automated cache purges, and restores access.",
     x: 50,
     y: 80,
-    color: "#06B6D4",
+    color: "#F2F2F2",
   },
   {
     id: "analytics",
@@ -120,7 +120,7 @@ const NETWORK_NODES: NetworkNode[] = [
     vignetteStory: "The Thread detects hidden cohort retention anomalies in SQL tables and drafts a crisp 3-point Weekly Business Review.",
     x: 72,
     y: 88,
-    color: "#14B8A6",
+    color: "#C2BCA8",
   },
 ];
 
@@ -153,30 +153,30 @@ export function LivingNetworkStage() {
   };
 
   return (
-    <div className="relative mx-auto w-full overflow-hidden rounded-[2.5rem] bg-[#07090E] p-6 text-white sm:p-10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.8)] border border-white/15">
+    <div className="relative mx-auto w-full overflow-hidden rounded-[2.5rem] bg-[#07080B] p-6 text-charcoal sm:p-10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.85)] border border-vaultAmber/20">
       {/* Dynamic Ambient Backlight */}
-      <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-cyan-500/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-violet-500/10 blur-[120px]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff_0.75px,transparent_0.75px)] [background-size:24px_24px] opacity-[0.04]" />
+      <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-vaultAmber/10 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(182,176,159,0.15)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
 
       {/* Section Header */}
-      <div className="relative z-10 flex flex-col justify-between gap-4 border-b border-white/10 pb-6 md:flex-row md:items-end">
+      <div className="relative z-10 flex flex-col justify-between gap-4 border-b border-vaultAmber/15 pb-6 md:flex-row md:items-end">
         <div>
-          <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">
-            <span className="h-2.5 w-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
+          <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
+            <span className="h-2 w-2 rounded-full bg-vaultAmber shadow-[0_0_8px_#B6B09F] animate-pulse" />
             <span>EXTENDED INTELLIGENCE NETWORK</span>
           </div>
-          <h3 className="mt-2 text-2xl font-normal tracking-tight text-white sm:text-3xl">
+          <h3 className="mt-2 text-2xl font-normal tracking-tight text-charcoal sm:text-3xl">
             The Thread expands across every enterprise department
           </h3>
-          <p className="mt-1 text-xs text-white/60 sm:text-sm font-mono">
-            Click any specialized node below to inspect its live cinematic vignette.
+          <p className="mt-1 text-xs text-charcoal/60 sm:text-sm font-mono">
+            Select any specialist node below to inspect its live cinematic vignette.
           </p>
         </div>
 
         <Link
           href="/solutions"
-          className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-cyan-300 underline underline-offset-4 hover:text-cyan-200 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
         >
           <span>Explore all 13 business solutions</span>
           <span>→</span>
@@ -186,10 +186,10 @@ export function LivingNetworkStage() {
       {/* Interactive Layout: Left is the Living Network Map / Right is the Active Vignette */}
       <div className="relative z-10 mt-8 grid gap-8 lg:grid-cols-12 lg:items-center">
         {/* Left: Interactive Living Neural Map */}
-        <div className="relative flex min-h-[420px] w-full flex-col justify-between rounded-3xl border border-white/15 bg-black/60 p-6 shadow-2xl backdrop-blur-xl lg:col-span-6">
-          <div className="flex items-center justify-between border-b border-white/10 pb-3 font-mono text-[10px] text-white/40 uppercase">
+        <div className="relative flex min-h-[420px] w-full flex-col justify-between rounded-3xl border border-vaultAmber/20 bg-voidSurface p-6 shadow-2xl backdrop-blur-xl lg:col-span-6">
+          <div className="flex items-center justify-between border-b border-vaultAmber/10 pb-3 font-mono text-[10px] text-charcoal/40 uppercase">
             <span>LIVING NEURAL MAP</span>
-            <span className="text-cyan-300 font-bold">SELECT NODE TO TRAVEL</span>
+            <span className="text-vaultAmber font-bold">SELECT NODE TO TRAVEL</span>
           </div>
 
           {/* SVG Connecting Thread Lines */}
@@ -205,32 +205,32 @@ export function LivingNetworkStage() {
                     y1="50"
                     x2={node.x}
                     y2={node.y}
-                    stroke={isSelected ? node.color : "#FFFFFF"}
-                    strokeOpacity={isSelected ? 0.9 : 0.15}
+                    stroke={isSelected ? node.color : "#B6B09F"}
+                    strokeOpacity={isSelected ? 0.9 : 0.2}
                     strokeWidth={isSelected ? "2" : "0.75"}
                     strokeDasharray={isSelected ? "none" : "2 2"}
-                    filter={isSelected ? `drop-shadow(0 0 8px ${node.color})` : "none"}
+                    filter={isSelected ? `drop-shadow(0 0 6px ${node.color})` : "none"}
                   />
                 );
               })}
 
               {/* Pulsing Central Hub */}
-              <circle cx="50" cy="50" r="5" fill="#FFFFFF" />
+              <circle cx="50" cy="50" r="4" fill="#B6B09F" />
               <motion.circle
                 cx="50"
                 cy="50"
-                r="11"
-                stroke="#22D3EE"
+                r="10"
+                stroke="#B6B09F"
                 strokeWidth="1"
                 fill="none"
-                animate={{ scale: [1, 1.4, 1], opacity: [0.9, 0.2, 0.9] }}
-                transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+                animate={{ scale: [1, 1.35, 1], opacity: [0.8, 0.2, 0.8] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
               />
             </svg>
 
             {/* Central Core Label */}
-            <div className="absolute top-[46%] left-[50%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-400/40 bg-black/90 px-3 py-1 font-mono text-[9px] font-bold text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.4)] pointer-events-none">
-              LAXVISH BRAIN
+            <div className="absolute top-[46%] left-[50%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-vaultAmber/30 bg-black/90 px-3 py-1 font-mono text-[9px] font-bold text-vaultAmber shadow-[0_0_15px_rgba(182,176,159,0.3)] pointer-events-none">
+              LAXVISH NUCLEUS
             </div>
 
             {/* Node Buttons positioned absolutely */}
@@ -245,12 +245,12 @@ export function LivingNetworkStage() {
                     left: `${node.x}%`,
                     top: `${node.y}%`,
                     borderColor: isSelected ? node.color : undefined,
-                    boxShadow: isSelected ? `0 0 20px ${node.color}60` : undefined,
+                    boxShadow: isSelected ? `0 0 15px ${node.color}50` : undefined,
                   }}
                   className={`group absolute -translate-x-1/2 -translate-y-1/2 rounded-2xl p-2.5 font-mono text-left transition-all duration-300 cursor-pointer ${
                     isSelected
-                      ? "border-2 bg-black text-white shadow-[0_0_25px_rgba(255,255,255,0.3)] scale-110 z-20"
-                      : "border border-white/20 bg-white/5 text-white/80 shadow-xs hover:border-white/50 hover:bg-white/15 hover:scale-105 z-10 backdrop-blur-md"
+                      ? "border-2 bg-black text-charcoal shadow-lg scale-110 z-20"
+                      : "border border-vaultAmber/20 bg-white/5 text-charcoal/80 hover:border-vaultAmber/50 hover:bg-white/10 hover:scale-105 z-10 backdrop-blur-md"
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -258,10 +258,10 @@ export function LivingNetworkStage() {
                       className="h-2 w-2 rounded-full"
                       style={{
                         backgroundColor: node.color,
-                        boxShadow: `0 0 8px ${node.color}`,
+                        boxShadow: `0 0 6px ${node.color}`,
                       }}
                     />
-                    <span className="text-[10px] font-bold tracking-tight whitespace-nowrap">
+                    <span className="text-[10px] font-semibold tracking-tight whitespace-nowrap">
                       {node.name.split(" ")[0]}
                     </span>
                   </div>
@@ -271,12 +271,12 @@ export function LivingNetworkStage() {
           </div>
 
           {/* Node Quick Summary Info */}
-          <div className="border-t border-white/10 pt-3 font-mono text-xs">
+          <div className="border-t border-vaultAmber/10 pt-3 font-mono text-xs">
             <div className="flex items-center justify-between text-[11px]">
-              <span className="text-white/40">Active Specialist:</span>
-              <span className="font-bold text-cyan-300">{activeNode.name}</span>
+              <span className="text-charcoal/40">Active Specialist:</span>
+              <span className="font-bold text-vaultAmber">{activeNode.name}</span>
             </div>
-            <p className="mt-1 text-[11px] text-white/70 italic font-serif">
+            <p className="mt-1 text-[11px] text-charcoal/70 italic font-serif">
               &ldquo;{activeNode.oneLiner}&rdquo;
             </p>
           </div>
@@ -284,7 +284,7 @@ export function LivingNetworkStage() {
 
         {/* Right: Active Specialist Vignette */}
         <div className="flex flex-col space-y-4 lg:col-span-6">
-          <div className="rounded-3xl border border-white/15 bg-black/70 p-2 shadow-2xl backdrop-blur-xl">
+          <div className="rounded-3xl border border-vaultAmber/20 bg-voidSurface p-2 shadow-2xl backdrop-blur-xl">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeNode.id}
@@ -299,18 +299,18 @@ export function LivingNetworkStage() {
           </div>
 
           {/* Context & Link */}
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 font-mono text-xs backdrop-blur-md">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-vaultAmber/15 bg-white/5 p-4 font-mono text-xs backdrop-blur-md">
             <div>
-              <span className="block text-[10px] uppercase text-cyan-300 font-bold">
+              <span className="block text-[10px] uppercase text-vaultAmber font-bold">
                 {activeNode.category} Specialization
               </span>
-              <span className="text-white/70 text-[11px]">
+              <span className="text-charcoal/70 text-[11px]">
                 {activeNode.vignetteStory}
               </span>
             </div>
             <Link
               href={`/solutions/${activeNode.slug}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-cyan-400 bg-cyan-400/20 px-4 py-1.5 font-mono text-[11px] font-semibold text-cyan-200 hover:bg-cyan-400 hover:text-black transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 rounded-full border border-vaultAmber bg-vaultAmber/15 px-4 py-1.5 font-mono text-[11px] font-semibold text-charcoal hover:bg-vaultAmber hover:text-obsidian transition-colors shadow-sm"
             >
               <span>Full {activeNode.name} Briefing</span>
               <span>→</span>

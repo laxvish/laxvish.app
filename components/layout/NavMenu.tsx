@@ -10,10 +10,10 @@ interface NavMenuProps {
 
 const getLinkClassName = (isActive: boolean): string =>
   [
-    "rounded-full px-3 py-1.5 text-sm transition-colors duration-200",
+    "rounded-full px-3 py-1.5 text-sm transition-colors duration-200 font-mono text-xs",
     isActive
-      ? "bg-charcoal/10 text-neonCyan"
-      : "text-charcoal/75 hover:text-neonCyan",
+      ? "bg-white/10 text-vaultAmber font-semibold"
+      : "text-charcoal/80 hover:text-vaultAmber",
   ].join(" ");
 
 export function NavMenu({

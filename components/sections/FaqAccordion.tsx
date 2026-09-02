@@ -45,20 +45,21 @@ export function FaqAccordion() {
       <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
         Common questions.
       </h2>
-      <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/70 sm:text-lg">
+      <p className="mt-4 max-w-2xl text-base leading-relaxed text-charcoal/70 sm:text-lg">
         If your question isn&rsquo;t here, just ask on the call. We answer honestly.
       </p>
-      <div className="mt-12 flex flex-col border-t border-charcoal">
+      <div className="mt-12 flex flex-col border-t border-vaultAmber/20">
         {faqItems.map((item, index) => (
           <details
             key={item.question}
             open={index === 0}
-            className="group border-b border-charcoal/20 py-6 transition-colors hover:bg-vaultAmber/50"
+            className="group border-b border-vaultAmber/15 py-6 transition-colors hover:bg-white/5 px-4 rounded-xl"
           >
-            <summary className="cursor-pointer list-none text-xl font-normal text-charcoal outline-none marker:hidden">
-              {item.question}
+            <summary className="cursor-pointer list-none text-xl font-normal text-charcoal outline-none marker:hidden flex justify-between items-center">
+              <span>{item.question}</span>
+              <span className="text-vaultAmber text-sm transition-transform group-open:rotate-45">+</span>
             </summary>
-            <p className="mt-6 max-w-3xl text-base leading-relaxed text-neonCyan">
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-charcoal/80">
               {item.answer}
             </p>
           </details>

@@ -18,11 +18,11 @@ export function ItHelpdeskScene() {
   }, [phase]);
 
   return (
-    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#FAF8F5] p-8 text-charcoal sm:p-12">
+    <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#07080B] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 shadow-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between font-mono text-[11px] text-charcoal/40 uppercase tracking-widest border-b border-charcoal/10 pb-4">
+      <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-widest border-b border-vaultAmber/15 pb-4">
         <span>Chapter 08 : IT Helpdesk & Nervous System</span>
-        <span>
+        <span className="text-charcoal/60">
           {phase === "broken" && "Node Interruption Detected"}
           {phase === "tracing" && "The Thread Tracing Root Cause"}
           {phase === "restored" && "System Restored"}
@@ -32,25 +32,25 @@ export function ItHelpdeskScene() {
       {/* Main Kinetic Stage */}
       <div className="relative my-auto flex w-full flex-col items-center justify-center py-6">
         {phase === "broken" && (
-          <div className="flex items-center gap-4 font-mono text-xs">
-            <div className="rounded-lg bg-white border border-charcoal/20 px-3 py-2">DEVICE</div>
-            <span>→</span>
-            <div className="rounded-lg bg-white border border-charcoal/20 px-3 py-2">NETWORK</div>
-            <span>→</span>
-            <div className="rounded-lg bg-red-100 border border-red-300 px-3 py-2 text-red-900 font-bold">
+          <div className="flex flex-wrap items-center justify-center gap-3 font-mono text-xs">
+            <div className="rounded-xl bg-voidSurface border border-vaultAmber/20 px-3.5 py-2">DEVICE</div>
+            <span className="text-vaultAmber">→</span>
+            <div className="rounded-xl bg-voidSurface border border-vaultAmber/20 px-3.5 py-2">NETWORK</div>
+            <span className="text-vaultAmber">→</span>
+            <div className="rounded-xl bg-[#1A0E0A] border border-[#A8583E]/60 px-3.5 py-2 text-[#E08A6F] font-bold">
               AUTH (STS ROLE TIMEOUT) ✗
             </div>
-            <span>→</span>
-            <div className="rounded-lg bg-white/50 border border-charcoal/10 px-3 py-2 text-charcoal/40">SERVICE</div>
+            <span className="text-vaultAmber">→</span>
+            <div className="rounded-xl bg-voidSurface/40 border border-white/5 px-3.5 py-2 text-charcoal/40">SERVICE</div>
           </div>
         )}
 
         {phase === "tracing" && (
           <div className="flex flex-col items-center gap-3 font-mono text-xs">
-            <span className="text-[10px] uppercase text-charcoal/40 tracking-wider">
+            <span className="text-[10px] uppercase text-vaultAmber/60 tracking-wider">
               VALIDATING PAGERDUTY ON-CALL ROSTER & OKTA IDENTITY
             </span>
-            <div className="rounded-full bg-charcoal px-5 py-2 text-white font-medium shadow-md">
+            <div className="rounded-full bg-voidSurface border border-vaultAmber/30 px-5 py-2 text-charcoal font-semibold shadow-lg">
               Generating 4-Hour Time-Bound STS Elevation Token
             </div>
           </div>
@@ -60,11 +60,11 @@ export function ItHelpdeskScene() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md rounded-2xl border border-charcoal/15 bg-white p-6 shadow-xl text-left font-mono text-xs"
+            className="w-full max-w-md rounded-2xl border border-vaultAmber/30 bg-gradient-to-b from-[#14151B] to-[#08080B] p-6 shadow-xl text-left font-mono text-xs"
           >
-            <div className="flex items-center justify-between border-b border-charcoal/10 pb-3 text-[10px] text-charcoal/40 uppercase">
+            <div className="flex items-center justify-between border-b border-vaultAmber/15 pb-3 text-[10px] text-vaultAmber uppercase">
               <span>SYSTEM RESTORED</span>
-              <span className="font-bold text-emerald-700">SOC-2 COMPLIANT ✓</span>
+              <span className="font-bold text-neonCyan">SOC-2 COMPLIANT ✓</span>
             </div>
             <div className="mt-4 space-y-2">
               <div className="flex justify-between">
@@ -77,7 +77,7 @@ export function ItHelpdeskScene() {
               </div>
               <div className="flex justify-between">
                 <span className="text-charcoal/50">Auto-Revocation Timer:</span>
-                <span className="font-bold text-emerald-700">Armed (03:59:42)</span>
+                <span className="font-bold text-neonCyan">Armed (03:59:42)</span>
               </div>
             </div>
           </motion.div>
@@ -85,7 +85,7 @@ export function ItHelpdeskScene() {
       </div>
 
       {/* Narrative Footer */}
-      <div className="border-t border-charcoal/10 pt-4 font-serif text-xs italic text-charcoal/60">
+      <div className="border-t border-vaultAmber/15 pt-4 font-serif text-xs italic text-charcoal/60">
         No ticket backlog. Diagnosis, intervention, and recovery happen in one unbroken motion.
       </div>
     </div>

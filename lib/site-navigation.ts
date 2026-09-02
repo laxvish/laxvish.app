@@ -32,10 +32,10 @@ export const getBookDemoUrl = (): string =>
   process.env.NEXT_PUBLIC_NEETOCAL_URL ?? DEFAULT_NEETOCAL_URL;
 
 export const BOOK_NOW_BUTTON_CLASS =
-  "relative inline-flex items-center justify-center bg-charcoal px-8 py-3 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 hover:bg-neonCyan";
+  "relative inline-flex items-center justify-center bg-charcoal px-8 py-3 text-sm font-medium tracking-wide text-obsidian transition-all duration-300 hover:bg-vaultAmber hover:text-obsidian";
 
 export const SECONDARY_HERO_CTA_CLASS =
-  "inline-flex items-center justify-center border border-charcoal/20 bg-transparent px-8 py-3 text-sm font-medium tracking-wide text-charcoal transition-colors duration-500 hover:border-charcoal hover:bg-vaultAmber";
+  "inline-flex items-center justify-center border border-charcoal/25 bg-white/5 px-8 py-3 text-sm font-medium tracking-wide text-charcoal transition-all duration-300 hover:border-vaultAmber hover:bg-vaultAmber/10";
 
 /**
  * Build the "What we automate" mega-menu group from the use cases.

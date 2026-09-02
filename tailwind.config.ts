@@ -8,10 +8,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        obsidian: "#FAFAFA", // ultra-minimal base (off-white)
-        neonCyan: "#666666", // muted secondary text/elements
-        vaultAmber: "#EAEAEA", // matte surface panels
-        charcoal: "#111111", // deep ink for typography
+        obsidian: "#000000", // pure cinematic void black
+        neonCyan: "#F2F2F2", // lunar titanium silver / starlight
+        vaultAmber: "#B6B09F", // warm champagne / brushed brass / golden thread
+        charcoal: "#EAE4D5", // warm alabaster / parchment typography
+        voidDark: "#070709", // monolithic machine surface
+        voidSurface: "#0E0F14", // elevated titanium chamber
+        voidBorder: "rgba(182, 176, 159, 0.18)", // precision micro-machined seam
+        goldThread: "#C5A880", // the living protagonist thread
       },
       keyframes: {
         pulseSlow: {

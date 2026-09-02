@@ -1,19 +1,56 @@
 @config "../tailwind.config.ts";
 @import "tailwindcss";
 
+:root {
+  --color-obsidian: #000000;
+  --color-vault-amber: #B6B09F;
+  --color-charcoal: #EAE4D5;
+  --color-neon-cyan: #F2F2F2;
+  --color-gold-thread: #C5A880;
+}
+
 body {
   @apply bg-obsidian text-charcoal antialiased;
+  background-color: #000000;
+  color: #EAE4D5;
   font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: #B6B09F;
+  color: #000000;
 }
 
 .hero-void {
-  background: #FAFAFA;
+  background: #000000;
 }
 
 .hero-void-mesh {
-  background-image: radial-gradient(#EAEAEA 1px, transparent 1px);
-  background-size: 24px 24px;
-  opacity: 0.5;
+  background-image: radial-gradient(rgba(182, 176, 159, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.6;
+}
+
+/* Cinematic film grain & letterbox subtle styling */
+.cinematic-vignette {
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+}
+
+/* Custom minimal dark scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(182, 176, 159, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(182, 176, 159, 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {

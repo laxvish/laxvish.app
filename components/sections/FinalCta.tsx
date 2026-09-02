@@ -15,11 +15,11 @@ export function FinalCta() {
       className="mx-auto w-full max-w-[90rem] px-6 py-24 sm:px-12 lg:px-16 lg:py-32"
     >
       <FadeIn yOffset={40}>
-        <SystemPanel className="border border-charcoal bg-vaultAmber p-12 text-center sm:p-20 shadow-2xl shadow-charcoal/5">
+        <SystemPanel className="border border-vaultAmber/25 bg-voidSurface p-12 text-center sm:p-20 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.9)]">
           <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
             See what an AI worker can do for your team.
           </h2>
-          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-neonCyan">
+          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-charcoal/70">
             Talk to our team. We&rsquo;ll show you a real walkthrough using
             your kind of work. 15 minutes. No pitch deck.
           </p>
@@ -45,9 +45,9 @@ export function FinalCta() {
         </SystemPanel>
       </FadeIn>
 
-      <footer className="mt-20 flex flex-col items-center justify-between gap-4 border-t border-charcoal/20 pt-8 text-xs font-medium text-neonCyan sm:flex-row">
-        <span className="tracking-[0.2em] uppercase text-charcoal">Laxvish</span>
-        <span className="tracking-wide">DPDP-ready • Built for Indian businesses</span>
+      <footer className="mt-20 flex flex-col items-center justify-between gap-4 border-t border-vaultAmber/15 pt-8 text-xs font-medium text-charcoal/60 sm:flex-row font-mono">
+        <span className="tracking-[0.2em] uppercase text-vaultAmber">Laxvish</span>
+        <span className="tracking-wide">DPDP-ready · Built for Indian businesses</span>
       </footer>
     </section>
   );

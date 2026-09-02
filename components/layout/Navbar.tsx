@@ -40,11 +40,11 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-charcoal bg-obsidian">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-vaultAmber/20 bg-obsidian/90 backdrop-blur-md">
       <div className="mx-auto flex h-20 w-full max-w-[96rem] items-center justify-between px-6 sm:h-24 sm:px-12 lg:px-16">
         <Link
           href="/"
-          className="text-lg font-normal tracking-[0.2em] uppercase text-charcoal sm:text-xl"
+          className="text-lg font-normal tracking-[0.25em] uppercase text-vaultAmber sm:text-xl font-mono"
           onClick={closeMenu}
         >
           Laxvish
@@ -66,7 +66,7 @@ export function Navbar() {
         </MagneticButton>
         <button
           type="button"
-          className="border border-charcoal px-4 py-2 text-sm font-medium tracking-wide text-charcoal transition-colors duration-300 hover:bg-charcoal hover:text-obsidian md:hidden"
+          className="border border-vaultAmber/30 px-4 py-2 text-sm font-medium tracking-wide text-charcoal transition-colors duration-300 hover:bg-vaultAmber hover:text-obsidian md:hidden rounded-lg cursor-pointer"
           onClick={() => setIsMenuOpen((current) => !current)}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-nav-panel"
@@ -78,7 +78,7 @@ export function Navbar() {
       {isMenuOpen ? (
         <div
           id="mobile-nav-panel"
-          className="border-t border-charcoal bg-obsidian px-6 py-6 md:hidden"
+          className="border-t border-vaultAmber/20 bg-obsidian px-6 py-6 md:hidden"
         >
           <NavMenu
             links={PRIMARY_NAV_LINKS}

@@ -12,12 +12,12 @@ import { LivingNetworkStage } from "@/components/visuals/engine/LivingNetworkSta
 
 export function FeaturedAgentsShowcase() {
   return (
-    <section id="the-machine" className="relative z-10 border-y border-charcoal/10 bg-obsidian">
+    <section id="the-machine" className="relative z-10 border-y border-vaultAmber/15 bg-obsidian">
       <div className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
         {/* Section Manifesto */}
         <FadeIn>
           <div className="max-w-3xl space-y-4">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-vaultAmber">
               The Workforce, Reimagined
             </p>
             <h2 className="text-[clamp(2.5rem,5.5vw,4.25rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
@@ -44,8 +44,8 @@ export function FeaturedAgentsShowcase() {
               <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
                 {/* Left: Narrative Column */}
                 <div className="space-y-6 lg:col-span-5">
-                  <div className="flex items-center gap-3 font-mono text-xs text-charcoal/50">
-                    <span className="font-bold text-charcoal">01</span>
+                  <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
+                    <span className="font-bold text-vaultAmber">01</span>
                     <span>/</span>
                     <span className="uppercase tracking-wider">REVENUE & GROWTH</span>
                   </div>
@@ -63,25 +63,25 @@ export function FeaturedAgentsShowcase() {
                   </p>
 
                   {/* Key Metrics */}
-                  <div className="grid grid-cols-3 gap-3 border-y border-charcoal/10 py-4 font-mono text-xs">
+                  <div className="grid grid-cols-3 gap-3 border-y border-vaultAmber/15 py-4 font-mono text-xs">
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">Response</span>
                       <span className="font-bold text-charcoal mt-0.5 block">&lt; 2 mins</span>
                     </div>
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">ICP Fit</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">96.4% Tier-1</span>
+                      <span className="font-bold text-vaultAmber mt-0.5 block">96.4% Tier-1</span>
                     </div>
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">CRM Sync</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">HubSpot / SF</span>
+                      <span className="font-bold text-neonCyan mt-0.5 block">HubSpot / SF</span>
                     </div>
                   </div>
 
                   <div>
                     <Link
                       href="/solutions/sales-automation"
-                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-charcoal underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
                     >
                       <span>Explore Sales Engine specification</span>
                       <span>→</span>
@@ -91,7 +91,7 @@ export function FeaturedAgentsShowcase() {
 
                 {/* Right: Cinematic Visual */}
                 <div className="lg:col-span-7">
-                  <div className="group relative rounded-[2.5rem] p-2 bg-charcoal/5 ring-1 ring-charcoal/10 shadow-2xl transition-all duration-700">
+                  <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
                     <SalesScene />
                   </div>
                 </div>
@@ -105,15 +105,15 @@ export function FeaturedAgentsShowcase() {
               <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
                 {/* Left: Cinematic Visual */}
                 <div className="lg:col-span-7 lg:order-1 order-2">
-                  <div className="group relative rounded-[2.5rem] p-2 bg-charcoal/5 ring-1 ring-charcoal/10 shadow-2xl transition-all duration-700">
+                  <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
                     <SupportScene />
                   </div>
                 </div>
 
                 {/* Right: Narrative Column */}
                 <div className="space-y-6 lg:col-span-5 lg:order-2 order-1">
-                  <div className="flex items-center gap-3 font-mono text-xs text-charcoal/50">
-                    <span className="font-bold text-charcoal">02</span>
+                  <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
+                    <span className="font-bold text-vaultAmber">02</span>
                     <span>/</span>
                     <span className="uppercase tracking-wider">CUSTOMER OPERATIONS</span>
                   </div>
@@ -131,25 +131,25 @@ export function FeaturedAgentsShowcase() {
                   </p>
 
                   {/* Key Metrics */}
-                  <div className="grid grid-cols-3 gap-3 border-y border-charcoal/10 py-4 font-mono text-xs">
+                  <div className="grid grid-cols-3 gap-3 border-y border-vaultAmber/15 py-4 font-mono text-xs">
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">Resolution</span>
                       <span className="font-bold text-charcoal mt-0.5 block">1.4s Live</span>
                     </div>
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">Language</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">Hinglish / Multi</span>
+                      <span className="font-bold text-vaultAmber mt-0.5 block">Hinglish / Multi</span>
                     </div>
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">Verification</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">Brakes Gated</span>
+                      <span className="font-bold text-neonCyan mt-0.5 block">Brakes Gated</span>
                     </div>
                   </div>
 
                   <div>
                     <Link
                       href="/solutions/customer-support"
-                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-charcoal underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
                     >
                       <span>Explore Support Desk specification</span>
                       <span>→</span>
@@ -166,8 +166,8 @@ export function FeaturedAgentsShowcase() {
               <div className="space-y-8">
                 <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                   <div className="max-w-2xl space-y-2">
-                    <div className="flex items-center gap-3 font-mono text-xs text-charcoal/50">
-                      <span className="font-bold text-charcoal">03</span>
+                    <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
+                      <span className="font-bold text-vaultAmber">03</span>
                       <span>/</span>
                       <span className="uppercase tracking-wider">FINANCE & LEDGER</span>
                     </div>
@@ -181,7 +181,7 @@ export function FeaturedAgentsShowcase() {
 
                   <Link
                     href="/solutions/document-processing"
-                    className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-charcoal underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
                   >
                     <span>Explore Document Parser specification</span>
                     <span>→</span>
@@ -189,7 +189,7 @@ export function FeaturedAgentsShowcase() {
                 </div>
 
                 {/* Full Width Cinematic Container */}
-                <div className="group relative rounded-[2.5rem] p-2 bg-charcoal/5 ring-1 ring-charcoal/10 shadow-2xl transition-all duration-700">
+                <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
                   <DocumentScene />
                 </div>
               </div>
@@ -202,8 +202,8 @@ export function FeaturedAgentsShowcase() {
               <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
                 {/* Left: Narrative Column */}
                 <div className="space-y-6 lg:col-span-5">
-                  <div className="flex items-center gap-3 font-mono text-xs text-charcoal/50">
-                    <span className="font-bold text-charcoal">04</span>
+                  <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
+                    <span className="font-bold text-vaultAmber">04</span>
                     <span>/</span>
                     <span className="uppercase tracking-wider">ORGANIZATIONAL MEMORY</span>
                   </div>
@@ -221,25 +221,25 @@ export function FeaturedAgentsShowcase() {
                   </p>
 
                   {/* Key Metrics */}
-                  <div className="grid grid-cols-3 gap-3 border-y border-charcoal/10 py-4 font-mono text-xs">
+                  <div className="grid grid-cols-3 gap-3 border-y border-vaultAmber/15 py-4 font-mono text-xs">
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">Memory Index</span>
                       <span className="font-bold text-charcoal mt-0.5 block">4,200+ Docs</span>
                     </div>
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">Query Speed</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">14ms Latency</span>
+                      <span className="font-bold text-vaultAmber mt-0.5 block">14ms Latency</span>
                     </div>
                     <div>
                       <span className="block text-[10px] text-charcoal/40 uppercase">Governance</span>
-                      <span className="font-bold text-charcoal mt-0.5 block">RBAC Gated</span>
+                      <span className="font-bold text-neonCyan mt-0.5 block">RBAC Gated</span>
                     </div>
                   </div>
 
                   <div>
                     <Link
                       href="/solutions/internal-knowledge"
-                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-charcoal underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
                     >
                       <span>Explore Knowledge Assistant specification</span>
                       <span>→</span>
@@ -249,7 +249,7 @@ export function FeaturedAgentsShowcase() {
 
                 {/* Right: Expansive Memory Visual */}
                 <div className="lg:col-span-7">
-                  <div className="group relative rounded-[2.5rem] p-2 bg-charcoal/5 ring-1 ring-charcoal/10 shadow-2xl transition-all duration-700">
+                  <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
                     <KnowledgeScene />
                   </div>
                 </div>
@@ -263,8 +263,8 @@ export function FeaturedAgentsShowcase() {
               <div className="space-y-8">
                 <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                   <div className="max-w-2xl space-y-2">
-                    <div className="flex items-center gap-3 font-mono text-xs text-charcoal/50">
-                      <span className="font-bold text-charcoal">05</span>
+                    <div className="flex items-center gap-3 font-mono text-xs text-vaultAmber/60">
+                      <span className="font-bold text-vaultAmber">05</span>
                       <span>/</span>
                       <span className="uppercase tracking-wider">TELEPHONY & MESSAGING</span>
                     </div>
@@ -278,7 +278,7 @@ export function FeaturedAgentsShowcase() {
 
                   <Link
                     href="/solutions/voice-whatsapp"
-                    className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-charcoal underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-vaultAmber underline underline-offset-4 hover:text-neonCyan transition-colors cursor-pointer"
                   >
                     <span>Explore Voice & WhatsApp specification</span>
                     <span>→</span>
@@ -286,7 +286,7 @@ export function FeaturedAgentsShowcase() {
                 </div>
 
                 {/* Symmetrical Dual-Stream Container */}
-                <div className="group relative rounded-[2.5rem] p-2 bg-charcoal/5 ring-1 ring-charcoal/10 shadow-2xl transition-all duration-700">
+                <div className="group relative rounded-[2.5rem] p-2 bg-voidSurface/60 ring-1 ring-vaultAmber/20 shadow-2xl transition-all duration-700">
                   <VoiceWhatsAppScene />
                 </div>
               </div>
