@@ -25,7 +25,6 @@ export default function CallmePage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        shape="sphere"
       />
       <PageBlocks
         details={content.details}

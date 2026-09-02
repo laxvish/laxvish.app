@@ -1,19 +1,19 @@
 "use client";
 
-import { type MouseEvent, type ReactNode } from "react";
+import { type ElementType, type MouseEvent, type ReactNode } from "react";
 import {
-  motion,
   useMotionValue,
   useReducedMotion,
   useSpring,
 } from "framer-motion";
 import { ExecutionPhase, ValidationPhase } from "@/lib/motion-system";
+import { resolveMotionComponent } from "@/components/ui/withMotion";
 
 interface MagneticButtonProps {
   children: ReactNode;
   className?: string;
-  as?: any;
-  [key: string]: any;
+  as?: ElementType;
+  [key: string]: unknown;
 }
 
 export function MagneticButton({
@@ -45,9 +45,13 @@ export function MagneticButton({
     y.set(0);
   };
 
-  const MotionComponent = motion.create(Component as any);
+  // Not a render-time creation: `resolveMotionComponent` returns a reference
+  // from a registry populated once at module scope (see withMotion.ts), so
+  // element identity is stable across renders and no subtree state is reset.
+  const MotionComponent = resolveMotionComponent(Component);
 
   return (
+    /* eslint-disable-next-line react-hooks/static-components -- false positive: MotionComponent is a module-scope singleton, see withMotion.ts */
     <MotionComponent
       {...props}
       style={magneticEnabled ? { x: springX, y: springY } : undefined}
@@ -67,7 +71,7 @@ export function MagneticButton({
           ease: ValidationPhase.ease 
         }
       }}
-      className={className ?? `rounded-full border border-vaultAmber bg-transparent px-5 py-2 text-sm font-medium text-vaultAmber transition-shadow duration-200 hover:shadow-[0_0_18px_rgba(182,176,159,0.38)]`}
+      className={className ?? `border border-charcoal/20 bg-transparent px-5 py-2 text-sm font-medium text-charcoal transition-colors duration-200 hover:border-charcoal hover:bg-vaultAmber`}
     >
       {children}
     </MotionComponent>

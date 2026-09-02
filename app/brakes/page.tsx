@@ -25,7 +25,6 @@ export default function BrakesPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        shape="cone"
       />
       <PageBlocks
         details={content.details}

@@ -33,6 +33,14 @@ const actionLabels: Record<LeadCaptureAction, string> = {
   blueprint: "Get Integration Blueprint",
 };
 
+// Visible label styling: uppercase overline, per AGENTS.md §2.
+const LABEL_CLASS =
+  "mb-2 block text-[10px] font-medium uppercase tracking-[0.2em] text-neonCyan";
+
+// Underline field with a crisp, colour-free focus indicator (WCAG 2.4.7).
+const FIELD_CLASS =
+  "border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan/70 focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber";
+
 export function ContactPanel() {
   const [formData, setFormData] = useState<ContactFormData>(initialFormData);
   const [action, setAction] = useState<LeadCaptureAction>("pilot");
@@ -112,7 +120,7 @@ export function ContactPanel() {
       id="contact"
       className="mx-auto w-full max-w-4xl px-6 py-24 sm:px-12 lg:py-32"
     >
-      <SystemPanel className="border border-charcoal bg-vaultAmber p-8 sm:p-12 shadow-2xl shadow-charcoal/5">
+      <SystemPanel className="border border-charcoal bg-vaultAmber p-8 sm:p-12">
         <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
           Let’s talk about your work.
         </h2>
@@ -149,32 +157,72 @@ export function ContactPanel() {
           </motion.button>
         </div>
 
-        <form className="mt-8 grid gap-6 sm:grid-cols-2" onSubmit={onSubmit}>
+        <form className="mt-8 grid gap-6 sm:grid-cols-2" onSubmit={onSubmit} aria-describedby="lead-feedback">
+          <div>
+            <label htmlFor="lead-name" className={LABEL_CLASS}>
+              Name
+            </label>
+            <input
+              id="lead-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              value={formData.name}
+              onChange={updateField("name")}
+              required
+              className={`w-full ${FIELD_CLASS}`}
+            />
+          </div>
+          <div>
+            <label htmlFor="lead-work-email" className={LABEL_CLASS}>
+              Work Email
+            </label>
+            <input
+              id="lead-work-email"
+              name="workEmail"
+              type="email"
+              autoComplete="email"
+              value={formData.workEmail}
+              onChange={updateField("workEmail")}
+              required
+              className={`w-full ${FIELD_CLASS}`}
+            />
+          </div>
+          <div>
+            <label htmlFor="lead-company" className={LABEL_CLASS}>
+              Company
+            </label>
+            <input
+              id="lead-company"
+              name="company"
+              type="text"
+              autoComplete="organization"
+              value={formData.company}
+              onChange={updateField("company")}
+              required
+              className={`w-full ${FIELD_CLASS}`}
+            />
+          </div>
+          <div>
+            <label htmlFor="lead-use-case" className={LABEL_CLASS}>
+              Use Case
+            </label>
+            <textarea
+              id="lead-use-case"
+              name="useCase"
+              rows={4}
+              value={formData.useCase}
+              onChange={updateField("useCase")}
+              required
+              className={`w-full sm:col-span-2 ${FIELD_CLASS}`}
+            />
+          </div>
+          {/* Honeypot anti-spam field: never exposed to users or assistive tech. */}
+          <label htmlFor="lead-website" className="hidden" aria-hidden="true">
+            Website
+          </label>
           <input
-            type="text"
-            value={formData.name}
-            onChange={updateField("name")}
-            placeholder="Name"
-            required
-            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
-          />
-          <input
-            type="email"
-            value={formData.workEmail}
-            onChange={updateField("workEmail")}
-            placeholder="Work Email"
-            required
-            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
-          />
-          <input
-            type="text"
-            value={formData.company}
-            onChange={updateField("company")}
-            placeholder="Company"
-            required
-            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none"
-          />
-          <input
+            id="lead-website"
             type="text"
             value={formData.website}
             onChange={updateField("website")}
@@ -183,20 +231,12 @@ export function ContactPanel() {
             aria-hidden="true"
             className="hidden"
           />
-          <textarea
-            value={formData.useCase}
-            onChange={updateField("useCase")}
-            placeholder="Use Case"
-            required
-            rows={4}
-            className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none sm:col-span-2"
-          />
           <motion.button
             type="submit"
             disabled={isSubmitting}
             whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
             whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className="mt-6 inline-flex items-center justify-center bg-charcoal px-8 py-4 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 disabled:opacity-50 hover:bg-neonCyan sm:col-span-2 sm:w-auto sm:justify-start"
+            className="mt-6 inline-flex items-center justify-center bg-charcoal px-8 py-4 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber disabled:opacity-50 hover:bg-neonCyan sm:col-span-2 sm:w-auto sm:justify-start"
           >
             {isSubmitting ? "Capturing..." : actionLabels[action]}
           </motion.button>
@@ -204,12 +244,14 @@ export function ContactPanel() {
 
         {feedback.status !== "idle" ? (
           <p
-            className={`mt-6 text-sm font-medium tracking-wide ${
-              feedback.status === "success"
-                ? "text-charcoal"
-                : "text-red-700"
-            }`}
+            id="lead-feedback"
+            role="status"
+            aria-live="polite"
+            className="mt-6 text-sm font-medium tracking-wide text-charcoal"
           >
+            <span className="uppercase tracking-[0.2em] text-neonCyan">
+              {feedback.status === "success" ? "Received — " : "Not sent — "}
+            </span>
             {feedback.message}
             {feedback.referenceId ? ` Reference: ${feedback.referenceId}` : ""}
           </p>

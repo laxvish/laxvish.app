@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
-import { MouseEvent, useEffect, useMemo } from "react";
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform, useScroll } from "framer-motion";
+import { MouseEvent, useEffect } from "react";
 
 interface AIFabricProps {
   /**
@@ -24,9 +24,14 @@ export function AIFabric({
   // Config multipliers based on intensity & variant
   const isHero = intensity === 1;
   const isFocus = intensity === 3;
-  
+
+  // Honour the OS-level "reduce motion" preference: the field holds a static
+  // frame instead of running its scroll/rotate loops. WCAG 2.3.3.
+  const prefersReducedMotion = useReducedMotion();
+  const motionEnabled = !prefersReducedMotion;
+
   let speedMultiplier = intensity === 1 ? 1 : intensity === 2 ? 0.3 : 0.05;
-  let baseOpacity = intensity === 1 ? 1 : intensity === 2 ? 0.6 : 0.2;
+  const baseOpacity = intensity === 1 ? 1 : intensity === 2 ? 0.6 : 0.2;
 
   // Page-specific variants
   if (variant === "workers") speedMultiplier *= 1.3;
@@ -92,22 +97,25 @@ export function AIFabric({
   const cameraScrollScale = useTransform(scrollY, scrollBreakpoints, [1, 1.01, 1.03, 1.06, 1]);
   const interactionScale = useTransform(smoothInteraction, [0, 1], [0, 0.02]);
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const finalCameraScale = isHero 
-    ? useTransform([cameraScrollScale, interactionScale, warpScale], (([s, i, ws]: any) => s + i + ws) as any)
-    : useTransform([interactionScale, warpScale], (([i, ws]: any) => 1 + i + ws) as any);
+  // Both camera scales are computed unconditionally so the hook count never
+  // depends on `intensity`. Selecting between them happens after the hooks.
+  const cameraScaleHero = useTransform(
+    [cameraScrollScale, interactionScale, warpScale],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (([s, i, ws]: number[]) => s + i + ws) as any,
+  );
+  const cameraScaleAmbient = useTransform(
+    [interactionScale, warpScale],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (([i, ws]: number[]) => 1 + i + ws) as any,
+  );
+  const finalCameraScale = isHero ? cameraScaleHero : cameraScaleAmbient;
 
-  // Dynamic Lighting System
-  const lightX = useTransform(smoothMouseX, [0, 1], ["-10%", "10%"]);
-  const lightY = useTransform(smoothMouseY, [0, 1], ["-10%", "10%"]);
-  
-  // Hero Scroll Lighting: Soft (0.03) -> Slight Incr (0.045) -> Sharper (0.07) -> Max (0.12) -> Soft (0.03)
-  const scrollLightIntensity = useTransform(scrollY, scrollBreakpoints, [0.03, 0.045, 0.07, 0.12, 0.03]);
-  const interactionLightBoost = useTransform(smoothInteraction, [0, 1], [0, 0.05]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const finalLightIntensity = isHero
-    ? useTransform([scrollLightIntensity, interactionLightBoost, warpLight], (([base, boost, wl]: any) => base + boost + wl) as any)
-    : useTransform([interactionLightBoost, warpLight], (([boost, wl]: any) => (isFocus ? 0.01 : 0.03) + boost + wl) as any);
+  // NOTE: The former "Dynamic Lighting System" derived lightX / lightY /
+  // scrollLightIntensity / interactionLightBoost and a final intensity, but no
+  // element ever consumed them — the whole chain was inert and was removed
+  // rather than wired up, so this edit changes no pixels. `warpLight` is kept
+  // because the transition effect below still drives it.
 
   // Structural Alignment mapped to Scroll (5-State Progression)
   
@@ -154,7 +162,7 @@ const finalLightIntensity = isHero
   return (
     <div 
       className={`absolute inset-0 z-0 overflow-hidden [perspective:1200px] transition-colors duration-700 ${
-        theme === "light" ? "bg-[#F6F1F1]" : "bg-obsidian"
+        theme === "light" ? "bg-vaultAmber" : "bg-obsidian"
       }`}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => !isFocus && isInteracting.set(1)}
@@ -172,12 +180,12 @@ const finalLightIntensity = isHero
       {/* AMBIENT LIGHTING OVERLAY */}
       <motion.div 
         className="absolute inset-0 pointer-events-none z-30 opacity-40 mix-blend-overlay"
-        animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
-        transition={{ duration: 20 / speedMultiplier, repeat: Infinity, ease: "linear" }}
+        animate={motionEnabled ? { backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] } : { backgroundPosition: "0% 0%" }}
+        transition={motionEnabled ? { duration: 20 / speedMultiplier, repeat: Infinity, ease: "linear" } : { duration: 0 }}
         style={{
           backgroundImage: theme === "light"
-            ? "radial-gradient(ellipse at top left, rgba(25,167,206,0.08) 0%, transparent 70%)"
-            : "radial-gradient(ellipse at top left, rgba(182,176,159,0.15) 0%, transparent 70%)",
+            ? "radial-gradient(ellipse at top left, rgba(17,17,17,0.06) 0%, transparent 70%)"
+            : "radial-gradient(ellipse at top left, rgba(102,102,102,0.14) 0%, transparent 70%)",
           backgroundSize: "200% 200%"
         }}
       />
@@ -192,14 +200,14 @@ const finalLightIntensity = isHero
           y: transitionPanY,
           transformStyle: "preserve-3d" 
         }}
-        animate={isFocus ? {} : {
+        animate={motionEnabled && !isFocus ? {
           x: ["-1%", "1%", "-1%"],
           y: ["-1%", "1%", "-1%"],
-        }}
-        transition={{
+        } : {}}
+        transition={motionEnabled ? {
           x: { duration: 15 / speedMultiplier, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 18 / speedMultiplier, repeat: Infinity, ease: "easeInOut" },
-        }}
+        } : { duration: 0 }}
       >
         {/* LAYER 1: Deep Background Field */}
         <motion.div
@@ -207,33 +215,34 @@ const finalLightIntensity = isHero
             theme === "light" ? "mix-blend-multiply bg-black/10" : "mix-blend-screen bg-vaultAmber"
           }`}
           style={{ translateZ: zOffsetLayer1, borderRadius: finalRadius1 }}
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 50 / speedMultiplier, repeat: Infinity, ease: "linear" }}
+          animate={motionEnabled ? { rotate: [0, 360] } : { rotate: 0 }}
+          transition={motionEnabled ? { duration: 50 / speedMultiplier, repeat: Infinity, ease: "linear" } : { duration: 0 }}
         />
 
-        {/* LAYER 2: Midground Fabric */}
+        {/* LAYER 2: Midground Fabric — matte surface with a hairline edge.
+            Glass and drop-shadow treatments were removed here per AGENTS.md §4.3/§4.5. */}
         <motion.div
-          className={`absolute right-[-10vw] w-[80vw] h-[90vh] border-[1px] backdrop-blur-sm shadow-sm transition-colors duration-700 ${
-            theme === "light" ? "mix-blend-multiply bg-black/5 border-black/5" : "mix-blend-screen bg-charcoal/5 border-vaultAmber/10"
+          className={`absolute right-[-10vw] w-[80vw] h-[90vh] border-[1px] transition-colors duration-700 ${
+            theme === "light" ? "mix-blend-multiply bg-black/5 border-black/10" : "mix-blend-screen bg-charcoal/5 border-vaultAmber/20"
           }`}
           style={{ translateZ: zOffsetLayer2, borderRadius: finalRadius2 }}
-          animate={{ rotate: [0, -360] }}
-          transition={{ duration: 45 / speedMultiplier, repeat: Infinity, ease: "linear" }}
+          animate={motionEnabled ? { rotate: [0, -360] } : { rotate: 0 }}
+          transition={motionEnabled ? { duration: 45 / speedMultiplier, repeat: Infinity, ease: "linear" } : { duration: 0 }}
         >
           <div className="absolute inset-0 rounded-[inherit] border border-t-vaultAmber/20 border-l-vaultAmber/10 border-b-transparent border-r-transparent mix-blend-overlay" />
         </motion.div>
 
         {/* LAYER 3: Foreground Structured Flow */}
         <motion.div
-          className={`absolute right-[5vw] w-[60vw] h-[70vh] border-[1px] backdrop-blur-md transition-colors duration-700 ${
-            theme === "light" ? "mix-blend-normal bg-white/40 border-black/5 shadow-lg" : "mix-blend-screen bg-obsidian/40 border-neonCyan/10 shadow-2xl"
+          className={`absolute right-[5vw] w-[60vw] h-[70vh] border-[1px] transition-colors duration-700 ${
+            theme === "light" ? "mix-blend-normal bg-white/40 border-black/10" : "mix-blend-screen bg-obsidian/40 border-neonCyan/20"
           }`}
           style={{ translateZ: zOffsetLayer3, borderRadius: finalRadius3 }}
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 35 / speedMultiplier, repeat: Infinity, ease: "linear" }}
+          animate={motionEnabled ? { rotate: [0, 360] } : { rotate: 0 }}
+          transition={motionEnabled ? { duration: 35 / speedMultiplier, repeat: Infinity, ease: "linear" } : { duration: 0 }}
         >
            <div className={`absolute inset-0 mix-blend-overlay rounded-[inherit] ${
-             theme === "light" ? "bg-gradient-to-br from-black/5" : "bg-gradient-to-br from-vaultAmber/10"
+             theme === "light" ? "bg-black/5" : "bg-vaultAmber/10"
            }`} />
         </motion.div>
 

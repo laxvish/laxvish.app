@@ -27,6 +27,28 @@ export function getSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? DEFAULT_SITE_URL;
 }
 
+/**
+ * Absolute URL for the generated social card (app/opengraph-image.tsx).
+ * Declared explicitly rather than relying on `metadataBase`, because several
+ * crawlers do not resolve relative og:image URLs.
+ */
+function absoluteOgImage(): string {
+  return `${getSiteUrl().replace(/\/$/, "")}/opengraph-image`;
+}
+
+const OG_IMAGE_ALT = "Laxvish — an AI operating system for Indian enterprises";
+
+function ogImages() {
+  return [
+    {
+      url: absoluteOgImage(),
+      width: 1200,
+      height: 630,
+      alt: OG_IMAGE_ALT,
+    },
+  ];
+}
+
 export function buildPageMetadata({
   title,
   description,
@@ -54,11 +76,13 @@ export function buildPageMetadata({
       siteName: SITE_NAME,
       type: "website",
       locale: "en_IN",
+      images: ogImages(),
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | ${SITE_NAME}`,
       description,
+      images: ogImages(),
     },
   };
 }
@@ -82,11 +106,13 @@ export const ROOT_METADATA: Metadata = {
     siteName: SITE_NAME,
     type: "website",
     locale: "en_IN",
+    images: ogImages(),
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} | ${DEFAULT_TITLE}`,
     description: DEFAULT_DESCRIPTION,
+    images: ogImages(),
   },
   robots: {
     index: true,

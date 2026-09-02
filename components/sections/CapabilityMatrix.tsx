@@ -44,7 +44,7 @@ export function CapabilityMatrix() {
         {capabilityCards.map((card) => (
           <article
             key={card.title}
-            className="rounded-xl border border-charcoal/20 bg-[#F6F1F1]/30 p-6"
+            className="rounded-xl border border-charcoal/20 bg-vaultAmber/30 p-6"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-neonCyan">{card.title}</h3>

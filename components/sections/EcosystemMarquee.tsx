@@ -50,7 +50,7 @@ const laneB: string[] = [
 
 export function EcosystemMarquee() {
   return (
-    <section className="border-y border-charcoal/20 bg-[#F6F1F1]/25">
+    <section className="border-y border-charcoal/20 bg-vaultAmber/25">
       <div className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <h2 className="text-2xl font-bold text-charcoal [font-family:var(--font-space-grotesk)] sm:text-3xl lg:text-4xl">
           Ecosystem Pathways, Flowing as One Neural Fabric

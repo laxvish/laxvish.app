@@ -191,7 +191,7 @@ export function CareersApplicationPanel() {
 
   return (
     <section className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6 sm:py-16 lg:py-20">
-      <div className="rounded-2xl border border-charcoal/20 bg-[#F6F1F1]/30 p-6 sm:p-8">
+      <div className="rounded-none border border-charcoal/20 bg-vaultAmber/30 p-6 sm:p-8">
         <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
           Apply to build enterprise AI with us
         </h2>
@@ -219,10 +219,10 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.name)}
               aria-describedby={errors.name ? "career-name-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-[#F6F1F1] px-4 py-3 text-sm text-[#146C94] focus:border-vaultAmber focus:outline-none"
+              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
             />
             {errors.name ? (
-              <p id="career-name-error" className="mt-1 text-sm text-vaultAmber">
+              <p id="career-name-error" className="mt-1 text-sm font-medium text-charcoal">
                 {errors.name}
               </p>
             ) : null}
@@ -244,10 +244,10 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.workEmail)}
               aria-describedby={errors.workEmail ? "career-workEmail-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-[#F6F1F1] px-4 py-3 text-sm text-[#146C94] focus:border-vaultAmber focus:outline-none"
+              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
             />
             {errors.workEmail ? (
-              <p id="career-workEmail-error" className="mt-1 text-sm text-vaultAmber">
+              <p id="career-workEmail-error" className="mt-1 text-sm font-medium text-charcoal">
                 {errors.workEmail}
               </p>
             ) : null}
@@ -269,10 +269,10 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.phone)}
               aria-describedby={errors.phone ? "career-phone-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-[#F6F1F1] px-4 py-3 text-sm text-[#146C94] focus:border-vaultAmber focus:outline-none"
+              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
             />
             {errors.phone ? (
-              <p id="career-phone-error" className="mt-1 text-sm text-vaultAmber">
+              <p id="career-phone-error" className="mt-1 text-sm font-medium text-charcoal">
                 {errors.phone}
               </p>
             ) : null}
@@ -292,13 +292,13 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.roleTrack)}
               aria-describedby={errors.roleTrack ? "career-roleTrack-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-[#F6F1F1] px-4 py-3 text-sm text-[#146C94] focus:border-vaultAmber focus:outline-none"
+              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
             >
               <option value="internship">Internship</option>
               <option value="full-time">Full-time job</option>
             </select>
             {errors.roleTrack ? (
-              <p id="career-roleTrack-error" className="mt-1 text-sm text-vaultAmber">
+              <p id="career-roleTrack-error" className="mt-1 text-sm font-medium text-charcoal">
                 {errors.roleTrack}
               </p>
             ) : null}
@@ -320,10 +320,10 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.portfolioUrl)}
               aria-describedby={errors.portfolioUrl ? "career-portfolioUrl-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-[#F6F1F1] px-4 py-3 text-sm text-[#146C94] focus:border-vaultAmber focus:outline-none"
+              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
             />
             {errors.portfolioUrl ? (
-              <p id="career-portfolioUrl-error" className="mt-1 text-sm text-vaultAmber">
+              <p id="career-portfolioUrl-error" className="mt-1 text-sm font-medium text-charcoal">
                 {errors.portfolioUrl}
               </p>
             ) : null}
@@ -345,10 +345,10 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.resumeUrl)}
               aria-describedby={errors.resumeUrl ? "career-resumeUrl-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-[#F6F1F1] px-4 py-3 text-sm text-[#146C94] focus:border-vaultAmber focus:outline-none"
+              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
             />
             {errors.resumeUrl ? (
-              <p id="career-resumeUrl-error" className="mt-1 text-sm text-vaultAmber">
+              <p id="career-resumeUrl-error" className="mt-1 text-sm font-medium text-charcoal">
                 {errors.resumeUrl}
               </p>
             ) : null}
@@ -369,10 +369,10 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.whyJoin)}
               aria-describedby={errors.whyJoin ? "career-whyJoin-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-[#F6F1F1] px-4 py-3 text-sm text-[#146C94] focus:border-vaultAmber focus:outline-none"
+              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
             />
             {errors.whyJoin ? (
-              <p id="career-whyJoin-error" className="mt-1 text-sm text-vaultAmber">
+              <p id="career-whyJoin-error" className="mt-1 text-sm font-medium text-charcoal">
                 {errors.whyJoin}
               </p>
             ) : null}
@@ -392,7 +392,7 @@ export function CareersApplicationPanel() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-2 rounded-full bg-[#AFD3E2] px-6 py-3 text-sm font-semibold text-[#146C94] transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 sm:w-fit"
+            className="mt-2 inline-flex items-center justify-center bg-charcoal px-6 py-3 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 hover:bg-neonCyan disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 sm:w-fit"
           >
             {isSubmitting ? "Submitting..." : "Submit application"}
           </button>
@@ -404,7 +404,7 @@ export function CareersApplicationPanel() {
 
         {feedback.status !== "idle" ? (
           <p
-            className={`mt-4 text-sm ${feedback.status === "success" ? "text-neonCyan" : "text-vaultAmber"}`}
+            className={`mt-4 text-sm ${feedback.status === "success" ? "text-neonCyan" : "text-charcoal"}`}
             role="status"
             aria-live="polite"
           >

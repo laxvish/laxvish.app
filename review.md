@@ -94,3 +94,25 @@
 ## Validation Notes
 - Lint and production build are passing.
 - `framer-motion` is included in `package.json`.
+
+## Correction — 2026-03-05
+
+The claims in item 10 above were **aspirational, not factual**, when this file
+was written. `@react-three/fiber`, `@react-three/drei`, `three` and
+`@types/three` were still in `package.json`, and an orphaned R3F component
+(`components/visuals/MiniHeroShape.tsx`) was still in the tree importing them.
+
+All of it is now actually removed:
+
+- Deleted `components/visuals/MiniHeroShape.tsx` (imported by nothing; the sole
+  importer of the R3F packages).
+- Removed from `package.json`: `three`, `@react-three/fiber`,
+  `@react-three/drei`, `matter-js`, `animejs`, `motion`, `@types/three`,
+  `@types/matter-js`. `package-lock.json` regenerated and verified in sync.
+- `framer-motion` is retained — it is what the animation layer actually imports
+  (the `motion` package was never used).
+
+`README.md` carried the same class of drift (a Vitest suite that does not exist,
+a `deploy-vercel.yml` workflow that does not exist, port 3000, and a claim that
+the banned Geist font is preloaded). Those are corrected there, and
+`CONTRIBUTING.md` now exists.

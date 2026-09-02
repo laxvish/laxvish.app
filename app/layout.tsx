@@ -37,7 +37,9 @@ export default function RootLayout({
     "@type": "Organization",
     name: "Laxvish",
     url: siteUrl,
-    logo: `${siteUrl}/icon.png`, // Make sure you have an icon.png in your /public or /app folder
+    // Next serves app/icon.tsx at /icon (NOT /icon.png) — verified against the
+    // running build. 512x512 PNG, above Google's 112x112 logo minimum.
+    logo: `${siteUrl}/icon`,
     description: "Enterprise AI Operating System",
     // sameAs: [ "https://twitter.com/your-handle", "https://linkedin.com/company/your-page" ] // Uncomment and add your socials when ready
   };
@@ -75,8 +77,14 @@ export default function RootLayout({
         />
         <GlobalAIFabric />
         <NoiseOverlay />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:border focus:border-charcoal focus:bg-obsidian focus:px-4 focus:py-2 focus:text-sm focus:tracking-wide focus:text-charcoal"
+        >
+          Skip to content
+        </a>
         <Navbar />
-        <main className="relative z-10 flex min-h-screen flex-col">
+        <main id="main-content" className="relative z-10 flex min-h-screen flex-col">
           <PageTransitionProvider>
             {children}
           </PageTransitionProvider>

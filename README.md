@@ -23,7 +23,7 @@ This is a website-only implementation focused on the marketing and product narra
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Animations:** GSAP, Framer Motion, Rive Canvas
-- **Testing:** Vitest
+- **Testing:** Node.js built-in test runner (`node:test`, Node 22 + `--experimental-strip-types`)
 - **Deployment:** Vercel (CI via GitHub Actions)
 
 ---
@@ -50,7 +50,7 @@ Run the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. The page auto-refreshes on edits to `app/page.tsx` and related components.
+Open [http://localhost:3050](http://localhost:3050) in your browser. The page auto-refreshes on edits to `app/page.tsx` and related components.
 
 To use your own Book Demo popup target, set:
 
@@ -71,11 +71,11 @@ npm start
 
 | Script | Purpose |
 |--------|---------|
-| `npm run dev` | Start development server (port 3000) |
+| `npm run dev` | Start development server (port 3050) |
 | `npm run build` | Optimized production build |
 | `npm start` | Start production server |
 | `npm run lint` | Run ESLint on source files |
-| `npm test` | Run Vitest suite (enterprise vault + API route) |
+| `npm test` | Run the Node test suite (rate limiter, hex math, AGENTS.md conformance) |
 
 ---
 
@@ -117,7 +117,9 @@ Run tests locally:
 npm test
 ```
 
-Expected output: **7 passing tests**.
+Expected output: **17 tests — 13 passing, 0 failing, 4 pending**.
+The 4 pending tests are `todo`-marked in `tests/genesis-prologue.test.mjs`; see the
+header comment in that file for the palette conflict that keeps them parked.
 
 ---
 
@@ -127,30 +129,25 @@ This project uses GitHub Actions for continuous integration and Vercel for produ
 
 ### GitHub Actions Workflows
 
-#### `.github/workflows/ci.yml` — Lint, Test, Build
-**Triggers:** Push to any branch, Pull Requests
+#### `.github/workflows/ci.yml` — Lint, Typecheck, Test, Build
+**Triggers:** Push to `main`, and Pull Requests targeting `main`
 
-1. Installs dependencies
-2. Runs ESLint linting
-3. Runs Vitest unit tests
-4. Builds Next.js production bundle
+1. `npm ci` — installs strictly from the lockfile
+2. `npm run lint` — ESLint
+3. `npm run typecheck` — `tsc --noEmit`
+4. `npm test` — Node test suite
+5. `npm run build` — Next.js production bundle, **with no `DATABASE_URL`**
+   (the build must never require a live database)
 
 **Status badge:** See Actions tab for live status.
 
-#### `.github/workflows/deploy-vercel.yml` — Production Deployment
-**Triggers:** Push to `main` branch, manual workflow dispatch
+#### Deployment
 
-Deploys to Vercel production environment after CI passes.
-
-**Requirements (must configure in repository settings):**
-- `VERCEL_TOKEN` — Personal access token from [Vercel CLI](https://vercel.com/docs/cli#setup)
-- `VERCEL_ORG_ID` — Organization ID (visible in Vercel dashboard)
-- `VERCEL_PROJECT_ID` — Project ID (from `vercel.json` or dashboard)
-
-**Setup:**
-1. Go to repository Settings → Secrets and Variables → Actions
-2. Add the three secrets above
-3. Deployment will run automatically on next `main` push
+There is **no deploy workflow in this repository, by design.** Vercel's own Git
+integration builds `main` automatically on push, so a second GitHub Actions deploy
+path would only create two competing sources of truth. Configure environment
+variables in the Vercel dashboard (Project → Settings → Environment Variables).
+See [`deploy.md`](./deploy.md) for the full runbook.
 
 ---
 
@@ -261,7 +258,7 @@ laxvish.app/
 ├── .github/
 │   ├── copilot-instructions.md
 │   └── workflows/            # CI/CD workflows
-├── vitest.config.ts          # Test runner config
+├── tests/                    # Node test suite (conformance gate + rate limiter)
 ├── next.config.ts            # Next.js config
 ├── tailwind.config.ts        # Tailwind theme tokens
 ├── prisma.config.ts          # Prisma configuration
@@ -276,7 +273,8 @@ laxvish.app/
 - **NeuralCanvas:** Adaptive quality tiers based on pixel load; visibility-aware rendering (IntersectionObserver)
 - **Animations:** CSS `@keyframes` for marquees; CSS transforms for button motions
 - **Images:** Next.js `<Image>` component with lazy loading
-- **Fonts:** Geist font preloaded via `next/font`
+- **Fonts:** Space Grotesk (display) and Inter (body), loaded via `next/font`.
+  Geist is explicitly banned by `AGENTS.md` §2.
 - **Rendering:** Server components by default; selective client-side interactivity
 - **Database:** Prisma connection pooling (Neon/Supabase automatic)
 
@@ -353,7 +351,7 @@ npm run build
 npm start
 ```
 
-Runs production server on port 3000 (configurable via `PORT` env var).
+Runs production server on port 3050 (see `AGENTS.md` §5).
 
 ---
 
@@ -373,7 +371,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for:
 - [Next.js Docs](https://nextjs.org/docs)
 - [Tailwind CSS](https://tailwindcss.com)
 - [GSAP Animation Library](https://gsap.com)
-- [Vitest Docs](https://vitest.dev)
+- [Node.js Test Runner Docs](https://nodejs.org/api/test.html)
 - [Vercel Docs](https://vercel.com/docs)
 
 ---

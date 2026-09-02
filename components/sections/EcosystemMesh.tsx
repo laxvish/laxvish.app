@@ -47,13 +47,13 @@ export function EcosystemMesh() {
         {meshCards.map((card) => (
           <article
             key={card.domain}
-            className="rounded-2xl border border-charcoal/20 bg-[#F6F1F1]/30 p-6"
+            className="rounded-none border border-charcoal/20 bg-vaultAmber/30 p-6"
           >
             <p className="text-xs uppercase tracking-[0.18em] text-neonCyan/90">
               {card.domain}
             </p>
             <p className="mt-3 text-base font-medium text-neonCyan">{card.signal}</p>
-            <p className="mt-2 text-sm text-[#AFD3E2]">{card.outcome}</p>
+            <p className="mt-2 text-sm text-neonCyan">{card.outcome}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {card.pathways.map((tag) => (
                 <span

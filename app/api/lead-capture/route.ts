@@ -6,53 +6,32 @@ import {
   validateLeadVaultInsert,
 } from "@/lib/enterpriseVault";
 import { sendLeadSyncWebhook } from "@/lib/leadSync";
+import { getRateLimitStore, getRequesterKey } from "@/lib/rate-limit";
 
-const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_WINDOW_SECONDS = 60;
 const MAX_REQUESTS_PER_IP_WINDOW = 6;
 const MAX_REQUESTS_PER_IDENTITY_WINDOW = 3;
+/**
+ * Callers behind a proxy that forwards no address at all share one bucket. It
+ * is deliberately generous: misidentifying a visitor must never become a
+ * denial of service on the lead form.
+ */
+const MAX_REQUESTS_PER_UNIDENTIFIED_WINDOW = 60;
 
-interface RateWindow {
-  count: number;
-  startTime: number;
-}
-
-const rateWindows = new Map<string, RateWindow>();
-const identityRateWindows = new Map<string, RateWindow>();
-
-function cleanupRateWindows(timestamp: number, windows: Map<string, RateWindow>): void {
-  for (const [key, value] of windows.entries()) {
-    if (timestamp - value.startTime > RATE_LIMIT_WINDOW_MS) {
-      windows.delete(key);
-    }
-  }
-}
-
-function getRequesterKey(request: NextRequest): string {
-  const platformIp =
-    request.headers.get("x-vercel-forwarded-for") ??
-    request.headers.get("cf-connecting-ip");
-  return platformIp?.trim() || "anonymous";
-}
-
-function isRateLimited(
-  key: string,
-  timestamp: number,
-  windows: Map<string, RateWindow>,
-  maxRequests: number,
-): boolean {
-  cleanupRateWindows(timestamp, windows);
-  const currentWindow = windows.get(key);
-  if (!currentWindow || timestamp - currentWindow.startTime > RATE_LIMIT_WINDOW_MS) {
-    windows.set(key, { count: 1, startTime: timestamp });
-    return false;
-  }
-
-  if (currentWindow.count >= maxRequests) {
-    return true;
-  }
-
-  currentWindow.count += 1;
-  return false;
+function tooManyRequests(retryAfterSeconds: number, scope: string): NextResponse {
+  return NextResponse.json(
+    {
+      ok: false,
+      message:
+        scope === "identity"
+          ? "Too many requests for this identity. Please retry shortly."
+          : "Too many requests. Please retry shortly.",
+    },
+    {
+      status: 429,
+      headers: { "retry-after": String(Math.max(1, retryAfterSeconds)) },
+    },
+  );
 }
 
 async function toSha256(value: string): Promise<string> {
@@ -72,15 +51,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const now = Date.now();
-  const requesterKey = getRequesterKey(request);
-  const ipWindowLimit =
-    requesterKey === "anonymous" ? MAX_REQUESTS_PER_IP_WINDOW * 5 : MAX_REQUESTS_PER_IP_WINDOW;
-  if (isRateLimited(requesterKey, now, rateWindows, ipWindowLimit)) {
-    return NextResponse.json(
-      { ok: false, message: "Too many requests. Please retry shortly." },
-      { status: 429 },
-    );
+  const store = getRateLimitStore();
+  const { key: requesterKey, identified } = getRequesterKey(request.headers);
+  const ipLimit = identified
+    ? MAX_REQUESTS_PER_IP_WINDOW
+    : MAX_REQUESTS_PER_UNIDENTIFIED_WINDOW;
+
+  const ipDecision = await store.hit(
+    `ip:${requesterKey}`,
+    ipLimit,
+    RATE_LIMIT_WINDOW_SECONDS,
+  );
+  if (!ipDecision.allowed) {
+    return tooManyRequests(ipDecision.retryAfterSeconds, "ip");
   }
 
   let payload: unknown;
@@ -112,19 +95,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const identityRateKey = `${validation.data.workEmail}|${validation.data.action}`;
-  if (
-    isRateLimited(
-      identityRateKey,
-      now,
-      identityRateWindows,
-      MAX_REQUESTS_PER_IDENTITY_WINDOW,
-    )
-  ) {
-    return NextResponse.json(
-      { ok: false, message: "Too many requests for this identity. Please retry shortly." },
-      { status: 429 },
-    );
+  // Hashed before it becomes a cache key: the raw work email must never be
+  // written into shared rate-limit storage.
+  const identityRateKey = await toSha256(
+    `${validation.data.workEmail.toLowerCase()}|${validation.data.action}`,
+  );
+  const identityDecision = await store.hit(
+    `id:${identityRateKey}`,
+    MAX_REQUESTS_PER_IDENTITY_WINDOW,
+    RATE_LIMIT_WINDOW_SECONDS,
+  );
+  if (!identityDecision.allowed) {
+    return tooManyRequests(identityDecision.retryAfterSeconds, "identity");
   }
 
   const identityHash = await toSha256(

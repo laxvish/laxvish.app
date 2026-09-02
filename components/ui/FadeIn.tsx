@@ -13,21 +13,6 @@ interface FadeInProps {
   yOffset?: number;
 }
 
-const variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.96, filter: "blur(6px)" },
-  visible: (delay: number) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: {
-      duration: DecisionPhase.duration.system,
-      delay: delay + DecisionPhase.delay,
-      ease: DecisionPhase.ease,
-    },
-  }),
-};
-
 export function FadeIn({
   children,
   delay = 0,

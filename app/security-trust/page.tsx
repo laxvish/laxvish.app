@@ -20,7 +20,6 @@ export default function SecurityTrustPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        shape="octahedron"
       />
       <PageBlocks details={content.details} outcomes={content.outcomes} />
     </>

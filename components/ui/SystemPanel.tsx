@@ -1,13 +1,14 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { type ReactNode, type MouseEvent, useRef } from "react";
+import { useMotionValue, useSpring, useTransform } from "framer-motion";
+import { type ElementType, type ReactNode, type MouseEvent, useRef } from "react";
 import { ExecutionPhase, ValidationPhase } from "@/lib/motion-system";
+import { resolveMotionComponent } from "@/components/ui/withMotion";
 
 interface SystemPanelProps {
   children: ReactNode;
   className?: string;
-  as?: any;
+  as?: ElementType;
 }
 
 export function SystemPanel({ children, className = "", as: Component = "div" }: SystemPanelProps) {
@@ -42,9 +43,13 @@ export function SystemPanel({ children, className = "", as: Component = "div" }:
     y.set(0);
   };
 
-  const MotionComponent = motion.create(Component as any);
+  // Not a render-time creation: `resolveMotionComponent` returns a reference
+  // from a registry populated once at module scope (see withMotion.ts), so
+  // element identity is stable across renders and no subtree state is reset.
+  const MotionComponent = resolveMotionComponent(Component);
 
   return (
+    /* eslint-disable-next-line react-hooks/static-components -- false positive: MotionComponent is a module-scope singleton, see withMotion.ts */
     <MotionComponent
       ref={ref}
       onMouseMove={handleMouseMove}

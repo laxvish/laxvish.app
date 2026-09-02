@@ -28,7 +28,6 @@ export default function SolutionsPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        shape="sphere"
       />
       <PageBlocks
         details={content.details}

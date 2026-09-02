@@ -39,7 +39,7 @@ export function VerificationPanel() {
         {signals.map((signal) => (
           <article
             key={signal.title}
-            className="rounded-xl border border-charcoal/20 bg-[#F6F1F1]/30 p-5 transition-transform duration-300 hover:-translate-y-0.5"
+            className="rounded-xl border border-charcoal/20 bg-vaultAmber/30 p-5 transition-transform duration-300 hover:-translate-y-0.5"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-charcoal">{signal.title}</h3>

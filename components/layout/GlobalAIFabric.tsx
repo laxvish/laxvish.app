@@ -4,25 +4,33 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AIFabric } from "@/components/ui/AIFabric";
 
+type TransitionPhase = "idle" | "pre" | "warp" | "morph" | "release";
+
+const TRANSITION_SCHEDULE: ReadonlyArray<{ at: number; phase: TransitionPhase }> = [
+  { at: 0, phase: "pre" },
+  { at: 200, phase: "warp" },
+  { at: 600, phase: "morph" },
+  { at: 1000, phase: "release" },
+  { at: 1300, phase: "idle" },
+] as const;
+
 export function GlobalAIFabric() {
   const pathname = usePathname();
-  const [transitionPhase, setTransitionPhase] = useState<"idle" | "pre" | "warp" | "morph" | "release">("idle");
+  const [transitionPhase, setTransitionPhase] = useState<TransitionPhase>("idle");
 
   useEffect(() => {
-    // Trigger Field Continuity Warp on route change
-    setTransitionPhase("pre");
-    
-    const t1 = setTimeout(() => setTransitionPhase("warp"), 200);   // Pre-transition (200ms)
-    const t2 = setTimeout(() => setTransitionPhase("morph"), 600);  // Warp phase (400ms)
-    const t3 = setTimeout(() => setTransitionPhase("release"), 1000); // Morph phase (400ms)
-    const t4 = setTimeout(() => setTransitionPhase("idle"), 1300);  // Release phase (300ms)
-    
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-    };
+    // The Hero handles its own full-intensity AIFabric; nothing is mounted on
+    // "/" so there is no transition to run.
+    if (pathname === "/") return;
+
+    // Every phase change is dispatched from a timer callback rather than
+    // synchronously in this effect body, and all timers are cleared together on
+    // unmount or on the next navigation.
+    const timers = TRANSITION_SCHEDULE.map(({ at, phase }) =>
+      setTimeout(() => setTransitionPhase(phase), at),
+    );
+
+    return () => timers.forEach(clearTimeout);
   }, [pathname]);
 
   // The Hero handles its own full-intensity AIFabric.

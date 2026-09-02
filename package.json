@@ -3,35 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3050",
     "prebuild": "prisma generate",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "start": "next start -p 3050",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs tests/*.test.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.6.0",
-    "animejs": "^4.3.6",
     "framer-motion": "^12.38.0",
-    "matter-js": "^0.20.0",
-    "motion": "^12.38.0",
     "next": "16.2.3",
     "pg": "^8.20.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "three": "^0.183.2"
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/matter-js": "^0.20.2",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.183.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
     "prisma": "^7.7.0",

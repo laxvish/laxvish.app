@@ -25,7 +25,6 @@ export default function BrainPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        shape="icosahedron"
       />
       <PageBlocks
         details={content.details}

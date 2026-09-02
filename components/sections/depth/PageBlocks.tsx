@@ -234,7 +234,7 @@ export function PageBlocks({
       {ctaHeadline && (
         <section className="mx-auto w-full max-w-[90rem] px-6 py-24 sm:px-12 lg:px-16 lg:py-32 relative z-10">
           <FadeIn yOffset={40}>
-            <SystemPanel className="border border-charcoal bg-vaultAmber p-12 text-center sm:p-20 shadow-2xl shadow-charcoal/5">
+            <SystemPanel className="border border-charcoal bg-vaultAmber p-12 text-center sm:p-20">
               <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
                 {ctaHeadline}
               </h2>

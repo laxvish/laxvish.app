@@ -27,7 +27,7 @@ const useCases: UseCase[] = [
 
 export function UseCaseRail() {
   return (
-    <section id="agents" className="border-y border-charcoal/20 bg-[#F6F1F1]/25">
+    <section id="agents" className="border-y border-charcoal/20 bg-vaultAmber/25">
       <div className="mx-auto w-full max-w-[96rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <h2 className="text-3xl font-bold text-charcoal [font-family:var(--font-space-grotesk)] sm:text-4xl">
           Built for Real-World Indian Enterprise Workloads
@@ -36,11 +36,11 @@ export function UseCaseRail() {
           {useCases.map((item) => (
             <article
               key={item.title}
-              className="rounded-xl border border-charcoal/20 bg-[#F6F1F1]/30 p-6"
+              className="rounded-xl border border-charcoal/20 bg-vaultAmber/30 p-6"
             >
               <h3 className="text-lg font-semibold text-charcoal">{item.title}</h3>
               <p className="mt-3 text-sm leading-6 text-charcoal/70">{item.summary}</p>
-              <p className="mt-4 text-xs font-medium text-[#AFD3E2]">
+              <p className="mt-4 text-xs font-medium text-neonCyan">
                 {item.outcome}
               </p>
             </article>

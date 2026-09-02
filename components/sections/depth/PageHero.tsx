@@ -4,7 +4,6 @@ interface PageHeroProps {
   eyebrow: string;
   title: string;
   summary: string;
-  shape?: any; // Deprecated, kept for backward compatibility if passed
 }
 
 export function PageHero({

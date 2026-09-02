@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Concurrency: cancel superseded runs on the same ref rather than queueing them.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint · Typecheck · Test · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # `npm ci` installs strictly from package-lock.json and fails if it is
+      # out of sync with package.json — which is the behaviour we want here.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Node's built-in runner with type stripping; there is no Vitest in this
+      # project. Tests are static/source-level and need no database.
+      - name: Unit tests
+        run: npm test
+
+      # No DATABASE_URL is provided on purpose: the build must not require a
+      # live database. If this step ever starts failing for that reason, a
+      # route has begun doing DB work at build time and needs `export const
+      # dynamic`.
+      - name: Build
+        run: npm run build

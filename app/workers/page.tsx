@@ -25,7 +25,6 @@ export default function WorkersPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        shape="torus"
       />
       <PageBlocks
         details={content.details}
