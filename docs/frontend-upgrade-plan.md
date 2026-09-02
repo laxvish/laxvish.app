@@ -168,4 +168,40 @@ Each stage ships only after **RED + GREEN** evidence and a fresh `verify_evidenc
 
 ---
 
-*End of plan. Stage 0 is verified. Awaiting your read + the open decisions before Stage 1 (typography), which then unlocks Stages 2–4.*
+## 7. Build record (branch `feat/frontend-upgrade-control-surface`)
+
+| Stage | Status | Evidence |
+|---|---|---|
+| 0 Baseline checkpoint | ✅ shipped | `b096c86` |
+| 1 Typography (Space Grotesk live) + SEO reframe | ✅ shipped | `398a1fc` — 17/17 headings Space Grotesk, body Inter, weights 400–600 |
+| 2 Signature machine cross-section SVG | ✅ shipped | `36e2bb9` — `SignatureMachine.tsx`, one kinetic flywheel + scroll-linked gauge |
+| 3 Hero recompose | ✅ shipped | `3625bb9`/`36e2bb9` — h1 **2 lines** @54–57.6px, hero 759–797px fits viewport |
+| 5 Sections + CTA labels | ✅ shipped | `68c65e4` — zero cards, numbered spec bands, `Book a working session` unified |
+| 6 Proof band | ✅ shipped | `3c51032` — 4 spec rows, SLOT-marked, no logo wall |
+| 7 Cleanup | ✅ shipped | `aa61e0e` — AIFabric + 7 orphans deleted, static `PageBackdrop` |
+| a11y regression fix | ✅ shipped | `a3c642f` — valid `ul > li` semantics restored |
+| 4 Macro-machine AI imagery | ⛔ **blocked on credential** | Needs `OPENROUTER_API_KEY` (or a fal.ai key) — see §8 |
+
+**Final verification (production build):** `npm run build` passes, all routes 200; Lighthouse **a11y 100 · BP 100 · SEO 100 · Agentic 100** (agentic was 67); zero invalid list children; no x-overflow desktop or mobile; hero fits viewport; blob field gone (the only `mix-blend` left is the 6% soft-light film grain in `NoiseOverlay`).
+
+---
+
+## 8. Stage 4 — how to generate the imagery (blocked on API key)
+
+The mono-graded macro-machine imagery could not be generated in-session: no
+image API credential is available. Everything is ready to run the moment one
+exists (`export OPENROUTER_API_KEY=sk-or-...`), using the nano-banana script:
+
+```
+uv run ~/.agents/skills/nano-banana-pro-openrouter/scripts/generate_image.py \
+  --prompt "Extreme macro photograph of machined steel plate edges and hex bolt heads, monochrome black and white, high contrast studio lighting, shallow depth of field, industrial precision engineering, no color, no text" \
+  --resolution 2K --filename public/images/machine-detail-01.png
+
+uv run ~/.agents/skills/nano-banana-pro-openrouter/scripts/generate_image.py \
+  --prompt "Macro black and white photograph of a precision wire harness inside industrial machinery, monochrome, high contrast, fine detail, engineered, no color, no people, no text" \
+  --resolution 2K --filename public/images/machine-detail-02.png
+```
+
+Integration rule (§2.1b): desaturate/grade to the 4-colour palette, lay the
+24px dot grain + a hairline rule over it, and use as a split block or band
+background. Every image must pass the stranger test.
