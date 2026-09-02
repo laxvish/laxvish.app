@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { CallmeSection } from "@/components/sections/CallmeSection";
 import { ContactPanel } from "@/components/sections/ContactPanel";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
+import { FeaturedAgentsShowcase } from "@/components/sections/FeaturedAgentsShowcase";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { PillarsGrid } from "@/components/sections/PillarsGrid";
-import { UseCaseGrid } from "@/components/sections/UseCaseGrid";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -28,10 +27,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <UseCaseGrid />
+      <FeaturedAgentsShowcase />
       <PillarsGrid />
       <HowItWorks />
-      <CallmeSection />
       <ContactPanel />
       <FaqAccordion />
       <FinalCta />
