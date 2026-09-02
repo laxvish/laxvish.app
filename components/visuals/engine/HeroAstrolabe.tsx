@@ -354,6 +354,9 @@ export function HeroAstrolabe({ className = "" }: HeroAstrolabeProps) {
           <span className="hidden sm:inline text-[7px] md:text-[7.5px] text-deepink/40">
             STATE // SYSTEM ACTIVE
           </span>
+          <span className="hidden md:inline text-[7px] italic tracking-wider text-mark/70">
+            OPS // SK
+          </span>
         </div>
       </div>
 

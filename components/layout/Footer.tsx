@@ -32,12 +32,12 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className={BOOK_NOW_BUTTON_CLASS}
               >
-                <span>Talk to our team</span>
+                <span>Book a working session</span>
               </a>
             </div>
           </div>
 
-          <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-4">
+          <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-3">
             {FOOTER_GROUPS.map((group) => (
               <div key={group.title}>
                 <h3 className="text-sm font-semibold tracking-wide text-mark font-mono">

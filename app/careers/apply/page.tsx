@@ -16,7 +16,8 @@ export default function CareersApplyPage() {
 
   return (
     <>
-      <PageHero eyebrow={content.eyebrow} title={content.title} summary={content.summary} />
+      <PageHero eyebrow={content.eyebrow} title={content.title} summary={content.summary}
+        stamp="RECRUITMENT // OPEN ROLES" />
       <CareersApplicationPanel />
     </>
   );

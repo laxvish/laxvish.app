@@ -20,6 +20,9 @@ interface Chapter {
   metrics: { label: string; value: string }[];
   scene: React.ReactNode;
   visualSide: "left" | "right" | "full";
+  /** Montage rhythm: vary the shot size per chapter (see DIRECTORS_TREATMENT.md C5). */
+  frameStyle?: "drawer" | "edge" | "datum" | "nested" | "plain";
+  metricCols?: 2 | 3 | 4;
 }
 
 const chapters: Chapter[] = [
@@ -37,6 +40,8 @@ const chapters: Chapter[] = [
     ],
     scene: <SalesScene />,
     visualSide: "right",
+    frameStyle: "drawer",
+    metricCols: 3,
   },
   {
     number: "02",
@@ -52,6 +57,8 @@ const chapters: Chapter[] = [
     ],
     scene: <SupportScene />,
     visualSide: "left",
+    frameStyle: "datum",
+    metricCols: 2,
   },
   {
     number: "03",
@@ -67,6 +74,8 @@ const chapters: Chapter[] = [
     ],
     scene: <DocumentScene />,
     visualSide: "full",
+    frameStyle: "edge",
+    metricCols: 4,
   },
   {
     number: "04",
@@ -82,6 +91,8 @@ const chapters: Chapter[] = [
     ],
     scene: <KnowledgeScene />,
     visualSide: "right",
+    frameStyle: "nested",
+    metricCols: 3,
   },
   {
     number: "05",
@@ -97,8 +108,47 @@ const chapters: Chapter[] = [
     ],
     scene: <VoiceWhatsAppScene />,
     visualSide: "full",
+    frameStyle: "plain",
+    metricCols: 2,
   },
 ];
+
+function Frame({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style: Chapter["frameStyle"];
+}) {
+  switch (style) {
+    case "edge":
+      // Full-bleed field: the artifact owns the frame, no box.
+      return <div className="border-y border-rule-hair py-2">{children}</div>;
+    case "datum":
+      // Datum draw: corner ticks read as a machined drawing.
+      return (
+        <div className="relative border border-rule-hair bg-cream p-3">
+          <span aria-hidden className="absolute -top-0.5 -left-0.5 h-3 w-3 border-t-2 border-l-2 border-mark" />
+          <span aria-hidden className="absolute -top-0.5 -right-0.5 h-3 w-3 border-t-2 border-r-2 border-mark" />
+          <span aria-hidden className="absolute -bottom-0.5 -left-0.5 h-3 w-3 border-b-2 border-l-2 border-mark" />
+          <span aria-hidden className="absolute -bottom-0.5 -right-0.5 h-3 w-3 border-b-2 border-r-2 border-mark" />
+          {children}
+        </div>
+      );
+    case "nested":
+      // Double-rule: a hairline inset inside the drawer.
+      return (
+        <div className="border border-rule-hair bg-cream p-3">
+          <div className="border border-rule-hair/50 p-2">{children}</div>
+        </div>
+      );
+    case "plain":
+      // Stripped: no frame at all, the scene breathes on parchment.
+      return <div>{children}</div>;
+    default:
+      return <div className="border border-rule-hair bg-cream p-3">{children}</div>;
+  }
+}
 
 function ChapterBlock({ chapter }: { chapter: Chapter }) {
   const narrative = (
@@ -117,7 +167,9 @@ function ChapterBlock({ chapter }: { chapter: Chapter }) {
       <p className="max-w-md text-base leading-relaxed text-deepink/75 sm:text-lg">
         {chapter.body}
       </p>
-      <dl className="grid grid-cols-3 gap-x-4 border-y border-rule-hair py-5 font-mono text-xs">
+      <dl
+        className={`grid gap-x-4 border-y border-rule-hair py-5 font-mono text-xs ${ chapter.metricCols === 2 ? "grid-cols-2" : chapter.metricCols === 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3" }`}
+      >
         {chapter.metrics.map((m) => (
           <div key={m.label}>
             <dt className="text-[10px] tracking-[0.18em] text-deepink/50 uppercase">
@@ -141,16 +193,12 @@ function ChapterBlock({ chapter }: { chapter: Chapter }) {
     return (
       <div className="space-y-10">
         {narrative}
-        <div className="border border-rule-hair bg-cream p-3">
-          {chapter.scene}
-        </div>
+        <Frame style={chapter.frameStyle}>{chapter.scene}</Frame>
       </div>
     );
   }
 
-  const visual = (
-    <div className="border border-rule-hair bg-cream p-3">{chapter.scene}</div>
-  );
+  const visual = <Frame style={chapter.frameStyle}>{chapter.scene}</Frame>;
 
   return (
     <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
