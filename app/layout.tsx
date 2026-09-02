@@ -4,7 +4,7 @@ import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { NoiseOverlay } from "@/components/layout/NoiseOverlay";
-import { PageBackdrop } from "@/components/layout/PageBackdrop";
+import { GlobalAIFabric } from "@/components/layout/GlobalAIFabric";
 import { PageTransitionProvider } from "@/components/layout/PageTransitionProvider";
 import { ROOT_METADATA, getSiteUrl } from "@/lib/seo";
 
@@ -75,7 +75,7 @@ export default function RootLayout({
             __html: JSON.stringify(schemaGraph),
           }}
         />
-        <PageBackdrop />
+        <GlobalAIFabric />
         <NoiseOverlay />
         <a
           href="#main-content"

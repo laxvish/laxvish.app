@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AIFabric } from "@/components/ui/AIFabric";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { SignatureMachine } from "@/components/ui/SignatureMachine";
@@ -22,6 +23,9 @@ export function Hero() {
 
   return (
     <section className="relative isolate overflow-hidden border-b border-charcoal/10 bg-obsidian">
+      {/* Immersive Intelligence Field Background — restored by user request */}
+      <AIFabric />
+
       {/* Control-surface corner registration ticks (the machine frame) */}
       <div
         aria-hidden="true"
