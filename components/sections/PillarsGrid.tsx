@@ -70,8 +70,8 @@ export function PillarsGrid() {
       <FadeInStagger className="mt-20">
         <ul className="border-t border-charcoal">
           {pillars.map((pillar) => (
-            <FadeIn key={pillar.index}>
-              <li className="border-b border-charcoal/20">
+            <li key={pillar.index} className="border-b border-charcoal/20">
+              <FadeIn>
                 <Link
                   href={pillar.href}
                   className="group grid grid-cols-[auto_1fr] items-baseline gap-x-6 gap-y-3 py-10 transition-colors duration-300 hover:bg-vaultAmber/40 sm:grid-cols-[3.5rem_1fr] lg:grid-cols-[5rem_minmax(0,18rem)_1fr_auto] lg:items-start lg:gap-x-12"
@@ -89,8 +89,8 @@ export function PillarsGrid() {
                     Learn more
                   </span>
                 </Link>
-              </li>
-            </FadeIn>
+              </FadeIn>
+            </li>
           ))}
         </ul>
       </FadeInStagger>

@@ -72,19 +72,24 @@ export function ProofBand() {
         <FadeInStagger>
           <ul className="border-t border-charcoal">
             {proofRows.map((row) => (
-              <FadeIn key={row.slot}>
-                <li className="grid grid-cols-1 gap-1 border-b border-charcoal/20 py-7 sm:grid-cols-[minmax(0,11rem)_minmax(0,12rem)_1fr] sm:gap-x-8">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neonCyan">
-                    {row.slot}
-                  </span>
-                  <span className="text-lg font-normal tracking-tight text-charcoal">
-                    {row.value}
-                  </span>
-                  <span className="text-sm leading-relaxed text-charcoal/70">
-                    {row.detail}
-                  </span>
-                </li>
-              </FadeIn>
+              <li
+                key={row.slot}
+                className="grid grid-cols-1 gap-1 border-b border-charcoal/20 py-7 sm:grid-cols-[minmax(0,11rem)_minmax(0,12rem)_1fr] sm:gap-x-8"
+              >
+                <FadeIn>
+                  <div className="grid grid-cols-1 gap-1 sm:grid-cols-[minmax(0,11rem)_minmax(0,12rem)_1fr] sm:gap-x-8">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neonCyan">
+                      {row.slot}
+                    </span>
+                    <span className="text-lg font-normal tracking-tight text-charcoal">
+                      {row.value}
+                    </span>
+                    <span className="text-sm leading-relaxed text-charcoal/70">
+                      {row.detail}
+                    </span>
+                  </div>
+                </FadeIn>
+              </li>
             ))}
           </ul>
           <FadeIn delay={0.3}>
