@@ -13,19 +13,19 @@ interface CallmeFeature {
 
 const features: CallmeFeature[] = [
   {
-    title: "Realtime Voice AI",
+    title: "Answers calls naturally",
     description:
-      "Natural speech recognition and generation for fluid, human-like conversations. An enterprise AI voice agent that callers interact with naturally.",
+      "Speaks like a real person, understands accents, switches between English and Hindi mid-sentence. Your callers don't feel like they're talking to a robot.",
   },
   {
-    title: "Enterprise Controls",
+    title: "Stays inside your rules",
     description:
-      "Call recording, compliance logging, escalation paths, and policy enforcement. AI voice automation with governance built into every conversation.",
+      "Every call is recorded and logged. Sensitive topics go straight to a human. You set which calls the AI handles and which it must transfer.",
   },
   {
-    title: "Workflow Integration",
+    title: "Works with what you have",
     description:
-      "Trigger actions, update records, and hand off to human agents seamlessly. A conversational AI system connected to your existing workflows.",
+      "Connects to your phone system, your CRM, and your calendar. The AI can book appointments, update records, and hand off to your team when needed.",
   },
 ];
 
@@ -35,18 +35,19 @@ export function CallmeSection() {
       <div className="max-w-2xl">
         <FadeIn>
           <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
-            CallMe — Enterprise AI Voice Agent
+            CallMe — Voice & WhatsApp
           </p>
         </FadeIn>
         <FadeIn delay={0.1}>
           <h2 className="mt-6 text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
-            Voice AI for enterprise conversations.
+            An AI receptionist that never puts anyone on hold.
           </h2>
         </FadeIn>
         <FadeIn delay={0.2}>
           <p className="mt-6 text-lg leading-relaxed text-neonCyan">
-            Deploy an enterprise AI voice agent that handles calls with natural conversation,
-            compliance-grade controls, and seamless workflow integration.
+            Answer every phone call and WhatsApp message, in your customer&rsquo;s
+            language, 24/7. Hand off to a human with the full conversation
+            history when it matters.
           </p>
         </FadeIn>
       </div>
@@ -73,10 +74,10 @@ export function CallmeSection() {
         <div className="mt-16 flex">
           <MagneticButton
             as={Link}
-            href="/callme"
+            href="/solutions/voice-whatsapp"
             className={SECONDARY_HERO_CTA_CLASS}
           >
-            Explore CallMe
+            See Voice & WhatsApp automation →
           </MagneticButton>
         </div>
       </FadeIn>

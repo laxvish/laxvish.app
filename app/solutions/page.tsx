@@ -1,48 +1,90 @@
 import type { Metadata } from "next";
-import { PageBlocks } from "@/components/sections/depth/PageBlocks";
+import Link from "next/link";
 import { PageHero } from "@/components/sections/depth/PageHero";
+import { FadeIn, FadeInStagger } from "@/components/ui/FadeIn";
 import { buildPageMetadata } from "@/lib/seo";
-import { PAGE_CONTENT } from "@/lib/site-pages";
+import {
+  getUseCasesByCategory,
+  type UseCaseCategory,
+} from "@/lib/use-cases";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "AI Workflow Automation — Enterprise Solutions That Execute",
+  title: "AI Automations for Every Part of Your Business",
   description:
-    "Deploy AI workflow automation with measurable business impact. Laxvish aligns enterprise automation AI with real process outcomes across revenue, operations, and compliance.",
+    "Laxvish builds AI workers that take over the repetitive work in your business — sales, support, operations, finance, IT, and more. Built for Indian enterprises. DPDP-ready.",
   path: "/solutions",
   keywords: [
+    "ai automation for business",
     "ai workflow automation",
-    "enterprise automation ai",
-    "ai workflow system",
+    "ai solutions india",
   ],
 });
 
+const CATEGORY_INTRO: Record<UseCaseCategory, string> = {
+  "Sales & Growth":
+    "Automate the work that fills your pipeline and grows your revenue.",
+  "Customer Operations":
+    "Be there for every customer, on every channel, without scaling headcount.",
+  "Internal Operations":
+    "Free your team from repetitive internal work so they can focus on real projects.",
+  "Finance & Compliance":
+    "Move faster on the work your finance and compliance teams do every day — with full audit trails.",
+};
+
 export default function SolutionsPage() {
-  const content = PAGE_CONTENT.solutions;
+  const grouped = getUseCasesByCategory();
+  const categories = Object.keys(grouped) as UseCaseCategory[];
 
   return (
     <>
       <PageHero
-        eyebrow={content.eyebrow}
-        title={content.title}
-        summary={content.summary}
+        eyebrow="What we automate"
+        title="AI workers for every part of your business."
+        summary="Pick the work you want to take off your team's plate. We'll show you what the AI worker does, how it's controlled, and what it costs."
         shape="sphere"
       />
-      <PageBlocks
-        details={content.details}
-        outcomes={content.outcomes}
-        problemHeadline={content.problemHeadline}
-        problemDescription={content.problemDescription}
-        problemPoints={content.problemPoints}
-        solutionHeadline={content.solutionHeadline}
-        solutionDescription={content.solutionDescription}
-        howItWorks={content.howItWorks}
-        useCases={content.useCases}
-        differentiationHeadline={content.differentiationHeadline}
-        differentiationPoints={content.differentiationPoints}
-        ctaHeadline={content.ctaHeadline}
-        ctaDescription={content.ctaDescription}
-        internalLinks={content.internalLinks}
-      />
+
+      <section className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
+        <FadeInStagger className="space-y-24">
+          {categories.map((category) => (
+            <div key={category} className="space-y-8">
+              <FadeIn>
+                <div className="max-w-3xl space-y-3">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+                    {category}
+                  </div>
+                  <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight text-charcoal">
+                    {category}
+                  </h2>
+                  <p className="text-base leading-relaxed text-charcoal/70 sm:text-lg">
+                    {CATEGORY_INTRO[category]}
+                  </p>
+                </div>
+              </FadeIn>
+
+              <FadeInStagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {grouped[category].map((uc) => (
+                  <Link
+                    key={uc.slug}
+                    href={`/solutions/${uc.slug}`}
+                    className="group block border border-charcoal/10 bg-white p-6 transition-colors hover:border-neonCyan"
+                  >
+                    <h3 className="text-lg font-medium text-charcoal group-hover:text-neonCyan">
+                      {uc.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-charcoal/70">
+                      {uc.oneLiner}
+                    </p>
+                    <div className="mt-6 text-sm font-medium text-neonCyan">
+                      Learn more →
+                    </div>
+                  </Link>
+                ))}
+              </FadeInStagger>
+            </div>
+          ))}
+        </FadeInStagger>
+      </section>
     </>
   );
 }

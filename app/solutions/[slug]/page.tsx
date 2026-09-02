@@ -1,0 +1,275 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { PageHero } from "@/components/sections/depth/PageHero";
+import { MagneticButton } from "@/components/ui/MagneticButton";
+import { FadeIn, FadeInStagger } from "@/components/ui/FadeIn";
+import {
+  BOOK_NOW_BUTTON_CLASS,
+  SECONDARY_HERO_CTA_CLASS,
+  getBookDemoUrl,
+} from "@/lib/site-navigation";
+import { buildPageMetadata } from "@/lib/seo";
+import { USE_CASES, getUseCase } from "@/lib/use-cases";
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export function generateStaticParams() {
+  return USE_CASES.map((uc) => ({ slug: uc.slug }));
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const uc = getUseCase(slug);
+  if (!uc) return {};
+  return buildPageMetadata({
+    title: `${uc.title} for Indian Enterprises`,
+    description: uc.subhead,
+    path: `/solutions/${uc.slug}`,
+    keywords: uc.keywords,
+  });
+}
+
+export default async function UseCasePage({ params }: PageProps) {
+  const { slug } = await params;
+  const uc = getUseCase(slug);
+  if (!uc) notFound();
+
+  const bookDemoUrl = getBookDemoUrl();
+  const relatedUseCases = uc.related
+    .map((s) => getUseCase(s))
+    .filter((u): u is NonNullable<typeof u> => Boolean(u));
+
+  return (
+    <>
+      <PageHero
+        eyebrow={uc.eyebrow}
+        title={uc.headline}
+        summary={uc.subhead}
+        shape="sphere"
+      />
+
+      {/* CTA right under the hero */}
+      <section className="relative z-10 border-b border-charcoal/10 bg-obsidian">
+        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-center gap-4 px-6 py-8 sm:px-12 lg:px-16">
+          <MagneticButton
+            as="a"
+            href={bookDemoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={BOOK_NOW_BUTTON_CLASS}
+          >
+            <span>Talk to our team</span>
+          </MagneticButton>
+          <MagneticButton
+            as="a"
+            href="#what-it-does"
+            className={SECONDARY_HERO_CTA_CLASS}
+          >
+            See how it works
+          </MagneticButton>
+        </div>
+      </section>
+
+      {/* What this AI worker does */}
+      <section
+        id="what-it-does"
+        className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32"
+      >
+        <FadeIn>
+          <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+            What this AI worker does
+          </h2>
+        </FadeIn>
+        <FadeInStagger className="mt-12 grid gap-6 md:grid-cols-2">
+          {uc.whatItDoes.map((item) => (
+            <div
+              key={item}
+              className="flex items-start gap-4 border-l-2 border-neonCyan/40 bg-white/50 p-6 backdrop-blur-sm"
+            >
+              <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-neonCyan" />
+              <p className="text-base leading-relaxed text-charcoal/80">
+                {item}
+              </p>
+            </div>
+          ))}
+        </FadeInStagger>
+      </section>
+
+      {/* Engagement timeline */}
+      <section className="relative z-10 border-y border-charcoal/10 bg-vaultAmber/30">
+        <div className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
+          <FadeIn>
+            <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+              How a typical engagement works
+            </h2>
+          </FadeIn>
+          <FadeInStagger className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {uc.engagement.map((step) => (
+              <div key={step.step} className="space-y-3">
+                <div className="text-sm font-semibold uppercase tracking-[0.2em] text-neonCyan">
+                  {step.step}
+                </div>
+                <h3 className="text-xl font-medium text-charcoal">
+                  {step.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-charcoal/70">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </FadeInStagger>
+        </div>
+      </section>
+
+      {/* Outcomes */}
+      <section className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
+        <FadeIn>
+          <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+            What you&rsquo;d see in the first month
+          </h2>
+        </FadeIn>
+        <FadeInStagger className="mt-12 grid gap-6 md:grid-cols-2">
+          {uc.outcomes.map((outcome) => (
+            <div
+              key={outcome}
+              className="flex items-start gap-4 border border-charcoal/10 bg-white p-6"
+            >
+              <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center bg-neonCyan text-xs font-bold text-obsidian">
+                ✓
+              </span>
+              <p className="text-base leading-relaxed text-charcoal/80">
+                {outcome}
+              </p>
+            </div>
+          ))}
+        </FadeInStagger>
+      </section>
+
+      {/* Control / trust */}
+      <section className="relative z-10 border-y border-charcoal/10 bg-obsidian text-charcoal">
+        <div className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
+          <FadeIn>
+            <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight">
+              How we keep you in control
+            </h2>
+          </FadeIn>
+          <FadeInStagger className="mt-12 grid gap-6 md:grid-cols-2">
+            {uc.control.map((c) => (
+              <div
+                key={c}
+                className="flex items-start gap-4 border border-charcoal/20 bg-white/5 p-6 backdrop-blur-sm"
+              >
+                <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-neonCyan" />
+                <p className="text-base leading-relaxed text-charcoal/80">
+                  {c}
+                </p>
+              </div>
+            ))}
+          </FadeInStagger>
+        </div>
+      </section>
+
+      {/* FAQ specific to this use case */}
+      <section className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
+        <FadeIn>
+          <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+            Common questions about {uc.title}
+          </h2>
+        </FadeIn>
+        <FadeInStagger className="mt-12 space-y-4">
+          {uc.faq.map((item) => (
+            <details
+              key={item.question}
+              className="group border border-charcoal/10 bg-white p-6"
+            >
+              <summary className="flex cursor-pointer items-center justify-between gap-4 text-left text-base font-medium text-charcoal">
+                <span>{item.question}</span>
+                <span className="text-neonCyan transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p className="mt-4 text-base leading-relaxed text-charcoal/70">
+                {item.answer}
+              </p>
+            </details>
+          ))}
+        </FadeInStagger>
+      </section>
+
+      {/* Related use cases */}
+      {relatedUseCases.length > 0 && (
+        <section className="relative z-10 border-t border-charcoal/10 bg-vaultAmber/30">
+          <div className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
+            <FadeIn>
+              <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+                Related automations
+              </h2>
+            </FadeIn>
+            <FadeInStagger className="mt-12 grid gap-6 md:grid-cols-3">
+              {relatedUseCases.map((r) => (
+                <Link
+                  key={r.slug}
+                  href={`/solutions/${r.slug}`}
+                  className="group block border border-charcoal/10 bg-white p-6 transition-colors hover:border-neonCyan"
+                >
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-charcoal/50">
+                    {r.category}
+                  </div>
+                  <h3 className="mt-3 text-lg font-medium text-charcoal group-hover:text-neonCyan">
+                    {r.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-charcoal/70">
+                    {r.oneLiner}
+                  </p>
+                  <div className="mt-4 text-sm font-medium text-neonCyan">
+                    Learn more →
+                  </div>
+                </Link>
+              ))}
+            </FadeInStagger>
+          </div>
+        </section>
+      )}
+
+      {/* Final CTA */}
+      <section className="relative z-10 border-t border-charcoal/10 bg-obsidian text-charcoal">
+        <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-8 px-6 py-24 text-center sm:px-12 lg:px-16 lg:py-32">
+          <FadeIn>
+            <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight">
+              Want to see {uc.title.toLowerCase()} on your real work?
+            </h2>
+          </FadeIn>
+          <FadeIn>
+            <p className="max-w-xl text-base leading-relaxed text-charcoal/70 sm:text-lg">
+              Talk to our team. We&rsquo;ll show you a real walkthrough using
+              your kind of work. 15 minutes, no pitch deck.
+            </p>
+          </FadeIn>
+          <FadeIn>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <MagneticButton
+                as="a"
+                href={bookDemoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={BOOK_NOW_BUTTON_CLASS}
+              >
+                <span>Talk to our team</span>
+              </MagneticButton>
+              <MagneticButton
+                as="a"
+                href="/solutions"
+                className={SECONDARY_HERO_CTA_CLASS}
+              >
+                See all automations
+              </MagneticButton>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+    </>
+  );
+}

@@ -5,28 +5,36 @@ import { FadeInStagger, FadeIn } from "@/components/ui/FadeIn";
 import { SystemPanel } from "@/components/ui/SystemPanel";
 
 interface Pillar {
-  title: string;
+  /** Plain-language benefit shown first */
+  benefit: string;
+  /** The architecture name we use internally */
+  name: string;
+  /** Plain-language description of what this does */
   description: string;
+  /** Link to learn more about the architecture */
   href: string;
 }
 
 const pillars: Pillar[] = [
   {
-    title: "Workers",
+    benefit: "The work gets done",
+    name: "Workers",
     description:
-      "Enterprise AI agents scoped to specific business functions. Predictable behavior, measurable output, production-grade execution.",
+      "AI assistants trained on one specific job each — answering customer questions, processing invoices, qualifying sales leads. They work 24/7, sound like your team, and never drift from what they're supposed to do.",
     href: "/workers",
   },
   {
-    title: "Brain",
+    benefit: "You stay in control",
+    name: "Brain",
     description:
-      "The AI orchestration system that routes tasks, sequences workflows, and governs execution between workers and human teams.",
+      "One control layer that coordinates every AI worker. See what's running, change the rules, route anything unusual to a human. No black boxes.",
     href: "/brain",
   },
   {
-    title: "Brakes",
+    benefit: "It's safe and compliant",
+    name: "Brakes",
     description:
-      "AI governance and verification controls that validate outputs, enforce policies, and maintain audit-grade compliance.",
+      "Every AI decision is checked before it goes anywhere important. Anything uncertain is escalated to a human. Every action is logged for your compliance team. Built for DPDP from day one.",
     href: "/brakes",
   },
 ];
@@ -39,23 +47,28 @@ export function PillarsGrid() {
     >
       <div className="max-w-3xl space-y-10">
         <h2 className="text-[clamp(2.5rem,6vw,4rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
-          Three layers. One AI orchestration system.
+          The work gets done. You stay in control.
         </h2>
         <p className="max-w-xl text-base leading-relaxed tracking-wide text-charcoal/70 sm:text-lg">
-          Workers execute. Brain coordinates. Brakes verify. Three foundational layers that make enterprise AI easier to deploy, govern, and scale with confidence.
+          Every Laxvish deployment runs on three layers. The first one does
+          the work. The second one keeps you in the loop. The third one keeps
+          it safe.
         </p>
       </div>
 
       <FadeInStagger className="mt-24 grid gap-x-8 gap-y-16 md:grid-cols-3 group/grid">
         {pillars.map((pillar) => (
-          <FadeIn key={pillar.title}>
+          <FadeIn key={pillar.name}>
             <Link href={pillar.href} className="block h-full">
               <SystemPanel
                 as="article"
                 className="group flex h-full flex-col border-t border-charcoal pt-8 transition-all duration-700 hover:opacity-100 opacity-90 group-hover/grid:opacity-30 hover:!opacity-100"
               >
-                <h3 className="text-2xl font-normal tracking-tight text-charcoal">
-                  {pillar.title}
+                <p className="text-sm font-medium text-neonCyan">
+                  {pillar.benefit}
+                </p>
+                <h3 className="mt-3 text-2xl font-normal tracking-tight text-charcoal">
+                  {pillar.name}
                 </h3>
                 <p className="mt-6 text-base leading-relaxed tracking-wide text-charcoal/70">
                   {pillar.description}
@@ -68,6 +81,24 @@ export function PillarsGrid() {
           </FadeIn>
         ))}
       </FadeInStagger>
+
+      <FadeIn>
+        <p className="mt-16 max-w-2xl text-sm leading-relaxed text-charcoal/60">
+          We call this architecture{" "}
+          <span className="font-semibold text-charcoal">
+            Workers, Brain, and Brakes
+          </span>
+          . Three names for three jobs: do the work, coordinate the work, keep
+          the work safe.{" "}
+          <Link
+            href="/workers"
+            className="font-medium text-neonCyan underline underline-offset-4 hover:text-charcoal"
+          >
+            See how they fit together
+          </Link>
+          .
+        </p>
+      </FadeIn>
     </section>
   );
 }

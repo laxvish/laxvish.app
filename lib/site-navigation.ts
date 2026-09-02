@@ -1,3 +1,10 @@
+import {
+  getFlagshipUseCases,
+  getOtherUseCases,
+  getUseCasesByCategory,
+  type UseCaseCategory,
+} from "@/lib/use-cases";
+
 export type NavKind = "primary" | "support";
 
 export interface SiteLink {
@@ -13,6 +20,11 @@ export interface FooterGroup {
   links: SiteLink[];
 }
 
+export interface UseCaseGroup {
+  category: UseCaseCategory;
+  links: SiteLink[];
+}
+
 export const DEFAULT_NEETOCAL_URL =
   "https://laxvish.neetocal.com/meeting-with-shubham-kumar";
 
@@ -25,36 +37,68 @@ export const BOOK_NOW_BUTTON_CLASS =
 export const SECONDARY_HERO_CTA_CLASS =
   "inline-flex items-center justify-center border border-charcoal/20 bg-transparent px-8 py-3 text-sm font-medium tracking-wide text-charcoal transition-colors duration-500 hover:border-charcoal hover:bg-vaultAmber";
 
+/**
+ * Build the "What we automate" mega-menu group from the use cases.
+ * Flagship use cases appear first, then the rest by category.
+ */
+export function getUseCaseNavGroups(): UseCaseGroup[] {
+  const grouped = getUseCasesByCategory();
+  const categories = Object.keys(grouped) as UseCaseCategory[];
+  return categories.map((category) => ({
+    category,
+    links: grouped[category].map((uc) => ({
+      label: uc.title,
+      href: `/solutions/${uc.slug}`,
+      kind: "primary" as NavKind,
+      description: uc.oneLiner,
+    })),
+  }));
+}
+
+/** Quick access list of flagship use cases for the home page CTA. */
+export function getFlagshipNavLinks(): SiteLink[] {
+  return getFlagshipUseCases().map((uc) => ({
+    label: uc.title,
+    href: `/solutions/${uc.slug}`,
+    kind: "primary",
+    description: uc.oneLiner,
+  }));
+}
+
+/** Compact list of non-flagship use cases for the "more ways we help" section. */
+export function getOtherUseCaseNavLinks(): SiteLink[] {
+  return getOtherUseCases().map((uc) => ({
+    label: uc.title,
+    href: `/solutions/${uc.slug}`,
+    kind: "primary",
+    description: uc.oneLiner,
+  }));
+}
+
 export const PRIMARY_NAV_LINKS: SiteLink[] = [
   {
-    label: "Solutions",
+    label: "What we automate",
     href: "/solutions",
     kind: "primary",
-    description: "AI workflow automation for enterprise",
+    description: "AI workers for every part of your business",
   },
   {
     label: "Workers",
     href: "/workers",
     kind: "primary",
-    description: "Enterprise AI agents for domain execution",
+    description: "Your AI team does the work",
   },
   {
     label: "Brain",
     href: "/brain",
     kind: "primary",
-    description: "AI orchestration platform for workflow control",
+    description: "Coordinates everything",
   },
   {
     label: "Brakes",
     href: "/brakes",
     kind: "primary",
-    description: "AI governance and verification controls",
-  },
-  {
-    label: "CallMe",
-    href: "/callme",
-    kind: "primary",
-    description: "Enterprise AI voice agent for business calls",
+    description: "Keeps it safe and compliant",
   },
   {
     label: "Trust",
@@ -72,13 +116,22 @@ export const PRIMARY_NAV_LINKS: SiteLink[] = [
 
 export const FOOTER_GROUPS: FooterGroup[] = [
   {
+    title: "What we automate",
+    links: [
+      { label: "All automations", href: "/solutions", kind: "primary" },
+      ...getFlagshipUseCases().map((uc) => ({
+        label: uc.title,
+        href: `/solutions/${uc.slug}`,
+        kind: "primary" as NavKind,
+      })),
+    ],
+  },
+  {
     title: "Platform",
     links: [
-      { label: "Solutions", href: "/solutions", kind: "primary" },
       { label: "Workers", href: "/workers", kind: "primary" },
       { label: "Brain", href: "/brain", kind: "primary" },
       { label: "Brakes", href: "/brakes", kind: "primary" },
-      { label: "CallMe", href: "/callme", kind: "primary" },
     ],
   },
   {

@@ -5,9 +5,9 @@ import { buildPageMetadata } from "@/lib/seo";
 
 const FAQ_HERO = {
   eyebrow: "FAQ",
-  title: "Answers for enterprise teams evaluating Laxvish.",
+  title: "Questions teams ask before they call us.",
   summary:
-    "Explore deployment, governance, and implementation questions before your pilot.",
+    "Plain answers to the most common questions about how Laxvish works, what it costs, and what to expect.",
 };
 
 export const metadata: Metadata = buildPageMetadata({

@@ -5,24 +5,34 @@ interface FaqItem {
 
 const faqItems: FaqItem[] = [
   {
-    question: "What makes Laxvish different from other enterprise AI platforms?",
+    question: "What does Laxvish actually do?",
     answer:
-      "Laxvish combines three integrated layers — Workers for execution, Brain for orchestration, and Brakes for verification — into one enterprise AI operating system. Most platforms offer only one of these capabilities. We deliver all three in a unified system designed for production, not just proof-of-concept.",
+      "We build AI workers that take over the repetitive work in your business — sales, customer support, document processing, finance, IT helpdesk, and more. Each AI worker is trained on a specific job and runs on your rules. You stay in control of every decision.",
   },
   {
-    question: "How quickly can we deploy AI workflow automation with Laxvish?",
+    question: "Do I need a data science team to use Laxvish?",
     answer:
-      "Most teams begin with one high-value workflow and a focused pilot scope. You can deploy a production-ready AI workflow within weeks, with measurable success criteria and governance controls active from day one.",
+      "No. We deploy and manage the AI for you. Your team uses it like any other business tool. If you can describe the work you want automated, we can build an AI worker for it.",
   },
   {
-    question: "Does Laxvish support enterprise compliance and governance requirements?",
+    question: "How long until I see results?",
     answer:
-      "Yes. Brakes provides AI governance and verification controls including pre-action validation, risk-triggered escalation, and audit-grade execution traces. The platform is designed with DPDP-first controls for enterprise procurement confidence.",
+      "Most pilots show measurable results in 2–4 weeks. The first week is understanding your work. The second week is building and training the AI. By week three it's running on your real work, with your oversight.",
   },
   {
-    question: "Can Laxvish run in private enterprise infrastructure?",
+    question: "What if it doesn't work for my business?",
     answer:
-      "The platform direction supports enterprise-controlled deployments and private environment requirements. Contact us to discuss your specific infrastructure needs.",
+      "Pilots are scoped with a clear go/no-go decision point. You'll know within weeks whether the AI is delivering the value you expected. If it isn't, we tell you honestly and help you figure out what would.",
+  },
+  {
+    question: "Is my data safe?",
+    answer:
+      "Yes. Laxvish follows DPDP requirements, your data stays in India unless you say otherwise, and every AI decision is logged for your compliance team. You can ask us to update or delete your data at any time.",
+  },
+  {
+    question: "How is Laxvish different from ChatGPT or other AI tools?",
+    answer:
+      "ChatGPT is a general tool — it's great for exploration but not built for your business. Laxvish is built around your workflows, your data, and your rules. The AI worker is trained on your business, knows your tone, follows your policies, and integrates with the tools you already use.",
   },
 ];
 
@@ -33,8 +43,11 @@ export function FaqAccordion() {
       className="mx-auto w-full max-w-4xl px-6 py-24 sm:px-12 lg:py-32"
     >
       <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
-        Common questions about enterprise AI.
+        Common questions.
       </h2>
+      <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/70 sm:text-lg">
+        If your question isn&rsquo;t here, just ask on the call. We answer honestly.
+      </p>
       <div className="mt-12 flex flex-col border-t border-charcoal">
         {faqItems.map((item, index) => (
           <details

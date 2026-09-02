@@ -114,10 +114,10 @@ export function ContactPanel() {
     >
       <SystemPanel className="border border-charcoal bg-vaultAmber p-8 sm:p-12 shadow-2xl shadow-charcoal/5">
         <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
-          Start with one clear next step.
+          Let&rsquo;s talk about your work.
         </h2>
         <p className="mt-6 text-lg text-neonCyan">
-          Pick your path. We only ask for essential business details.
+          Tell us what you want to automate. We&rsquo;ll show you what&rsquo;s possible — honestly.
         </p>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
@@ -132,7 +132,10 @@ export function ContactPanel() {
                 : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
             }`}
           >
-            Request pilot
+            <span className="block">I want to try it on my work</span>
+            <span className="mt-1 block text-xs font-normal opacity-70">
+              A 4-week pilot with clear success criteria
+            </span>
           </motion.button>
           <motion.button
             type="button"
@@ -145,7 +148,10 @@ export function ContactPanel() {
                 : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
             }`}
           >
-            Get integration blueprint
+            <span className="block">Show me how it would fit</span>
+            <span className="mt-1 block text-xs font-normal opacity-70">
+              An architecture review for your business
+            </span>
           </motion.button>
         </div>
 
@@ -186,7 +192,7 @@ export function ContactPanel() {
           <textarea
             value={formData.useCase}
             onChange={updateField("useCase")}
-            placeholder="Use Case"
+            placeholder="What work do you want to automate?"
             required
             rows={4}
             className="border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan focus:border-charcoal focus:outline-none sm:col-span-2"
