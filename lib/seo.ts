@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 
 const DEFAULT_SITE_URL = "https://www.laxvish.app";
 const SITE_NAME = "Laxvish";
-const DEFAULT_TITLE = "AI Workers for Indian Businesses";
+const DEFAULT_TITLE = "AI Systems for Indian Enterprise";
 const DEFAULT_DESCRIPTION =
-  "Laxvish builds AI workers that take over the repetitive work in your business — sales, customer support, document processing, finance, IT, and more. Built for Indian enterprises. DPDP-ready.";
+  "Laxvish is an AI company that builds the AI systems that do the real work in your business — sales, customer support, document processing, finance, IT, and more. Built for Indian enterprises. DPDP-ready.";
 
 const BASE_KEYWORDS = [
   "ai for business",
@@ -36,7 +36,7 @@ function absoluteOgImage(): string {
   return `${getSiteUrl().replace(/\/$/, "")}/opengraph-image`;
 }
 
-const OG_IMAGE_ALT = "Laxvish — an AI operating system for Indian enterprises";
+const OG_IMAGE_ALT = "Laxvish — an AI company building AI systems for Indian enterprises";
 
 function ogImages() {
   return [

@@ -6,6 +6,15 @@ body {
   font-family: var(--font-inter), sans-serif;
 }
 
+/* Display headline typography — Space Grotesk (AGENTS.md §2).
+   Applied once so every live h1/h2/h3 renders the display face; body stays Inter. */
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
+}
+
 .hero-void {
   background: #FAFAFA;
 }
