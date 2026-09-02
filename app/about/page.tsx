@@ -20,7 +20,6 @@ export default function AboutPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        stamp="ORIGIN LEDGER // FOUNDED 2025"
       />
       <PageBlocks details={content.details} outcomes={content.outcomes} />
     </>

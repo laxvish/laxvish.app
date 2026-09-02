@@ -21,7 +21,6 @@ export default function SecurityTrustPage() {
         title={content.title}
         summary={content.summary}
         shape="octahedron"
-        stamp="VAULT // DPDP + ISO POSTURE"
       />
       <PageBlocks details={content.details} outcomes={content.outcomes} />
     </>

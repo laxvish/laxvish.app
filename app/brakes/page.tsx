@@ -26,7 +26,6 @@ export default function BrakesPage() {
         title={content.title}
         summary={content.summary}
         shape="cone"
-        stamp="GOVERNOR // ENFORCEMENT LIVE"
       />
       <PageBlocks
         details={content.details}

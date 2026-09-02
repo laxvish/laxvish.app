@@ -52,7 +52,7 @@ export function Hero() {
                   rel="noopener noreferrer"
                   className={BOOK_NOW_BUTTON_CLASS}
                 >
-                  <span>Book a working session</span>
+                  <span>Talk to our team</span>
                 </PressButton>
                 <PressButton
                   as={Link}

@@ -236,10 +236,10 @@ export function GenesisPrologue() {
       </svg>
 
       {/* Cold Corner Calibration Stamps */}
-      <div className="pointer-events-none absolute top-2 left-3 font-mono text-[9px] uppercase tracking-[0.18em] text-[#1A1820]/35">
+      <div className="pointer-events-none absolute top-2 left-3 font-mono text-[9px] uppercase tracking-widest text-[#1A1820]/35">
         CRYOSTAT // 0.024 K
       </div>
-      <div className="pointer-events-none absolute top-2 right-3 font-mono text-[9px] uppercase tracking-[0.18em] text-[#1A1820]/35">
+      <div className="pointer-events-none absolute top-2 right-3 font-mono text-[9px] uppercase tracking-widest text-[#1A1820]/35">
         ISOTOPE // He-4
       </div>
 

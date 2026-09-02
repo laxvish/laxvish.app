@@ -285,7 +285,7 @@ export function VoiceWhatsAppScene() {
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
-              className="relative w-full max-w-md rounded-none border-2 border-[#9B8EC7] bg-[#EDE3D2] p-6 text-left shadow-[6px_6px_0_0_rgba(157,142,199,0.25)]"
+              className="relative w-full max-w-md rounded-none border-2 border-[#9B8EC7] bg-[#EDE3D2] p-6 text-left shadow-lg"
             >
               {/* Corner Pins */}
               <div className="absolute top-2.5 left-2.5 h-1.5 w-1.5 rounded-full bg-[#9B8EC7]" />

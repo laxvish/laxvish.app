@@ -24,7 +24,6 @@ export default function FaqPage() {
         eyebrow={FAQ_HERO.eyebrow}
         title={FAQ_HERO.title}
         summary={FAQ_HERO.summary}
-        stamp="DOSSIER // QUESTIONS ON FILE"
       />
       <FaqAccordion />
     </>

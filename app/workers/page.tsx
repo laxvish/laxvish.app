@@ -25,7 +25,6 @@ export default function WorkersPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        stamp="CREW MANIFEST // 08 DOMAIN MODULES"
         shape="torus"
       />
       <PageBlocks

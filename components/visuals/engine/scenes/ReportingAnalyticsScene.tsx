@@ -20,7 +20,7 @@ export function ReportingAnalyticsScene() {
   return (
     <div className="relative flex min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl bg-[#F2EAE0] p-8 text-charcoal sm:p-12 border border-vaultAmber/20 ">
       {/* Header */}
-      <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-[0.18em] border-b border-vaultAmber/15 pb-4">
+      <div className="flex items-center justify-between font-mono text-[11px] text-vaultAmber uppercase tracking-widest border-b border-vaultAmber/15 pb-4">
         <span>Chapter 13 : Narrative Analytics</span>
         <span className="text-charcoal/60">
           {phase === "noise" && "420,000 Unorganized Data Points"}

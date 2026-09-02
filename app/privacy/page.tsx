@@ -20,7 +20,6 @@ export default function PrivacyPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
-        stamp="DOSSIER // LEGAL BINDING"
       />
       <PageBlocks details={content.details} outcomes={content.outcomes} />
     </>
