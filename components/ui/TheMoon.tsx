@@ -2,6 +2,7 @@
 
 import {
   motion,
+  MotionValue,
   useMotionValue,
   useReducedMotion,
   useScroll,
@@ -14,79 +15,91 @@ const VELLUM = "#EAEAEA";
 const PAPER = "#FAFAFA";
 
 export interface TheMoonProps {
-  progress?: any; // MotionValue<number>
+  progress?: MotionValue<number>;
   disableOuterTransform?: boolean;
 }
 
 /**
  * The Moon — Metamorphic Scroll-Driven Celestial Surface.
  *
- * At rest in the Hero: Serene, breathing, 90% opaque monochrome moon with
- * shimmering aura, lunar maria, craters, and Tycho rays.
+ * 1. Rest State (Scroll 0):
+ *    - Serene, breathing, 90% opaque monochrome moon with lunar maria, craters, and Tycho rays.
  *
- * On scroll: As the user scrolls down, the moon smoothly glides towards the center
- * of the viewport, while the monochromatic surface gradually metamorphoses into an
- * iridescent center-originating fluid rainbow wave spectrum with organic wave distortion
- * and ambient chromatic halo.
+ * 2. Moving Metamorphosis (Scroll 0.12 -> 0.65):
+ *    - As the moon moves towards the center, the color palette becomes disorganized & turbulent.
+ *    - Color channels (Red/Orange, Green/Cyan, Blue/Violet) scatter, swirl, and refract at differing angular velocities.
+ *    - The fluid turbulence displacement creates a dynamic disorganized prismatic vortex.
+ *
+ * 3. Settled State (Scroll 0.65+):
+ *    - Reaches the exact center and aligns seamlessly directly above the Conversational Box.
+ *    - The disorganized chromatic storm stabilizes into a harmonic iridescent rainbow spectrum.
  */
 export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const motionEnabled = !prefersReducedMotion;
 
-  // Track global window scroll progress for smooth continuous metamorphosis
+  // Track global window scroll fallback
   const { scrollY } = useScroll();
 
-  // Scroll mapping:
-  // If parent passes a normalized scroll progress (0 -> 1), use it; otherwise map scrollY.
-  const rawChromatic = progress
-    ? useTransform(progress, [0.15, 0.65], [0, 1])
-    : useTransform(scrollY, [0, 360], [0, 1]);
+  // Normalized scroll value reference
+  const fallbackProgress = useTransform(scrollY, [0, 450], [0, 1]);
+  const activeProgress = progress ?? fallbackProgress;
+
+  // Smooth inertial spring
+  const smoothProgress = useSpring(activeProgress, {
+    stiffness: 52,
+    damping: 22,
+    mass: 0.8,
+  });
+
+  // ——— 1. Metamorphic Cross-Fade (Monochrome -> Chromatic) ———
+  const rawChromatic = useTransform(smoothProgress, [0.12, 0.65], [0, 1]);
+  const rawMono = useTransform(smoothProgress, [0.12, 0.65], [1, 0]);
 
   const chromaticProgress = useSpring(rawChromatic, {
     stiffness: 55,
     damping: 22,
-    mass: 0.8,
   });
-
-  const rawMono = progress
-    ? useTransform(progress, [0.15, 0.65], [1, 0])
-    : useTransform(scrollY, [0, 360], [1, 0]);
-
   const monoProgress = useSpring(rawMono, {
     stiffness: 55,
     damping: 22,
-    mass: 0.8,
   });
+
+  // ——— 2. Disorganized Color Palette Swirl on Movement ———
+  // Dynamic chaotic angular rotation per color band (Disorganized Chromatic Dispersion)
+  const redWaveRotate = useTransform(
+    smoothProgress,
+    [0, 0.35, 0.70],
+    [0, 110, 22]
+  );
+  const greenWaveRotate = useTransform(
+    smoothProgress,
+    [0, 0.35, 0.70],
+    [0, -95, -18]
+  );
+  const blueWaveRotate = useTransform(
+    smoothProgress,
+    [0, 0.35, 0.70],
+    [0, 140, 36]
+  );
+
+  // Core wave rotation
+  const coreWaveRotate = useTransform(
+    smoothProgress,
+    [0, 0.5, 1],
+    [0, 45, 28]
+  );
 
   // Standalone fallback transforms if not controlled by parent
   const rawShiftX = useTransform(scrollY, [0, 420], [0, -90]);
-  const shiftX = useSpring(rawShiftX, {
-    stiffness: 55,
-    damping: 22,
-  });
+  const shiftX = useSpring(rawShiftX, { stiffness: 55, damping: 22 });
 
   const rawShiftY = useTransform(scrollY, [0, 420], [0, 45]);
-  const shiftY = useSpring(rawShiftY, {
-    stiffness: 55,
-    damping: 22,
-  });
+  const shiftY = useSpring(rawShiftY, { stiffness: 55, damping: 22 });
 
-  const rawScrollScale = useTransform(scrollY, [0, 420], [1, 1.07]);
-  const scrollScale = useSpring(rawScrollScale, {
-    stiffness: 60,
-    damping: 24,
-  });
-
-  // Chromatic wave gentle rotation with scroll
-  const rawWaveRotate = progress
-    ? useTransform(progress, [0, 1], [0, 26])
-    : useTransform(scrollY, [0, 600], [0, 24]);
-
-  const waveRotate = useSpring(rawWaveRotate, {
-    stiffness: 40,
-    damping: 20,
-  });
+  const rawScrollScale = useTransform(scrollY, [0, 420], [1, 1.08]);
+  const scrollScale = useSpring(rawScrollScale, { stiffness: 60, damping: 24 });
 
   // Interactive mouse tilt physics
   const rawTiltX = useMotionValue(0);
@@ -108,7 +121,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
     rawTiltY.set(0);
   };
 
-  // Center coordinate
+  // Center coordinates
   const MOON_CX = 280;
   const MOON_CY = 240;
 
@@ -122,7 +135,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
     <div ref={containerRef} className="relative w-full">
       <motion.div
         role="img"
-        aria-label="Metamorphic moon emblem: transitions from serene monochrome to fluid chromatic rainbow spectrum on scroll"
+        aria-label="Metamorphic moon emblem: transitions from serene monochrome to fluid disorganized chromatic rainbow spectrum during movement, then aligns gracefully above the solution interface"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         initial={motionEnabled ? { opacity: 0 } : false}
@@ -152,132 +165,133 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               <stop offset="100%" stopColor={VELLUM} stopOpacity="0" />
             </radialGradient>
 
-            {/* 2. CHROMATIC RAINBOW HALO */}
+            {/* 2. CHROMATIC DISORGANIZED RAINBOW HALO */}
             <radialGradient id="rainbow-halo" cx="50%" cy="50%" r="50%">
-              <stop offset="55%" stopColor="#34C759" stopOpacity="0.22" />
-              <stop offset="72%" stopColor="#007AFF" stopOpacity="0.16" />
-              <stop offset="88%" stopColor="#AF52DE" stopOpacity="0.1" />
+              <stop offset="50%" stopColor="#34C759" stopOpacity="0.25" />
+              <stop offset="68%" stopColor="#007AFF" stopOpacity="0.2" />
+              <stop offset="84%" stopColor="#AF52DE" stopOpacity="0.15" />
+              <stop offset="95%" stopColor="#FF3B30" stopOpacity="0.08" />
               <stop offset="100%" stopColor="#000000" stopOpacity="0" />
             </radialGradient>
 
-            {/* 3. CENTER-ORIGINATING RADIAL RAINBOW WAVE GRADIENTS */}
+            {/* 3. DISORGANIZED CHROMATIC WAVE GRADIENTS */}
             <linearGradient
-              id="wave-red"
+              id="wave-red-disorganized"
               x1="400"
               y1="400"
-              x2="640"
-              y2="160"
+              x2="660"
+              y2="140"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#FF3B30" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#FF3B30" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#FF3B30" stopOpacity="0.2" />
-            </linearGradient>
-
-            <linearGradient
-              id="wave-orange"
-              x1="400"
-              y1="400"
-              x2="640"
-              y2="380"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop offset="0%" stopColor="#FF9500" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#FF9500" stopOpacity="0.8" />
+              <stop offset="0%" stopColor="#FF2D55" stopOpacity="0.95" />
+              <stop offset="60%" stopColor="#FF3B30" stopOpacity="0.85" />
               <stop offset="100%" stopColor="#FF9500" stopOpacity="0.2" />
             </linearGradient>
 
             <linearGradient
-              id="wave-yellow"
+              id="wave-orange-disorganized"
               x1="400"
               y1="400"
-              x2="520"
-              y2="620"
+              x2="660"
+              y2="420"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stopColor="#FF9500" stopOpacity="0.95" />
+              <stop offset="60%" stopColor="#FFCC00" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#FF3B30" stopOpacity="0.2" />
+            </linearGradient>
+
+            <linearGradient
+              id="wave-yellow-disorganized"
+              x1="400"
+              y1="400"
+              x2="500"
+              y2="660"
               gradientUnits="userSpaceOnUse"
             >
               <stop offset="0%" stopColor="#FFCC00" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#FFCC00" stopOpacity="0.8" />
+              <stop offset="60%" stopColor="#34C759" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#FF9500" stopOpacity="0.2" />
+            </linearGradient>
+
+            <linearGradient
+              id="wave-green-disorganized"
+              x1="400"
+              y1="400"
+              x2="280"
+              y2="660"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stopColor="#34C759" stopOpacity="0.95" />
+              <stop offset="60%" stopColor="#00C7BE" stopOpacity="0.85" />
               <stop offset="100%" stopColor="#FFCC00" stopOpacity="0.2" />
             </linearGradient>
 
             <linearGradient
-              id="wave-green"
+              id="wave-cyan-disorganized"
               x1="400"
               y1="400"
-              x2="320"
-              y2="640"
+              x2="140"
+              y2="500"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#34C759" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#34C759" stopOpacity="0.8" />
+              <stop offset="0%" stopColor="#00C7BE" stopOpacity="0.95" />
+              <stop offset="60%" stopColor="#007AFF" stopOpacity="0.85" />
               <stop offset="100%" stopColor="#34C759" stopOpacity="0.2" />
             </linearGradient>
 
             <linearGradient
-              id="wave-cyan"
+              id="wave-blue-disorganized"
               x1="400"
               y1="400"
-              x2="180"
-              y2="520"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop offset="0%" stopColor="#00A8FF" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#00A8FF" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#00A8FF" stopOpacity="0.2" />
-            </linearGradient>
-
-            <linearGradient
-              id="wave-blue"
-              x1="400"
-              y1="400"
-              x2="160"
-              y2="300"
+              x2="140"
+              y2="280"
               gradientUnits="userSpaceOnUse"
             >
               <stop offset="0%" stopColor="#007AFF" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#007AFF" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#007AFF" stopOpacity="0.2" />
+              <stop offset="60%" stopColor="#5856D6" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#00C7BE" stopOpacity="0.2" />
             </linearGradient>
 
             <linearGradient
-              id="wave-violet"
+              id="wave-violet-disorganized"
               x1="400"
               y1="400"
-              x2="300"
-              y2="160"
+              x2="320"
+              y2="140"
               gradientUnits="userSpaceOnUse"
             >
               <stop offset="0%" stopColor="#AF52DE" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#AF52DE" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#AF52DE" stopOpacity="0.2" />
+              <stop offset="60%" stopColor="#FF2D55" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#5856D6" stopOpacity="0.2" />
             </linearGradient>
 
-            {/* 4. FLUID RAINBOW WAVE DISTORTION FILTER */}
+            {/* 4. FLUID TURBULENCE & PRISMATIC DISPERSION FILTER */}
             <filter
               id="fluid-rainbow-wave"
-              x="-30%"
-              y="-30%"
-              width="160%"
-              height="160%"
+              x="-35%"
+              y="-35%"
+              width="170%"
+              height="170%"
             >
               <feTurbulence
                 type="fractalNoise"
-                baseFrequency="0.006 0.004"
-                numOctaves="3"
-                seed="12"
+                baseFrequency="0.007 0.005"
+                numOctaves="4"
+                seed="18"
                 result="noise"
               />
               <feDisplacementMap
                 in="SourceGraphic"
                 in2="noise"
-                scale="55"
+                scale="60"
                 xChannelSelector="R"
                 yChannelSelector="G"
                 result="displaced"
               />
               <feGaussianBlur
                 in="displaced"
-                stdDeviation="35"
+                stdDeviation="30"
                 result="fluidSpectrum"
               />
             </filter>
@@ -334,7 +348,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
           </motion.g>
 
           {/* ============================================================ */}
-          {/* THE MOON CORE SVG — INTERNAL METAMORPHOSIS                  */}
+          {/* THE MOON CORE SVG — INTERNAL METAMORPHOSIS & DISORGANIZATION */}
           {/* ============================================================ */}
           <motion.g
             initial={
@@ -384,63 +398,101 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                 style={{ opacity: monoProgress }}
               />
 
-              {/* LAYER 2B: Chromatic Fluid Center-Originating Rainbow Field Base */}
+              {/* LAYER 2B: Chromatic Disorganized Swirling Fluid Rainbow Field Base */}
               <motion.g
                 clipPath="url(#moon-sphere-clip)"
                 style={{
                   opacity: chromaticProgress,
                   originX: "400px",
                   originY: "400px",
-                  rotate: motionEnabled ? waveRotate : 0,
+                  rotate: coreWaveRotate,
                 }}
               >
                 <g filter="url(#fluid-rainbow-wave)">
-                  {/* Radial wave shapes originating from (400,400) outward */}
-                  <path
-                    d="M 400 400 C 480 320, 540 240, 680 120 C 600 80, 500 100, 400 400 Z"
-                    fill="url(#wave-red)"
-                  />
-                  <path
-                    d="M 400 400 C 520 360, 600 320, 680 360 C 680 460, 580 520, 400 400 Z"
-                    fill="url(#wave-orange)"
-                    opacity="0.9"
-                  />
-                  <path
-                    d="M 400 400 C 480 480, 520 560, 580 680 C 480 680, 400 620, 400 400 Z"
-                    fill="url(#wave-yellow)"
-                    opacity="0.9"
-                  />
-                  <path
-                    d="M 400 400 C 380 500, 340 580, 280 680 C 200 620, 180 540, 400 400 Z"
-                    fill="url(#wave-green)"
-                    opacity="0.9"
-                  />
-                  <path
-                    d="M 400 400 C 300 480, 220 500, 120 540 C 100 440, 140 360, 400 400 Z"
-                    fill="url(#wave-cyan)"
-                    opacity="0.9"
-                  />
-                  <path
-                    d="M 400 400 C 260 360, 180 320, 120 260 C 160 180, 240 160, 400 400 Z"
-                    fill="url(#wave-blue)"
-                    opacity="0.9"
-                  />
-                  <path
-                    d="M 400 400 C 320 280, 280 200, 260 120 C 360 80, 440 120, 400 400 Z"
-                    fill="url(#wave-violet)"
-                    opacity="0.9"
-                  />
+                  {/* RED / ORANGE SECTOR (Swirls with redWaveRotate) */}
+                  <motion.g
+                    style={{
+                      originX: "400px",
+                      originY: "400px",
+                      rotate: redWaveRotate,
+                    }}
+                  >
+                    <path
+                      d="M 400 400 C 480 300, 560 220, 700 100 C 620 60, 500 80, 400 400 Z"
+                      fill="url(#wave-red-disorganized)"
+                    />
+                    <path
+                      d="M 400 400 C 530 350, 620 300, 700 350 C 700 460, 600 530, 400 400 Z"
+                      fill="url(#wave-orange-disorganized)"
+                      opacity="0.9"
+                    />
+                  </motion.g>
 
-                  {/* Overlapping secondary paths for smooth color blending */}
-                  <path
-                    d="M 400 400 C 500 280, 580 200, 680 220 C 680 300, 600 360, 400 400 Z"
-                    fill="url(#wave-red)"
+                  {/* GREEN / CYAN SECTOR (Counter-swirls with greenWaveRotate) */}
+                  <motion.g
+                    style={{
+                      originX: "400px",
+                      originY: "400px",
+                      rotate: greenWaveRotate,
+                    }}
+                  >
+                    <path
+                      d="M 400 400 C 490 490, 530 570, 600 700 C 490 700, 400 640, 400 400 Z"
+                      fill="url(#wave-yellow-disorganized)"
+                      opacity="0.9"
+                    />
+                    <path
+                      d="M 400 400 C 370 520, 330 600, 260 700 C 180 640, 160 550, 400 400 Z"
+                      fill="url(#wave-green-disorganized)"
+                      opacity="0.9"
+                    />
+                    <path
+                      d="M 400 400 C 290 490, 200 520, 100 550 C 80 440, 120 350, 400 400 Z"
+                      fill="url(#wave-cyan-disorganized)"
+                      opacity="0.9"
+                    />
+                  </motion.g>
+
+                  {/* BLUE / VIOLET SECTOR (Swirls with blueWaveRotate) */}
+                  <motion.g
+                    style={{
+                      originX: "400px",
+                      originY: "400px",
+                      rotate: blueWaveRotate,
+                    }}
+                  >
+                    <path
+                      d="M 400 400 C 250 350, 160 300, 100 240 C 140 160, 230 140, 400 400 Z"
+                      fill="url(#wave-blue-disorganized)"
+                      opacity="0.9"
+                    />
+                    <path
+                      d="M 400 400 C 310 260, 260 180, 240 100 C 350 60, 440 100, 400 400 Z"
+                      fill="url(#wave-violet-disorganized)"
+                      opacity="0.9"
+                    />
+                  </motion.g>
+
+                  {/* Overlapping chromatic dispersion ribbons */}
+                  <motion.path
+                    d="M 400 400 C 510 260, 600 180, 700 200 C 700 290, 620 360, 400 400 Z"
+                    fill="url(#wave-red-disorganized)"
                     opacity="0.5"
+                    style={{
+                      originX: "400px",
+                      originY: "400px",
+                      rotate: redWaveRotate,
+                    }}
                   />
-                  <path
-                    d="M 400 400 C 340 220, 360 140, 460 100 C 540 120, 580 200, 400 400 Z"
-                    fill="url(#wave-violet)"
+                  <motion.path
+                    d="M 400 400 C 330 200, 350 120, 460 80 C 550 100, 600 190, 400 400 Z"
+                    fill="url(#wave-violet-disorganized)"
                     opacity="0.5"
+                    style={{
+                      originX: "400px",
+                      originY: "400px",
+                      rotate: blueWaveRotate,
+                    }}
                   />
                 </g>
               </motion.g>

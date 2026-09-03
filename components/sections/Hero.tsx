@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   motion,
   useReducedMotion,
@@ -25,24 +25,29 @@ import {
  *
  * Cinematic Scroll Journey:
  * 1. Rest State (Scroll Progress 0%):
- *    - Desktop: Split composition with Hero copy on the left and Moon on the right (scale 1.00).
+ *    - Desktop: Split composition with Hero copy on the left and serene monochrome Moon on the right (scale 1.00).
  *    - Mobile: Clean stacked hero with Moon hovering above the high-contrast display headline.
- * 2. Gliding Metamorphosis (Scroll Progress 15% -> 60%):
+ * 2. Gliding & Disorganized Metamorphosis (Scroll Progress 12% -> 62%):
  *    - Hero copy gently dissolves and drifts upward.
- *    - The Moon glides smoothly from its right-aligned hero spot straight to the horizontal center.
- *    - Moon scales up by 30% (scale 1.00 -> 1.30) and wakes the fluid rainbow spectrum.
- * 3. Solution Architecture Emergence (Scroll Progress 50% -> 80%):
- *    - The user intake panel emerges directly beneath the centered moon.
- *    - The Moon floats majestically right above the top edge of the panel.
- * 4. User Interaction (Scroll Progress 80% -> 100%):
- *    - Users can type their business bottlenecks, attach documents (PDF/XLSX/CSV),
- *      and generate an instant tailored Laxvish AI system blueprint.
+ *    - The Moon glides smoothly from its right-aligned hero spot to the exact horizontal center.
+ *    - Moon scales up by 30% (scale 1.00 -> 1.30) while its color palette gets disorganized, turbulent, and refracts into swirling chromatic ribbons.
+ * 3. Unified Alignment & Emergence (Scroll Progress 40% -> 65%):
+ *    - The minimal Gemini/ChatGPT-style prompt interface emerges directly beneath the centered moon.
+ *    - The disorganized spectrum resolves into a harmonic iridescent glow as both align together in unison.
  */
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const motionEnabled = !prefersReducedMotion;
   const bookDemoUrl = getBookDemoUrl();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
 
   // Normalized scroll progress across the narrative track
   const { scrollYProgress } = useScroll({
@@ -58,48 +63,48 @@ export function Hero() {
   });
 
   // ——— 1. Hero Copy Transforms ———
-  const rawHeroOpacity = useTransform(smoothProgress, [0.10, 0.35], [1, 0]);
-  const rawHeroY = useTransform(smoothProgress, [0.10, 0.35], [0, -35]);
+  const rawHeroOpacity = useTransform(smoothProgress, [0.08, 0.32], [1, 0]);
+  const rawHeroY = useTransform(smoothProgress, [0.08, 0.32], [0, -32]);
   const heroOpacity = motionEnabled ? rawHeroOpacity : 1;
   const heroY = motionEnabled ? rawHeroY : 0;
   const heroPointerEvents = useTransform(smoothProgress, (v) =>
-    v > 0.32 ? "none" : "auto"
+    v > 0.30 ? "none" : "auto"
   );
 
-  // ——— 2. The Moon Trajectory (Directly above the panel) ———
-  // Desktop: Glides from right-column offset (+26vw) to exact center (0vw)
+  // ——— 2. The Moon Trajectory & Calibration ———
+  // Desktop: Glides from right-column offset (+26vw) to exact center (0vw). Mobile: Stays centered (0vw).
   const rawMoonShiftX = useTransform(
     smoothProgress,
-    [0.15, 0.60],
-    ["26vw", "0vw"]
+    [0.12, 0.62],
+    [isDesktop ? "26vw" : "0vw", "0vw"]
   );
   // Scale increases gradually by 30% from 1.00 to 1.30
   const rawMoonScale = useTransform(
     smoothProgress,
-    [0.15, 0.60],
+    [0.12, 0.62],
     [1.0, 1.30]
   );
-  // Slight vertical lift to stay hovering right above the panel
+  // Vertical hovering calibration
   const rawMoonShiftY = useTransform(
     smoothProgress,
-    [0.15, 0.60],
-    [0, -10]
+    [0.12, 0.62],
+    [0, -12]
   );
 
   const moonShiftX = motionEnabled ? rawMoonShiftX : "0vw";
   const moonShiftY = motionEnabled ? rawMoonShiftY : 0;
   const moonScale = motionEnabled ? rawMoonScale : 1.0;
 
-  // ——— 3. Conversational / Solution Panel Emergence ———
-  const rawBoxOpacity = useTransform(smoothProgress, [0.48, 0.76], [0, 1]);
-  const rawBoxY = useTransform(smoothProgress, [0.48, 0.76], [35, 0]);
-  const rawBoxScale = useTransform(smoothProgress, [0.48, 0.76], [0.98, 1.0]);
+  // ——— 3. Conversational / Chatbox Synchronized Emergence ———
+  const rawBoxOpacity = useTransform(smoothProgress, [0.38, 0.64], [0, 1]);
+  const rawBoxY = useTransform(smoothProgress, [0.38, 0.64], [32, 0]);
+  const rawBoxScale = useTransform(smoothProgress, [0.38, 0.64], [0.97, 1.0]);
 
   const boxOpacity = motionEnabled ? rawBoxOpacity : 1;
   const boxY = motionEnabled ? rawBoxY : 0;
   const boxScale = motionEnabled ? rawBoxScale : 1;
   const boxPointerEvents = useTransform(smoothProgress, (v) =>
-    v > 0.50 ? "auto" : "none"
+    v > 0.45 ? "auto" : "none"
   );
 
   return (
@@ -114,7 +119,7 @@ export function Hero() {
       <div
         className={
           motionEnabled
-            ? "sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center items-center"
+            ? "sticky top-0 h-screen h-[100dvh] w-full overflow-hidden flex flex-col justify-center items-center"
             : "relative w-full py-12 sm:py-20"
         }
       >
@@ -185,18 +190,18 @@ export function Hero() {
           </motion.div>
 
           {/* ============================================================ */}
-          {/* LAYER 2: CELESTIAL STAGE (Moon + Solution Intake Panel)      */}
+          {/* LAYER 2: CELESTIAL STAGE (Moon + Minimal Solution Chatbox)   */}
           {/* ============================================================ */}
           <div className="w-full flex flex-col items-center justify-center z-20">
             
-            {/* ——— The Moon: Floats directly above the panel ——— */}
+            {/* ——— The Moon: Floats directly above the chatbox ——— */}
             <motion.div
               style={{
                 x: motionEnabled ? moonShiftX : 0,
                 y: motionEnabled ? moonShiftY : 0,
                 scale: motionEnabled ? moonScale : 1,
               }}
-              className="w-full max-w-[190px] sm:max-w-[240px] lg:max-w-[300px] mx-auto will-change-transform z-30"
+              className="w-full max-w-[170px] sm:max-w-[210px] lg:max-w-[260px] mx-auto will-change-transform z-30"
             >
               <TheMoon
                 progress={motionEnabled ? smoothProgress : undefined}
@@ -204,7 +209,7 @@ export function Hero() {
               />
             </motion.div>
 
-            {/* ——— The Solution Architect & Document Intake Panel ——— */}
+            {/* ——— Minimal Gemini/ChatGPT-Style Chatbox Surface ——— */}
             <motion.div
               style={{
                 opacity: boxOpacity,
@@ -212,7 +217,7 @@ export function Hero() {
                 scale: boxScale,
                 pointerEvents: motionEnabled ? boxPointerEvents : "auto",
               }}
-              className="w-full mt-2 sm:mt-3 lg:mt-4 will-change-transform z-40"
+              className="w-full -mt-3 sm:-mt-5 lg:-mt-6 will-change-transform z-40"
             >
               <ConversationalBox />
             </motion.div>
