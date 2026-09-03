@@ -14,17 +14,16 @@ const VELLUM = "#EAEAEA";
 const PAPER = "#FAFAFA";
 
 /**
- * The Moon — 10 life-animations + 10% transparency.
+ * The Moon — 9 life-animations, 10% transparent (opacity 0.9).
  *
- * The exact team-authored moon SVG is embedded verbatim. The moon
- * itself is rendered at opacity 0.1 (10%) so it is a translucent
- * ghost; the life of the moon is carried by its atmosphere — a
- * bright breathing aura, a rare halo ring expansion, the stars, and
- * the lake's reflection.
+ * The exact team-authored moon SVG is embedded verbatim. The moon is
+ * nearly opaque (10% see-through) so its surface life is fully visible;
+ * a breathing aura, twinkling stars, and a breathing lake reflection
+ * carry the rest of the life around it.
  *
- * The ten life-animations:
- *  1. Moonrise entrance   — fade in (to 10%) and settle
- *  2. Breathing scale     — the ghost moon inhales/exhales (1.0↔1.015)
+ * The nine life-animations:
+ *  1. Moonrise entrance   — fade in to 90% and settle
+ *  2. Breathing scale     — the moon inhales/exhales (1.0↔1.015)
  *  3. Celestial sway      — slow ±2° rotational sway
  *  4. Halo breath         — the ambient atmospheric glow pulses
  *  5. Crescent rim shimmer— the lit edge of the moon shimmers
@@ -32,7 +31,6 @@ const PAPER = "#FAFAFA";
  *  7. Surface shimmer     — the maria + crater field breathes
  *  8. Stars twinkle       — three wish-stars, staggered
  *  9. Reflection breath   — the lake's reflection glow breathes
- * 10. Halo ring expansion — a faint ring ripples outward, rarely
  */
 export function TheMoon() {
   const prefersReducedMotion = useReducedMotion();
@@ -106,42 +104,19 @@ export function TheMoon() {
           <circle cx={MOON_CX} cy={MOON_CY} r="170" fill="url(#moon-aura)" />
         </motion.g>
 
-        {/* #10 HALO RING EXPANSION — a faint ring ripples outward from the
-            moon every ~18s, then rests. The rare magical breath. */}
-        {motionEnabled && (
-          <motion.circle
-            cx={MOON_CX}
-            cy={MOON_CY}
-            r={140}
-            fill="none"
-            stroke={INK}
-            strokeOpacity="0.5"
-            strokeWidth="0.9"
-            initial={{ scale: 1, opacity: 0 }}
-            animate={{ scale: [1, 1.6], opacity: [0, 0.55, 0] }}
-            transition={{
-              duration: 4,
-              repeat: 18,
-              repeatDelay: 14,
-              ease: "easeOut",
-            }}
-            style={{ originX: `${MOON_CX}px`, originY: `${MOON_CY}px` }}
-          />
-        )}
-
         {/* THE MOON — the exact team-authored SVG, wrapped in a motion.g
             for #1 entrance, #2 breathing, #3 sway, and the 10% transparency. */}
         <motion.g
-          initial={motionEnabled ? { opacity: 0, y: 20 } : { opacity: 0.1, y: 0 }}
+          initial={motionEnabled ? { opacity: 0, y: 20 } : { opacity: 0.9, y: 0 }}
           animate={
             motionEnabled
               ? {
-                  opacity: 0.1,
+                  opacity: 0.9,
                   y: 0,
                   scale: [1, 1.015, 1],
                   rotate: [-2, 2, -2],
                 }
-              : { opacity: 0.1, y: 0, scale: 1, rotate: 0 }
+              : { opacity: 0.9, y: 0, scale: 1, rotate: 0 }
           }
           transition={{
             opacity: { duration: 1.2, delay: 0.2 },
