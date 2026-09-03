@@ -21,7 +21,7 @@ export function FinalCta() {
 
   return (
     <section
-      id="compliance"
+      id="start"
       className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32"
     >
       <FadeIn yOffset={30}>

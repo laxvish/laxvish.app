@@ -22,7 +22,7 @@ This is a website-only implementation focused on the marketing and product narra
 - **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
-- **Animations:** GSAP, Framer Motion, Rive Canvas
+- **Animations:** Framer Motion (springs, scroll-linked motion, reduced-motion aware)
 - **Testing:** Node.js built-in test runner (`node:test`, Node 22 + `--experimental-strip-types`)
 - **Deployment:** Vercel (CI via GitHub Actions)
 
@@ -370,7 +370,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for:
 
 - [Next.js Docs](https://nextjs.org/docs)
 - [Tailwind CSS](https://tailwindcss.com)
-- [GSAP Animation Library](https://gsap.com)
+- [Framer Motion](https://motion.dev)
 - [Node.js Test Runner Docs](https://nodejs.org/api/test.html)
 - [Vercel Docs](https://vercel.com/docs)
 

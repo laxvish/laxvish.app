@@ -73,8 +73,8 @@ export function AnsweringMoon() {
   const rawTiltY = useMotionValue(0);
   const tiltX = useSpring(rawTiltX, { stiffness: 60, damping: 22 });
   const tiltY = useSpring(rawTiltY, { stiffness: 60, damping: 22 });
-  const rotateX = useTransform(tiltY, [-0.5, 0.5], [1.6, -1.6]);
-  const rotateY = useTransform(tiltX, [-0.5, 0.5], [-1.6, 1.6]);
+  const rotateX = useTransform(tiltY, [-0.5, 0.5], [1.2, -1.2]);
+  const rotateY = useTransform(tiltX, [-0.5, 0.5], [-1.2, 1.2]);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (prefersReducedMotion) return;
@@ -113,12 +113,8 @@ export function AnsweringMoon() {
         {/* The still lake */}
         <line x1="40" y1="566" x2="520" y2="566" stroke={INK} strokeOpacity="0.25" strokeWidth="1" />
 
-        {/* Moonrise — the disc ascends once, then holds */}
-        <motion.g
-          animate={motionEnabled ? { scale: [1, 1.008, 1] } : { scale: 1 }}
-          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
-          style={{ originX: MOON_CENTER, originY: MOON_CENTER }}
-        >
+        {/* Moonrise — the disc ascends once, then holds perfectly still */}
+        <g>
           {/* Halo — the only continuous rotation, slow as a shadow */}
           <motion.g
             animate={motionEnabled ? { rotate: 360 } : { rotate: 0 }}
@@ -167,7 +163,7 @@ export function AnsweringMoon() {
           ].map(([x, y]) => (
             <circle key={`${x}-${y}`} cx={x} cy={y} r="1.5" fill={PAPER} opacity="0.2" />
           ))}
-        </motion.g>
+        </g>
 
         {/* Wish-stars — drifting, twinkling */}
         {STARS.map((star, i) => (

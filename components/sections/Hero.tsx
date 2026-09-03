@@ -26,17 +26,6 @@ export function Hero() {
       {/* Immersive Intelligence Field Background — restored by user request */}
       <AIFabric />
 
-      {/* Control-surface corner registration ticks (the machine frame) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-4 z-20 hidden lg:block"
-      >
-        <span className="absolute left-0 top-0 h-4 w-4 border-l-2 border-t-2 border-charcoal/30" />
-        <span className="absolute right-0 top-0 h-4 w-4 border-r-2 border-t-2 border-charcoal/30" />
-        <span className="absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-charcoal/30" />
-        <span className="absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-charcoal/30" />
-      </div>
-
       <div className="relative z-10 mx-auto grid w-full max-w-[1440px] items-center gap-16 px-6 pb-20 pt-32 sm:px-12 lg:grid-cols-[1.15fr_0.85fr] lg:px-16 lg:pb-28 lg:pt-40">
         {/* ——— Copy column (holds still) ——— */}
         <div className="max-w-2xl">
@@ -81,10 +70,11 @@ export function Hero() {
             </div>
           </FadeIn>
 
-          {/* Sparse mono telemetry line — static instrumentation, not a dashboard */}
+          {/* Quiet provenance line — honest, no machine telemetry */}
           <FadeIn delay={0.5} yOffset={10}>
             <p className="mt-14 border-t border-charcoal/20 pt-6 text-[10px] font-medium tracking-[0.2em] text-neonCyan uppercase">
-              Workers 03&ensp;·&ensp;Gate 01&ensp;·&ensp;Ready&ensp;·&ensp;DPDP
+              Made in India&ensp;·&ensp;DPDP-ready&ensp;·&ensp;You stay in
+              control
             </p>
           </FadeIn>
         </div>

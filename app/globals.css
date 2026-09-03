@@ -14,29 +14,3 @@ h3,
 .font-display {
   font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
 }
-
-.hero-void {
-  background: #FAFAFA;
-}
-
-.hero-void-mesh {
-  background-image: radial-gradient(#EAEAEA 1px, transparent 1px);
-  background-size: 24px 24px;
-  opacity: 0.5;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-void-mesh {
-    animation: none;
-  }
-}
-
-@media (forced-colors: active) {
-  .hero-void {
-    background: Canvas;
-  }
-
-  .hero-void-mesh {
-    background: none;
-  }
-}

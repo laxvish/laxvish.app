@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Laxvish — an AI operating system for Indian enterprises";
+export const alt = "Laxvish — an AI company building AI systems for Indian enterprises";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -75,7 +75,7 @@ export default function OpenGraphImage() {
               color: CHARCOAL,
             }}
           >
-            An AI operating system for Indian enterprises.
+            An AI company building AI systems for Indian enterprises.
           </div>
         </div>
 
