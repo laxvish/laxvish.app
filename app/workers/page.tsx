@@ -25,6 +25,11 @@ export default function WorkersPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
+        image={{
+          src: "/images/workers-actuator-macro.png",
+          alt: "Precision robotic micro-actuators and industrial mechanical linkages",
+          caption: "FIG. 01 / WORKER EXECUTION MESH",
+        }}
       />
       <PageBlocks
         details={content.details}

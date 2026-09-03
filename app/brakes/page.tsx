@@ -25,6 +25,11 @@ export default function BrakesPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
+        image={{
+          src: "/images/brakes-interlock-macro.png",
+          alt: "Solid steel mechanical interlocking brake caliper and safety mechanism",
+          caption: "FIG. 01 / VERIFICATION BRAKE INTERLOCK",
+        }}
       />
       <PageBlocks
         details={content.details}

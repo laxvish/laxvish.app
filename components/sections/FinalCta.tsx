@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import {
@@ -10,10 +11,7 @@ import {
 } from "@/lib/site-navigation";
 
 /**
- * FinalCta — the sign-off band.
- *
- * Full-width hairline-ruled closing panel with an inline "title block" footer
- * (engineering-drawing metadata). Mobile-first responsive spacing.
+ * FinalCta — the sign-off band with architectural perspective split.
  */
 export function FinalCta() {
   const bookDemoUrl = getBookDemoUrl();
@@ -25,15 +23,20 @@ export function FinalCta() {
     >
       <FadeIn yOffset={20}>
         <div className="border border-charcoal bg-obsidian">
-          <div className="border-b border-charcoal/20 px-6 py-10 sm:px-12 sm:py-14 lg:px-16 lg:py-16">
-            <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
-              Start with one worker
-            </p>
-            <div className="mt-6 sm:mt-8 grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
-              <h2 className="max-w-2xl text-[clamp(1.85rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
+          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] border-b border-charcoal/20 px-6 py-10 sm:px-12 sm:py-14 lg:px-16 lg:py-16 items-center">
+            <div>
+              <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+                Start with one worker
+              </p>
+              <h2 className="mt-4 sm:mt-5 text-[clamp(1.85rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
                 See what an AI worker can do for your team.
               </h2>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 lg:justify-end">
+              <p className="mt-4 sm:mt-5 max-w-xl text-base leading-relaxed text-charcoal/70">
+                Fifteen minutes on your kind of work — no pitch deck, no slide
+                library. Honest in scope, honest in cost, honest in what we cannot
+                do.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4">
                 <MagneticButton
                   as="a"
                   href={bookDemoUrl}
@@ -52,11 +55,20 @@ export function FinalCta() {
                 </MagneticButton>
               </div>
             </div>
-            <p className="mt-6 sm:mt-8 max-w-xl text-base leading-relaxed text-charcoal/70">
-              Fifteen minutes on your kind of work — no pitch deck, no slide
-              library. Honest in scope, honest in cost, honest in what we cannot
-              do.
-            </p>
+
+            <div className="relative overflow-hidden border border-charcoal/20 bg-vaultAmber group">
+              <Image
+                src="/images/final-cta-architecture.png"
+                alt="Precision-milled aluminum plates and razor shadow lines"
+                width={800}
+                height={450}
+                className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+              />
+              <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-4 py-2 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.18em] text-neonCyan">
+                <span>SPEC. 05 / ARCHITECTURE</span>
+                <span>SYSTEM COMMITMENT</span>
+              </div>
+            </div>
           </div>
 
           {/* Title block — engineering metadata */}

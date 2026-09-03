@@ -20,6 +20,11 @@ export default function SecurityTrustPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
+        image={{
+          src: "/images/security-vault-bolt.png",
+          alt: "Solid stainless steel vault locking bolt mechanism",
+          caption: "FIG. 01 / TRUST & ENCRYPTION POSTURE",
+        }}
       />
       <PageBlocks details={content.details} outcomes={content.outcomes} />
     </>

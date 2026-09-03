@@ -25,6 +25,11 @@ export default function CallmePage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
+        image={{
+          src: "/images/callme-ribbon-mic.png",
+          alt: "Broadcast ribbon microphone corrugated acoustic element",
+          caption: "FIG. 01 / ACOUSTIC TRANSDUCER INTERFACE",
+        }}
       />
       <PageBlocks
         details={content.details}

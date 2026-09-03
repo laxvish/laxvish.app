@@ -25,6 +25,11 @@ export default function BrainPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
+        image={{
+          src: "/images/brain-routing-mesh.png",
+          alt: "Optical fiber routing channels and precision server chassis cable harness",
+          caption: "FIG. 01 / ORCHESTRATION ROUTING CHASSIS",
+        }}
       />
       <PageBlocks
         details={content.details}

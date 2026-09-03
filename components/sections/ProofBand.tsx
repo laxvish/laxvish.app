@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FadeIn, FadeInStagger } from "@/components/ui/FadeIn";
 
 interface ProofRow {
@@ -8,10 +9,6 @@ interface ProofRow {
 
 /**
  * Placeholder rows — SLOT markers, not claims.
- *
- * Values marked "SLOT" are to be replaced with verified figures by the team.
- * Nothing here may be presented as a real measurement until it is (AGENTS.md
- * forbids invented precision and fake social proof).
  */
 const proofRows: ProofRow[] = [
   {
@@ -37,11 +34,7 @@ const proofRows: ProofRow[] = [
 ];
 
 /**
- * Proof — the evidence band.
- *
- * A measured spec table (hairline rows, mono overline, no badges, no logo
- * wall). Reads as the machine's own certification sheet. Sits directly under
- * the Pillars band. Mobile-first responsive layout.
+ * Proof — the evidence band with tactile silicon verification imagery.
  */
 export function ProofBand() {
   return (
@@ -50,26 +43,44 @@ export function ProofBand() {
       className="relative z-10 mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28"
     >
       <div className="grid gap-10 sm:gap-14 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-20">
-        <div className="max-w-sm">
-          <FadeIn>
-            <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
-              Verification record
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.1}>
-            <h2 className="mt-4 sm:mt-5 text-[clamp(1.85rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
-              What the machine commits to.
-            </h2>
-          </FadeIn>
-          <FadeIn delay={0.2}>
-            <p className="mt-4 sm:mt-5 text-base leading-relaxed text-charcoal/70">
-              Not promises — the operating envelope of every Laxvish system. The
-              numbers are on the record; if one is missing, we say so.
-            </p>
+        <div className="flex flex-col justify-between max-w-sm">
+          <div>
+            <FadeIn>
+              <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+                Verification record
+              </p>
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <h2 className="mt-4 sm:mt-5 text-[clamp(1.85rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
+                What the machine commits to.
+              </h2>
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <p className="mt-4 sm:mt-5 text-base leading-relaxed text-charcoal/70">
+                Not promises — the operating envelope of every Laxvish system. The
+                numbers are on the record; if one is missing, we say so.
+              </p>
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={0.25} className="mt-8">
+            <div className="relative overflow-hidden border border-charcoal/20 bg-vaultAmber group">
+              <Image
+                src="/images/verification-wafer-macro.png"
+                alt="Laser-etched serial numbers and silicon wafer microcircuitry"
+                width={800}
+                height={450}
+                className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+              />
+              <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-neonCyan">
+                <span>FIG. 02 / VERIFICATION LEDGER</span>
+                <span>DPDP</span>
+              </div>
+            </div>
           </FadeIn>
         </div>
 
-        <FadeInStagger>
+        <FadeInStagger className="flex flex-col justify-center">
           <ul className="border-t border-charcoal">
             {proofRows.map((row) => (
               <li
