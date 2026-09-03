@@ -56,17 +56,18 @@ export function FinalCta() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden border border-charcoal/20 bg-vaultAmber group">
+            <div className="relative w-full max-w-full overflow-hidden border border-charcoal/20 bg-vaultAmber group">
               <Image
                 src="/images/final-cta-architecture.png"
                 alt="Enterprise multi-agent AI system architecture and autonomous deployment mesh"
                 width={800}
                 height={450}
-                className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                sizes="(max-width: 768px) 100vw, 600px"
+                className="h-auto w-full max-w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               />
-              <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-4 py-2 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.18em] text-neonCyan">
-                <span>SPEC. 05 / ARCHITECTURE</span>
-                <span>SYSTEM COMMITMENT</span>
+              <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-3 sm:px-4 py-2 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.14em] sm:tracking-[0.18em] text-neonCyan">
+                <span className="truncate pr-2">SPEC. 05 / ARCHITECTURE</span>
+                <span className="shrink-0">SYSTEM COMMITMENT</span>
               </div>
             </div>
           </div>

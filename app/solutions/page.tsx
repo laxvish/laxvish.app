@@ -28,6 +28,11 @@ export default function SolutionsPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
+        image={{
+          src: "/images/final-cta-architecture.png",
+          alt: "Enterprise multi-agent AI solutions and automation architecture",
+          caption: "SPEC. 01 / ENTERPRISE AUTOMATION CATALOG",
+        }}
       />
       <PageBlocks
         details={content.details}
@@ -61,16 +66,16 @@ export default function SolutionsPage() {
                 {useCases.map((uc) => (
                   <li
                     key={uc.slug}
-                    className="border-b border-charcoal/20 py-6 transition-colors hover:bg-vaultAmber/50"
+                    className="border-b border-charcoal/20 py-5 sm:py-6 transition-colors hover:bg-vaultAmber/50"
                   >
                     <Link
                       href={`/solutions/${uc.slug}`}
-                      className="group flex items-baseline justify-between gap-6"
+                      className="group flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-6"
                     >
-                      <span className="text-2xl font-normal tracking-tight text-charcoal transition-colors duration-300 group-hover:text-neonCyan">
+                      <span className="text-xl sm:text-2xl font-normal tracking-tight text-charcoal transition-colors duration-300 group-hover:text-neonCyan">
                         {uc.title}
                       </span>
-                      <span className="max-w-md text-right text-sm leading-relaxed text-charcoal/70">
+                      <span className="max-w-md text-left sm:text-right text-xs sm:text-sm leading-relaxed text-charcoal/70">
                         {uc.oneLiner}
                       </span>
                     </Link>

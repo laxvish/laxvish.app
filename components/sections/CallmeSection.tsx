@@ -58,17 +58,18 @@ export function CallmeSection() {
           </div>
 
           <FadeIn delay={0.25} className="my-8 sm:my-10">
-            <div className="relative overflow-hidden border border-charcoal/20 bg-obsidian group">
+            <div className="relative w-full max-w-full overflow-hidden border border-charcoal/20 bg-obsidian group">
               <Image
                 src="/images/callme-acoustic-macro.png"
                 alt="Realtime enterprise conversational voice AI stream and neural intent telemetry"
                 width={800}
                 height={450}
-                className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                sizes="(max-width: 768px) 100vw, 600px"
+                className="h-auto w-full max-w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               />
-              <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-4 py-2 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.18em] text-neonCyan">
-                <span>FIG. 01 / REALTIME VOICE INTELLIGENCE</span>
-                <span>RAW 16:9</span>
+              <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-3 sm:px-4 py-2 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.14em] sm:tracking-[0.18em] text-neonCyan">
+                <span className="truncate pr-2">FIG. 01 / REALTIME VOICE INTELLIGENCE</span>
+                <span className="shrink-0">RAW 16:9</span>
               </div>
             </div>
           </FadeIn>

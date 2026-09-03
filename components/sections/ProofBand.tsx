@@ -64,13 +64,14 @@ export function ProofBand() {
           </div>
 
           <FadeIn delay={0.25} className="mt-8">
-            <div className="relative overflow-hidden border border-charcoal/20 bg-vaultAmber group">
+            <div className="relative w-full max-w-full overflow-hidden border border-charcoal/20 bg-vaultAmber group">
               <Image
                 src="/images/verification-wafer-macro.png"
                 alt="Enterprise AI cryptographic verification ledger and deterministic execution audit trail"
                 width={800}
                 height={450}
-                className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                sizes="(max-width: 768px) 100vw, 400px"
+                className="h-auto w-full max-w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               />
               <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-neonCyan">
                 <span>FIG. 02 / AI AUDIT LEDGER</span>

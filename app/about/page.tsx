@@ -20,6 +20,11 @@ export default function AboutPage() {
         eyebrow={content.eyebrow}
         title={content.title}
         summary={content.summary}
+        image={{
+          src: "/images/brain-routing-mesh.png",
+          alt: "Laxvish enterprise AI systems and engineering principles",
+          caption: "SPEC. 01 / SYSTEM PROVENANCE",
+        }}
       />
       <PageBlocks details={content.details} outcomes={content.outcomes} />
     </>
