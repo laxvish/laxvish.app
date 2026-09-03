@@ -33,6 +33,8 @@ export interface TheMoonProps {
  * 3. Settled State (Scroll 0.65+):
  *    - Reaches the exact center and aligns seamlessly directly above the Conversational Box.
  *    - The disorganized chromatic storm stabilizes into a harmonic iridescent rainbow spectrum.
+ *
+ * All chromatic/rainbow effects are strictly clipped to the Moon's exact circular silhouette (#moon-sphere-clip).
  */
 export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -158,23 +160,14 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
           className="h-auto w-full overflow-visible"
         >
           <defs>
-            {/* 1. MONOCHROME AMBIENT AURA */}
+            {/* 1. MONOCHROME AMBIENT AURA (Pure monochrome outside moon) */}
             <radialGradient id="moon-aura-mono" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor={PAPER} stopOpacity="0.55" />
               <stop offset="55%" stopColor={VELLUM} stopOpacity="0.18" />
               <stop offset="100%" stopColor={VELLUM} stopOpacity="0" />
             </radialGradient>
 
-            {/* 2. CHROMATIC DISORGANIZED RAINBOW HALO */}
-            <radialGradient id="rainbow-halo" cx="50%" cy="50%" r="50%">
-              <stop offset="50%" stopColor="#34C759" stopOpacity="0.25" />
-              <stop offset="68%" stopColor="#007AFF" stopOpacity="0.2" />
-              <stop offset="84%" stopColor="#AF52DE" stopOpacity="0.15" />
-              <stop offset="95%" stopColor="#FF3B30" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-            </radialGradient>
-
-            {/* 3. DISORGANIZED CHROMATIC WAVE GRADIENTS */}
+            {/* 2. DISORGANIZED CHROMATIC WAVE GRADIENTS */}
             <linearGradient
               id="wave-red-disorganized"
               x1="400"
@@ -266,7 +259,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               <stop offset="100%" stopColor="#5856D6" stopOpacity="0.2" />
             </linearGradient>
 
-            {/* 4. FLUID TURBULENCE & PRISMATIC DISPERSION FILTER */}
+            {/* 3. FLUID TURBULENCE & PRISMATIC DISPERSION FILTER */}
             <filter
               id="fluid-rainbow-wave"
               x="-35%"
@@ -296,7 +289,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               />
             </filter>
 
-            {/* 5. MONOCHROME BASE & SHADING */}
+            {/* 4. MONOCHROME BASE & SHADING */}
             <radialGradient id="minimal-moon-base" cx="35%" cy="30%" r="70%">
               <stop offset="0%" stopColor="#FFFFFF" />
               <stop offset="50%" stopColor="#F3F4F6" />
@@ -311,7 +304,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               <stop offset="100%" stopColor="#111827" stopOpacity="0.45" />
             </radialGradient>
 
-            {/* 6. SPHERICAL CHROMATIC SHADING */}
+            {/* 5. SPHERICAL CHROMATIC SHADING */}
             <radialGradient id="spherical-shading" cx="32%" cy="28%" r="72%">
               <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.45" />
               <stop offset="45%" stopColor="#FFFFFF" stopOpacity="0.0" />
@@ -319,14 +312,14 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               <stop offset="100%" stopColor="#111827" stopOpacity="0.6" />
             </radialGradient>
 
-            {/* 7. CLIPPING BOUNDARY */}
+            {/* 6. AUTHORITATIVE MOON SILHOUETTE CLIPPING BOUNDARY */}
             <clipPath id="moon-sphere-clip">
               <circle cx="400" cy="400" r="240" />
             </clipPath>
           </defs>
 
           {/* ============================================================ */}
-          {/* HALO BREATH LAYER — MONOCHROME + CHROMATIC CROSS-FADE        */}
+          {/* HALO BREATH LAYER — MONOCHROME AURA (OUTSIDE THE MOON)       */}
           {/* ============================================================ */}
           <motion.g
             animate={
@@ -337,7 +330,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             style={{ originX: `${MOON_CX}px`, originY: `${MOON_CY}px` }}
           >
-            {/* Monochrome atmospheric aura */}
+            {/* Pure Monochrome atmospheric aura */}
             <motion.circle
               cx={MOON_CX}
               cy={MOON_CY}
@@ -348,7 +341,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
           </motion.g>
 
           {/* ============================================================ */}
-          {/* THE MOON CORE SVG — INTERNAL METAMORPHOSIS & DISORGANIZATION */}
+          {/* THE MOON CORE SVG — STRICTLY CLIPPED TO MOON SILHOUETTE      */}
           {/* ============================================================ */}
           <motion.g
             initial={
@@ -380,128 +373,116 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               viewBox="0 0 800 800"
               preserveAspectRatio="xMidYMid meet"
             >
-              {/* LAYER 1: Chromatic Outer Halo (Awakens on scroll) */}
-              <motion.circle
-                cx="400"
-                cy="400"
-                r="280"
-                fill="url(#rainbow-halo)"
-                style={{ opacity: chromaticProgress }}
-              />
-
-              {/* LAYER 2A: Monochrome Base Moon Body (Fades out on scroll) */}
-              <motion.circle
-                cx="400"
-                cy="400"
-                r="240"
-                fill="url(#minimal-moon-base)"
-                style={{ opacity: monoProgress }}
-              />
-
-              {/* LAYER 2B: Chromatic Disorganized Swirling Fluid Rainbow Field Base */}
-              <motion.g
-                clipPath="url(#moon-sphere-clip)"
-                style={{
-                  opacity: chromaticProgress,
-                  originX: "400px",
-                  originY: "400px",
-                  rotate: coreWaveRotate,
-                }}
-              >
-                <g filter="url(#fluid-rainbow-wave)">
-                  {/* RED / ORANGE SECTOR (Swirls with redWaveRotate) */}
-                  <motion.g
-                    style={{
-                      originX: "400px",
-                      originY: "400px",
-                      rotate: redWaveRotate,
-                    }}
-                  >
-                    <path
-                      d="M 400 400 C 480 300, 560 220, 700 100 C 620 60, 500 80, 400 400 Z"
-                      fill="url(#wave-red-disorganized)"
-                    />
-                    <path
-                      d="M 400 400 C 530 350, 620 300, 700 350 C 700 460, 600 530, 400 400 Z"
-                      fill="url(#wave-orange-disorganized)"
-                      opacity="0.9"
-                    />
-                  </motion.g>
-
-                  {/* GREEN / CYAN SECTOR (Counter-swirls with greenWaveRotate) */}
-                  <motion.g
-                    style={{
-                      originX: "400px",
-                      originY: "400px",
-                      rotate: greenWaveRotate,
-                    }}
-                  >
-                    <path
-                      d="M 400 400 C 490 490, 530 570, 600 700 C 490 700, 400 640, 400 400 Z"
-                      fill="url(#wave-yellow-disorganized)"
-                      opacity="0.9"
-                    />
-                    <path
-                      d="M 400 400 C 370 520, 330 600, 260 700 C 180 640, 160 550, 400 400 Z"
-                      fill="url(#wave-green-disorganized)"
-                      opacity="0.9"
-                    />
-                    <path
-                      d="M 400 400 C 290 490, 200 520, 100 550 C 80 440, 120 350, 400 400 Z"
-                      fill="url(#wave-cyan-disorganized)"
-                      opacity="0.9"
-                    />
-                  </motion.g>
-
-                  {/* BLUE / VIOLET SECTOR (Swirls with blueWaveRotate) */}
-                  <motion.g
-                    style={{
-                      originX: "400px",
-                      originY: "400px",
-                      rotate: blueWaveRotate,
-                    }}
-                  >
-                    <path
-                      d="M 400 400 C 250 350, 160 300, 100 240 C 140 160, 230 140, 400 400 Z"
-                      fill="url(#wave-blue-disorganized)"
-                      opacity="0.9"
-                    />
-                    <path
-                      d="M 400 400 C 310 260, 260 180, 240 100 C 350 60, 440 100, 400 400 Z"
-                      fill="url(#wave-violet-disorganized)"
-                      opacity="0.9"
-                    />
-                  </motion.g>
-
-                  {/* Overlapping chromatic dispersion ribbons */}
-                  <motion.path
-                    d="M 400 400 C 510 260, 600 180, 700 200 C 700 290, 620 360, 400 400 Z"
-                    fill="url(#wave-red-disorganized)"
-                    opacity="0.5"
-                    style={{
-                      originX: "400px",
-                      originY: "400px",
-                      rotate: redWaveRotate,
-                    }}
-                  />
-                  <motion.path
-                    d="M 400 400 C 330 200, 350 120, 460 80 C 550 100, 600 190, 400 400 Z"
-                    fill="url(#wave-violet-disorganized)"
-                    opacity="0.5"
-                    style={{
-                      originX: "400px",
-                      originY: "400px",
-                      rotate: blueWaveRotate,
-                    }}
-                  />
-                </g>
-              </motion.g>
-
-              {/* ======================================================= */}
-              {/* SURFACE DETAILS & LUNAR MARIA (CLIPPED TO SPHERE)       */}
-              {/* ======================================================= */}
+              {/* AUTHORITATIVE CLIPPED MOON BODY: ZERO RAINBOW PIXELS OUTSIDE */}
               <g clipPath="url(#moon-sphere-clip)">
-                {/* Longitudinal & Latitudinal Texture Lines */}
+                {/* LAYER 1: Monochrome Base Moon Body (Fades out on scroll) */}
+                <motion.circle
+                  cx="400"
+                  cy="400"
+                  r="240"
+                  fill="url(#minimal-moon-base)"
+                  style={{ opacity: monoProgress }}
+                />
+
+                {/* LAYER 2: Chromatic Disorganized Swirling Fluid Rainbow Field Base */}
+                <motion.g
+                  style={{
+                    opacity: chromaticProgress,
+                    originX: "400px",
+                    originY: "400px",
+                    rotate: coreWaveRotate,
+                  }}
+                >
+                  <g filter="url(#fluid-rainbow-wave)">
+                    {/* RED / ORANGE SECTOR (Swirls with redWaveRotate) */}
+                    <motion.g
+                      style={{
+                        originX: "400px",
+                        originY: "400px",
+                        rotate: redWaveRotate,
+                      }}
+                    >
+                      <path
+                        d="M 400 400 C 480 300, 560 220, 700 100 C 620 60, 500 80, 400 400 Z"
+                        fill="url(#wave-red-disorganized)"
+                      />
+                      <path
+                        d="M 400 400 C 530 350, 620 300, 700 350 C 700 460, 600 530, 400 400 Z"
+                        fill="url(#wave-orange-disorganized)"
+                        opacity="0.9"
+                      />
+                    </motion.g>
+
+                    {/* GREEN / CYAN SECTOR (Counter-swirls with greenWaveRotate) */}
+                    <motion.g
+                      style={{
+                        originX: "400px",
+                        originY: "400px",
+                        rotate: greenWaveRotate,
+                      }}
+                    >
+                      <path
+                        d="M 400 400 C 490 490, 530 570, 600 700 C 490 700, 400 640, 400 400 Z"
+                        fill="url(#wave-yellow-disorganized)"
+                        opacity="0.9"
+                      />
+                      <path
+                        d="M 400 400 C 370 520, 330 600, 260 700 C 180 640, 160 550, 400 400 Z"
+                        fill="url(#wave-green-disorganized)"
+                        opacity="0.9"
+                      />
+                      <path
+                        d="M 400 400 C 290 490, 200 520, 100 550 C 80 440, 120 350, 400 400 Z"
+                        fill="url(#wave-cyan-disorganized)"
+                        opacity="0.9"
+                      />
+                    </motion.g>
+
+                    {/* BLUE / VIOLET SECTOR (Swirls with blueWaveRotate) */}
+                    <motion.g
+                      style={{
+                        originX: "400px",
+                        originY: "400px",
+                        rotate: blueWaveRotate,
+                      }}
+                    >
+                      <path
+                        d="M 400 400 C 250 350, 160 300, 100 240 C 140 160, 230 140, 400 400 Z"
+                        fill="url(#wave-blue-disorganized)"
+                        opacity="0.9"
+                      />
+                      <path
+                        d="M 400 400 C 310 260, 260 180, 240 100 C 350 60, 440 100, 400 400 Z"
+                        fill="url(#wave-violet-disorganized)"
+                        opacity="0.9"
+                      />
+                    </motion.g>
+
+                    {/* Overlapping chromatic dispersion ribbons */}
+                    <motion.path
+                      d="M 400 400 C 510 260, 600 180, 700 200 C 700 290, 620 360, 400 400 Z"
+                      fill="url(#wave-red-disorganized)"
+                      opacity="0.5"
+                      style={{
+                        originX: "400px",
+                        originY: "400px",
+                        rotate: redWaveRotate,
+                      }}
+                    />
+                    <motion.path
+                      d="M 400 400 C 330 200, 350 120, 460 80 C 550 100, 600 190, 400 400 Z"
+                      fill="url(#wave-violet-disorganized)"
+                      opacity="0.5"
+                      style={{
+                        originX: "400px",
+                        originY: "400px",
+                        rotate: blueWaveRotate,
+                      }}
+                    />
+                  </g>
+                </motion.g>
+
+                {/* LAYER 3: Surface Details & Lunar Maria */}
                 <path
                   d="M 160 400 A 240 240 0 0 0 640 400 A 240 160 0 0 1 160 400"
                   fill="#FFFFFF"
@@ -645,29 +626,29 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                   fill="url(#spherical-shading)"
                   style={{ opacity: chromaticProgress }}
                 />
-              </g>
 
-              {/* LAYER 8: Top Specular & Crescent Rim Highlights */}
-              <motion.path
-                d="M 220 200 A 200 200 0 0 1 580 180 A 230 230 0 0 0 220 200"
-                fill="#FFFFFF"
-                opacity={0.35}
-                animate={
-                  motionEnabled
-                    ? { opacity: [0.25, 0.45, 0.25] }
-                    : { opacity: 0.35 }
-                }
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-              <path
-                d="M 400 160 A 240 240 0 0 1 640 400 A 242 242 0 0 0 400 158 Z"
-                fill="#FFFFFF"
-                opacity={0.4}
-              />
+                {/* LAYER 4: Top Specular & Crescent Rim Highlights */}
+                <motion.path
+                  d="M 220 200 A 200 200 0 0 1 580 180 A 230 230 0 0 0 220 200"
+                  fill="#FFFFFF"
+                  opacity={0.35}
+                  animate={
+                    motionEnabled
+                      ? { opacity: [0.25, 0.45, 0.25] }
+                      : { opacity: 0.35 }
+                  }
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+                <path
+                  d="M 400 160 A 240 240 0 0 1 640 400 A 242 242 0 0 0 400 158 Z"
+                  fill="#FFFFFF"
+                  opacity={0.4}
+                />
+              </g>
             </svg>
           </motion.g>
 
