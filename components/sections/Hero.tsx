@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AIFabric } from "@/components/ui/AIFabric";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { MagneticButton } from "@/components/ui/MagneticButton";
-import { AnsweringMoon } from "@/components/ui/AnsweringMoon";
+import { RisingWish } from "@/components/ui/RisingWish";
 import {
   BOOK_NOW_BUTTON_CLASS,
   SECONDARY_HERO_CTA_CLASS,
@@ -79,9 +79,9 @@ export function Hero() {
           </FadeIn>
         </div>
 
-        {/* ——— The Answering Moon (carries the motion) ——— */}
+        {/* ——— The rising wish (carries the motion) ——— */}
         <FadeIn delay={0.25} yOffset={24} className="hidden lg:block">
-          <AnsweringMoon />
+          <RisingWish />
         </FadeIn>
       </div>
     </section>
