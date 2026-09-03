@@ -35,11 +35,11 @@ const actionLabels: Record<LeadCaptureAction, string> = {
 
 // Visible label styling: uppercase overline, per AGENTS.md §2.
 const LABEL_CLASS =
-  "mb-2 block text-[10px] font-medium uppercase tracking-[0.2em] text-neonCyan";
+  "mb-2 block text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.2em] text-neonCyan";
 
 // Underline field with a crisp, colour-free focus indicator (WCAG 2.4.7).
 const FIELD_CLASS =
-  "border-b border-charcoal/40 bg-transparent px-2 py-3 text-base text-charcoal placeholder:text-neonCyan/70 focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber";
+  "border-b border-charcoal/40 bg-transparent px-2 py-2.5 text-base text-charcoal placeholder:text-neonCyan/70 focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber";
 
 export function ContactPanel() {
   const [formData, setFormData] = useState<ContactFormData>(initialFormData);
@@ -118,23 +118,26 @@ export function ContactPanel() {
   return (
     <section
       id="contact"
-      className="mx-auto w-full max-w-4xl px-6 py-24 sm:px-12 lg:py-32"
+      className="mx-auto w-full max-w-4xl px-5 py-16 sm:px-10 sm:py-20 lg:py-28"
     >
-      <SystemPanel className="border border-charcoal bg-vaultAmber p-8 sm:p-12">
-        <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
+      <SystemPanel className="border border-charcoal bg-vaultAmber p-6 sm:p-10 lg:p-12">
+        <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase mb-3">
+          Direct engagement
+        </p>
+        <h2 className="text-[clamp(1.85rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
           Let’s talk about your work.
         </h2>
-        <p className="mt-6 text-lg text-neonCyan">
+        <p className="mt-3 sm:mt-4 text-base sm:text-lg leading-relaxed text-charcoal/70">
           Tell us what you want to automate. We’ll show you what’s possible — honestly, in plain language.
         </p>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2">
+        <div className="mt-8 sm:mt-10 grid gap-3 sm:grid-cols-2">
           <motion.button
             type="button"
             onClick={() => setAction("pilot")}
-            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
-            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className={`border px-6 py-4 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
+            whileHover={{ scale: 1.01, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
+            whileTap={{ scale: 0.98, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
+            className={`border px-5 py-3.5 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
               action === "pilot"
                 ? "border-charcoal bg-charcoal text-obsidian"
                 : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
@@ -145,9 +148,9 @@ export function ContactPanel() {
           <motion.button
             type="button"
             onClick={() => setAction("blueprint")}
-            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
-            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className={`border px-6 py-4 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
+            whileHover={{ scale: 1.01, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
+            whileTap={{ scale: 0.98, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
+            className={`border px-5 py-3.5 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
               action === "blueprint"
                 ? "border-charcoal bg-charcoal text-obsidian"
                 : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
@@ -157,7 +160,7 @@ export function ContactPanel() {
           </motion.button>
         </div>
 
-        <form className="mt-8 grid gap-6 sm:grid-cols-2" onSubmit={onSubmit} aria-describedby="lead-feedback">
+        <form className="mt-6 sm:mt-8 grid gap-5 sm:grid-cols-2" onSubmit={onSubmit} aria-describedby="lead-feedback">
           <div>
             <label htmlFor="lead-name" className={LABEL_CLASS}>
               Name
@@ -188,7 +191,7 @@ export function ContactPanel() {
               className={`w-full ${FIELD_CLASS}`}
             />
           </div>
-          <div>
+          <div className="sm:col-span-2">
             <label htmlFor="lead-company" className={LABEL_CLASS}>
               Company
             </label>
@@ -203,21 +206,22 @@ export function ContactPanel() {
               className={`w-full ${FIELD_CLASS}`}
             />
           </div>
-          <div>
+          <div className="sm:col-span-2">
             <label htmlFor="lead-use-case" className={LABEL_CLASS}>
               Use Case
             </label>
             <textarea
               id="lead-use-case"
               name="useCase"
-              rows={4}
+              rows={3}
               value={formData.useCase}
               onChange={updateField("useCase")}
               required
-              className={`w-full sm:col-span-2 ${FIELD_CLASS}`}
+              placeholder="Describe what tasks or workflows you want to automate..."
+              className={`w-full ${FIELD_CLASS}`}
             />
           </div>
-          {/* Honeypot anti-spam field: never exposed to users or assistive tech. */}
+          {/* Honeypot anti-spam field */}
           <label htmlFor="lead-website" className="hidden" aria-hidden="true">
             Website
           </label>
@@ -231,15 +235,17 @@ export function ContactPanel() {
             aria-hidden="true"
             className="hidden"
           />
-          <motion.button
-            type="submit"
-            disabled={isSubmitting}
-            whileHover={{ scale: 1.02, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
-            whileTap={{ scale: 0.96, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className="mt-6 inline-flex items-center justify-center bg-charcoal px-8 py-4 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber disabled:opacity-50 hover:bg-neonCyan sm:col-span-2 sm:w-auto sm:justify-start"
-          >
-            {isSubmitting ? "Capturing..." : actionLabels[action]}
-          </motion.button>
+          <div className="sm:col-span-2 mt-2">
+            <motion.button
+              type="submit"
+              disabled={isSubmitting}
+              whileHover={{ scale: 1.01, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
+              whileTap={{ scale: 0.98, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
+              className="inline-flex w-full sm:w-auto items-center justify-center bg-charcoal px-8 py-3.5 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber disabled:opacity-50 hover:bg-neonCyan"
+            >
+              {isSubmitting ? "Capturing..." : actionLabels[action]}
+            </motion.button>
+          </div>
         </form>
 
         {feedback.status !== "idle" ? (

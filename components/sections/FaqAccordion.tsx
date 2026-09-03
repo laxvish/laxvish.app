@@ -17,12 +17,12 @@ const faqItems: FaqItem[] = [
   {
     question: "How long until I see results?",
     answer:
-      "Most pilots show measurable results in 2–4 weeks. The first week is understanding your work. The second week is building and training the AI. By week three it&rsquo;s running on your real work, with your oversight.",
+      "Most pilots show measurable results in 2–4 weeks. The first week is understanding your work. The second week is building and training the AI. By week three it's running on your real work, with your oversight.",
   },
   {
-    question: "What if it doesn&rsquo;t work for my business?",
+    question: "What if it doesn't work for my business?",
     answer:
-      "Pilots are scoped with a clear go/no-go decision point. You&rsquo;ll know within weeks whether the AI is delivering the value you expected. If it isn&rsquo;t, we tell you honestly and help you figure out what would.",
+      "Pilots are scoped with a clear go/no-go decision point. You'll know within weeks whether the AI is delivering the value you expected. If it isn't, we tell you honestly and help you figure out what would.",
   },
   {
     question: "Is my data safe?",
@@ -32,7 +32,7 @@ const faqItems: FaqItem[] = [
   {
     question: "How is Laxvish different from ChatGPT or other AI tools?",
     answer:
-      "ChatGPT is a general tool — it&rsquo;s great for exploration but not built for your business. Laxvish is built around your workflows, your data, and your rules. The AI worker is trained on your business, knows your tone, follows your policies, and integrates with the tools you already use.",
+      "ChatGPT is a general tool — it's great for exploration but not built for your business. Laxvish is built around your workflows, your data, and your rules. The AI worker is trained on your business, knows your tone, follows your policies, and integrates with the tools you already use.",
   },
 ];
 
@@ -40,22 +40,28 @@ export function FaqAccordion() {
   return (
     <section
       id="faq"
-      className="mx-auto w-full max-w-4xl px-6 py-24 sm:px-12 lg:py-32"
+      className="mx-auto w-full max-w-4xl px-5 py-16 sm:px-10 sm:py-20 lg:py-28"
     >
-      <h2 className="text-4xl font-normal tracking-tight text-charcoal sm:text-5xl">
+      <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase mb-3">
+        Frequently asked questions
+      </p>
+      <h2 className="text-[clamp(1.85rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
         Common questions about enterprise AI.
       </h2>
-      <div className="mt-12 flex flex-col border-t border-charcoal">
+      <div className="mt-8 sm:mt-10 border-t border-charcoal">
         {faqItems.map((item, index) => (
           <details
             key={item.question}
             open={index === 0}
-            className="group border-b border-charcoal/20 py-6 transition-colors hover:bg-vaultAmber/50"
+            className="group border-b border-charcoal/20 transition-colors hover:bg-vaultAmber/40"
           >
-            <summary className="cursor-pointer list-none text-xl font-normal text-charcoal outline-none marker:hidden">
-              {item.question}
+            <summary className="flex cursor-pointer items-center justify-between py-5 sm:py-6 text-lg sm:text-xl font-normal text-charcoal outline-none marker:hidden select-none">
+              <span className="pr-4">{item.question}</span>
+              <span className="text-xl font-light text-neonCyan transition-transform duration-300 group-open:rotate-45">
+                +
+              </span>
             </summary>
-            <p className="mt-6 max-w-3xl text-base leading-relaxed text-neonCyan">
+            <p className="pb-6 max-w-3xl text-base leading-relaxed text-charcoal/70">
               {item.answer}
             </p>
           </details>

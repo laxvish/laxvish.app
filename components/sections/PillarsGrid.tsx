@@ -39,27 +39,27 @@ const pillars: Pillar[] = [
  *
  * Numbered rows separated by hairlines (01 / 02 / 03) instead of three equal
  * cards: reads as machine documentation, keeps focal hierarchy, and avoids
- * the generic three-column feature grid.
+ * the generic three-column feature grid. Mobile-first responsive layout.
  */
 export function PillarsGrid() {
   return (
     <section
       id="pillars"
-      className="relative z-10 mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-12 lg:px-16 lg:py-32"
+      className="relative z-10 mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28"
     >
-      <div className="max-w-3xl space-y-10">
+      <div className="max-w-3xl">
         <FadeIn>
-          <p className="text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+          <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
             The system architecture
           </p>
         </FadeIn>
         <FadeIn delay={0.1}>
-          <h2 className="text-[clamp(2.25rem,4vw,3.5rem)] font-normal leading-[1.06] tracking-[-0.02em] text-charcoal">
+          <h2 className="mt-4 sm:mt-5 text-[clamp(1.85rem,4vw,3.25rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
             Three layers. One AI orchestration system.
           </h2>
         </FadeIn>
         <FadeIn delay={0.2}>
-          <p className="max-w-xl text-base leading-relaxed tracking-wide text-charcoal/70 sm:text-lg">
+          <p className="mt-4 sm:mt-5 max-w-xl text-base sm:text-lg leading-relaxed tracking-wide text-charcoal/70">
             Workers execute. Brain coordinates. Brakes verify. Three foundational
             layers that make enterprise AI easier to deploy, govern, and scale
             with confidence.
@@ -67,25 +67,25 @@ export function PillarsGrid() {
         </FadeIn>
       </div>
 
-      <FadeInStagger className="mt-20">
+      <FadeInStagger className="mt-12 sm:mt-16">
         <ul className="border-t border-charcoal">
           {pillars.map((pillar) => (
             <li key={pillar.index} className="border-b border-charcoal/20">
               <FadeIn>
                 <Link
                   href={pillar.href}
-                  className="group grid grid-cols-[auto_1fr] items-baseline gap-x-6 gap-y-3 py-10 transition-colors duration-300 hover:bg-vaultAmber/40 sm:grid-cols-[3.5rem_1fr] lg:grid-cols-[5rem_minmax(0,18rem)_1fr_auto] lg:items-start lg:gap-x-12"
+                  className="group grid grid-cols-[2.5rem_1fr] items-start gap-x-4 gap-y-2 py-7 sm:grid-cols-[3.5rem_1fr] sm:py-8 lg:grid-cols-[4.5rem_minmax(0,16rem)_1fr_auto] lg:items-start lg:gap-x-10 transition-colors duration-300 hover:bg-vaultAmber/40"
                 >
-                  <span className="text-sm font-medium tracking-[0.2em] text-neonCyan">
+                  <span className="text-xs sm:text-sm font-medium tracking-[0.2em] text-neonCyan pt-1">
                     {pillar.index}
                   </span>
-                  <h3 className="text-3xl font-normal tracking-tight text-charcoal lg:text-4xl">
+                  <h3 className="text-2xl sm:text-3xl font-normal tracking-tight text-charcoal lg:text-4xl">
                     {pillar.title}
                   </h3>
-                  <p className="col-span-2 max-w-xl text-base leading-relaxed text-charcoal/70 sm:col-span-1 lg:col-span-1">
+                  <p className="col-span-2 sm:col-span-1 max-w-xl text-base leading-relaxed text-charcoal/70 mt-1 sm:mt-0">
                     {pillar.description}
                   </p>
-                  <span className="col-span-2 pt-2 text-sm font-medium tracking-wide text-charcoal underline decoration-charcoal/20 underline-offset-4 transition-colors duration-300 group-hover:decoration-charcoal sm:col-span-1 lg:col-span-1 lg:pt-1 lg:text-right">
+                  <span className="col-span-2 sm:col-span-1 pt-2 sm:pt-0 text-sm font-medium tracking-wide text-charcoal underline decoration-charcoal/20 underline-offset-4 transition-colors duration-300 group-hover:decoration-charcoal lg:text-right">
                     Learn more
                   </span>
                 </Link>

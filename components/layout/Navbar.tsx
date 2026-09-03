@@ -40,11 +40,11 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-charcoal bg-obsidian">
-      <div className="mx-auto flex h-20 w-full max-w-[96rem] items-center justify-between px-6 sm:h-24 sm:px-12 lg:px-16">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-charcoal bg-obsidian/95 backdrop-blur-sm">
+      <div className="mx-auto flex h-16 sm:h-20 w-full max-w-[1440px] items-center justify-between px-5 sm:px-10 lg:px-16">
         <Link
           href="/"
-          className="text-lg font-normal tracking-[0.2em] uppercase text-charcoal sm:text-xl"
+          className="text-base sm:text-lg font-normal tracking-[0.2em] uppercase text-charcoal"
           onClick={closeMenu}
         >
           Laxvish
@@ -64,9 +64,10 @@ export function Navbar() {
         >
           <span>Book a working session</span>
         </MagneticButton>
+
         <button
           type="button"
-          className="border border-charcoal px-4 py-2 text-sm font-medium tracking-wide text-charcoal transition-colors duration-300 hover:bg-charcoal hover:text-obsidian md:hidden"
+          className="border border-charcoal px-3.5 py-1.5 text-xs font-medium tracking-[0.15em] uppercase text-charcoal transition-colors duration-300 hover:bg-charcoal hover:text-obsidian md:hidden"
           onClick={() => setIsMenuOpen((current) => !current)}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-nav-panel"
@@ -78,17 +79,17 @@ export function Navbar() {
       {isMenuOpen ? (
         <div
           id="mobile-nav-panel"
-          className="border-t border-charcoal bg-obsidian px-6 py-6 md:hidden"
+          className="border-t border-charcoal bg-obsidian px-6 py-8 md:hidden"
         >
           <NavMenu
             links={PRIMARY_NAV_LINKS}
             pathname={pathname}
             onNavigate={closeMenu}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-1"
           />
           <button
             type="button"
-            className={`${BOOK_NOW_BUTTON_CLASS} mt-6 w-full`}
+            className={`${BOOK_NOW_BUTTON_CLASS} mt-8 w-full justify-center text-center`}
             onClick={redirectToDemo}
           >
             Book a working session
