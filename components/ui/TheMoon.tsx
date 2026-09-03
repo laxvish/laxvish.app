@@ -32,9 +32,12 @@ export interface TheMoonProps {
  *
  * 3. Settled State (Scroll 0.65+):
  *    - Reaches the exact center and aligns seamlessly directly above the Conversational Box.
- *    - The disorganized chromatic storm stabilizes into a harmonic iridescent rainbow spectrum.
+ *    - The disorganized chromatic storm stabilizes into a luminous, rich iridescent rainbow spectrum.
  *
- * All chromatic/rainbow effects are strictly clipped to the Moon's exact circular silhouette (#moon-sphere-clip).
+ * ARCHITECTURAL SPECIFICATION:
+ * - All surface rainbow colors and filter effects are strictly hard-clipped to the Moon's silhouette (#moon-sphere-clip).
+ * - A separate, very subtle same-color atmospheric aura (#moon-aura-chromatic) radiates softly outside the moon boundary,
+ *   fading continuously to 0% opacity without creating any visible rings or hard borders.
  */
 export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -137,7 +140,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
     <div ref={containerRef} className="relative w-full">
       <motion.div
         role="img"
-        aria-label="Metamorphic moon emblem: transitions from serene monochrome to fluid disorganized chromatic rainbow spectrum during movement, then aligns gracefully above the solution interface"
+        aria-label="Metamorphic moon emblem: transitions from serene monochrome to luminous disorganized chromatic rainbow spectrum during movement, then aligns gracefully above the solution interface"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         initial={motionEnabled ? { opacity: 0 } : false}
@@ -160,14 +163,23 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
           className="h-auto w-full overflow-visible"
         >
           <defs>
-            {/* 1. MONOCHROME AMBIENT AURA (Pure monochrome outside moon) */}
+            {/* 1A. MONOCHROME AMBIENT AURA (Pure monochrome vellum/paper glow at rest) */}
             <radialGradient id="moon-aura-mono" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor={PAPER} stopOpacity="0.55" />
               <stop offset="55%" stopColor={VELLUM} stopOpacity="0.18" />
               <stop offset="100%" stopColor={VELLUM} stopOpacity="0" />
             </radialGradient>
 
-            {/* 2. DISORGANIZED CHROMATIC WAVE GRADIENTS */}
+            {/* 1B. CHROMATIC AMBIENT AURA (Very subtle, soft same-color atmospheric radiation outside moon) */}
+            <radialGradient id="moon-aura-chromatic" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.25" />
+              <stop offset="65%" stopColor="#00C7BE" stopOpacity="0.16" />
+              <stop offset="80%" stopColor="#AF52DE" stopOpacity="0.06" />
+              <stop offset="92%" stopColor="#FF9500" stopOpacity="0.02" />
+              <stop offset="100%" stopColor={PAPER} stopOpacity="0" />
+            </radialGradient>
+
+            {/* 2. DISORGANIZED CHROMATIC WAVE GRADIENTS (Enriched saturation & luminous opacity) */}
             <linearGradient
               id="wave-red-disorganized"
               x1="400"
@@ -176,9 +188,9 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               y2="140"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#FF2D55" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="#FF3B30" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#FF9500" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#FF2D55" stopOpacity="1" />
+              <stop offset="65%" stopColor="#FF3B30" stopOpacity="0.92" />
+              <stop offset="100%" stopColor="#FF9500" stopOpacity="0.45" />
             </linearGradient>
 
             <linearGradient
@@ -189,9 +201,9 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               y2="420"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#FF9500" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="#FFCC00" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#FF3B30" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#FF9500" stopOpacity="1" />
+              <stop offset="65%" stopColor="#FFCC00" stopOpacity="0.92" />
+              <stop offset="100%" stopColor="#FF3B30" stopOpacity="0.45" />
             </linearGradient>
 
             <linearGradient
@@ -202,9 +214,9 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               y2="660"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#FFCC00" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="#34C759" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#FF9500" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#FFCC00" stopOpacity="1" />
+              <stop offset="65%" stopColor="#34C759" stopOpacity="0.92" />
+              <stop offset="100%" stopColor="#FF9500" stopOpacity="0.45" />
             </linearGradient>
 
             <linearGradient
@@ -215,9 +227,9 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               y2="660"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#34C759" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="#00C7BE" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#FFCC00" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#34C759" stopOpacity="1" />
+              <stop offset="65%" stopColor="#00C7BE" stopOpacity="0.92" />
+              <stop offset="100%" stopColor="#FFCC00" stopOpacity="0.45" />
             </linearGradient>
 
             <linearGradient
@@ -228,9 +240,9 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               y2="500"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#00C7BE" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="#007AFF" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#34C759" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#00C7BE" stopOpacity="1" />
+              <stop offset="65%" stopColor="#007AFF" stopOpacity="0.92" />
+              <stop offset="100%" stopColor="#34C759" stopOpacity="0.45" />
             </linearGradient>
 
             <linearGradient
@@ -241,9 +253,9 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               y2="280"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#007AFF" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="#5856D6" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#00C7BE" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#007AFF" stopOpacity="1" />
+              <stop offset="65%" stopColor="#5856D6" stopOpacity="0.92" />
+              <stop offset="100%" stopColor="#00C7BE" stopOpacity="0.45" />
             </linearGradient>
 
             <linearGradient
@@ -254,12 +266,12 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               y2="140"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#AF52DE" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="#FF2D55" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#5856D6" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#AF52DE" stopOpacity="1" />
+              <stop offset="65%" stopColor="#FF2D55" stopOpacity="0.92" />
+              <stop offset="100%" stopColor="#5856D6" stopOpacity="0.45" />
             </linearGradient>
 
-            {/* 3. FLUID TURBULENCE & PRISMATIC DISPERSION FILTER */}
+            {/* 3. FLUID TURBULENCE & PRISMATIC DISPERSION FILTER (Calibrated for crisp luminous saturation) */}
             <filter
               id="fluid-rainbow-wave"
               x="-35%"
@@ -277,14 +289,14 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               <feDisplacementMap
                 in="SourceGraphic"
                 in2="noise"
-                scale="60"
+                scale="50"
                 xChannelSelector="R"
                 yChannelSelector="G"
                 result="displaced"
               />
               <feGaussianBlur
                 in="displaced"
-                stdDeviation="30"
+                stdDeviation="20"
                 result="fluidSpectrum"
               />
             </filter>
@@ -304,12 +316,12 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               <stop offset="100%" stopColor="#111827" stopOpacity="0.45" />
             </radialGradient>
 
-            {/* 5. SPHERICAL CHROMATIC SHADING */}
+            {/* 5. SPHERICAL CHROMATIC SHADING (Dimensional specular lighting without color washing) */}
             <radialGradient id="spherical-shading" cx="32%" cy="28%" r="72%">
               <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.45" />
-              <stop offset="45%" stopColor="#FFFFFF" stopOpacity="0.0" />
-              <stop offset="80%" stopColor="#1F2937" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#111827" stopOpacity="0.6" />
+              <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.0" />
+              <stop offset="85%" stopColor="#0B0F19" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#030712" stopOpacity="0.45" />
             </radialGradient>
 
             {/* 6. AUTHORITATIVE MOON SILHOUETTE CLIPPING BOUNDARY */}
@@ -319,7 +331,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
           </defs>
 
           {/* ============================================================ */}
-          {/* HALO BREATH LAYER — MONOCHROME AURA (OUTSIDE THE MOON)       */}
+          {/* HALO BREATH LAYER — ATMOSPHERIC AURA (OUTSIDE THE MOON)      */}
           {/* ============================================================ */}
           <motion.g
             animate={
@@ -330,13 +342,21 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             style={{ originX: `${MOON_CX}px`, originY: `${MOON_CY}px` }}
           >
-            {/* Pure Monochrome atmospheric aura */}
+            {/* Pure Monochrome atmospheric aura at rest */}
             <motion.circle
               cx={MOON_CX}
               cy={MOON_CY}
-              r="170"
+              r="230"
               fill="url(#moon-aura-mono)"
               style={{ opacity: monoProgress }}
+            />
+            {/* Very subtle same-color chromatic atmospheric radiation awakening on scroll */}
+            <motion.circle
+              cx={MOON_CX}
+              cy={MOON_CY}
+              r="230"
+              fill="url(#moon-aura-chromatic)"
+              style={{ opacity: chromaticProgress }}
             />
           </motion.g>
 
@@ -409,7 +429,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                       <path
                         d="M 400 400 C 530 350, 620 300, 700 350 C 700 460, 600 530, 400 400 Z"
                         fill="url(#wave-orange-disorganized)"
-                        opacity="0.9"
+                        opacity="0.95"
                       />
                     </motion.g>
 
@@ -424,17 +444,17 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                       <path
                         d="M 400 400 C 490 490, 530 570, 600 700 C 490 700, 400 640, 400 400 Z"
                         fill="url(#wave-yellow-disorganized)"
-                        opacity="0.9"
+                        opacity="0.95"
                       />
                       <path
                         d="M 400 400 C 370 520, 330 600, 260 700 C 180 640, 160 550, 400 400 Z"
                         fill="url(#wave-green-disorganized)"
-                        opacity="0.9"
+                        opacity="0.95"
                       />
                       <path
                         d="M 400 400 C 290 490, 200 520, 100 550 C 80 440, 120 350, 400 400 Z"
                         fill="url(#wave-cyan-disorganized)"
-                        opacity="0.9"
+                        opacity="0.95"
                       />
                     </motion.g>
 
@@ -449,12 +469,12 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                       <path
                         d="M 400 400 C 250 350, 160 300, 100 240 C 140 160, 230 140, 400 400 Z"
                         fill="url(#wave-blue-disorganized)"
-                        opacity="0.9"
+                        opacity="0.95"
                       />
                       <path
                         d="M 400 400 C 310 260, 260 180, 240 100 C 350 60, 440 100, 400 400 Z"
                         fill="url(#wave-violet-disorganized)"
-                        opacity="0.9"
+                        opacity="0.95"
                       />
                     </motion.g>
 
@@ -462,7 +482,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                     <motion.path
                       d="M 400 400 C 510 260, 600 180, 700 200 C 700 290, 620 360, 400 400 Z"
                       fill="url(#wave-red-disorganized)"
-                      opacity="0.5"
+                      opacity="0.75"
                       style={{
                         originX: "400px",
                         originY: "400px",
@@ -472,7 +492,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                     <motion.path
                       d="M 400 400 C 330 200, 350 120, 460 80 C 550 100, 600 190, 400 400 Z"
                       fill="url(#wave-violet-disorganized)"
-                      opacity="0.5"
+                      opacity="0.75"
                       style={{
                         originX: "400px",
                         originY: "400px",
@@ -618,7 +638,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                   style={{ opacity: monoProgress }}
                 />
 
-                {/* Volumetric Spherical Shading (Chromatic mode) */}
+                {/* Volumetric Spherical Shading (Chromatic mode - dimensional specular illumination) */}
                 <motion.circle
                   cx="400"
                   cy="400"
@@ -674,7 +694,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              style={{ originX: `${st.x}px`, originY: `${st.y}px` }}
+              style={{ originX: `${st.x}px`, originY: `${MOON_CY}px` }}
             >
               <circle cx={st.x} cy={st.y} r="3" fill="#FFFFFF" opacity="0.9" />
               <line
