@@ -1,246 +1,527 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, ChangeEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getBookDemoUrl } from "@/lib/site-navigation";
 
-interface WorkflowPreset {
+interface CompanyPreset {
   id: string;
   tag: string;
-  workerType: string;
-  prompt: string;
-  metrics: { label: string; value: string }[];
-  pills: string[];
-  governance: string;
+  companyName: string;
+  industry: string;
+  challenge: string;
+  sampleDocName: string;
+  sampleDocSize: string;
+  solution: {
+    whatWeBuild: {
+      workers: string;
+      brain: string;
+      brakes: string;
+    };
+    howItHelpsGrow: string[];
+    estimatedRoi: string;
+    timeToDeploy: string;
+  };
 }
 
-const PRESETS: WorkflowPreset[] = [
+const PRESETS: CompanyPreset[] = [
   {
-    id: "finance",
-    tag: "Finance & AP",
-    workerType: "Laxvish Thread: Finance Worker",
-    prompt:
-      "Reconcile 1,420 vendor invoices against GST-2B filings for Q3. Flag 14 tax mismatch discrepancies exceeding ₹50,000, trigger automated vendor clarification queries via WhatsApp, and prepare the verified settlement ledger for Finance Controller sign-off.",
-    metrics: [
-      { label: "Processed", value: "1,420 docs" },
-      { label: "Mismatches", value: "14 flagged" },
-      { label: "Audit State", value: "Locked" },
-    ],
-    pills: ["GST-2B Interlock", "SAP ERP Connector", "Brakes: Controller Sign-Off"],
-    governance: "Human-in-the-loop sign-off required above ₹50,000",
+    id: "logistics",
+    tag: "Logistics & Fleet",
+    companyName: "FreightX Logistics (500+ Trucks)",
+    industry: "Supply Chain & Road Transport",
+    challenge:
+      "Our operations team spends 5+ hours daily manually verifying scanned Proof-of-Deliveries (PODs), matching GST E-Way bills, and re-keying transport receipts into ERP. We face payment delays from shippers and frequent invoice dispute penalties.",
+    sampleDocName: "sample_freight_eway_bills_batch.pdf",
+    sampleDocSize: "2.8 MB",
+    solution: {
+      whatWeBuild: {
+        workers: "POD Vision Worker & E-Way Bill Extraction Agent (auto-parses multi-page handwritten & scanned receipts).",
+        brain: "Logistics Dispatch Mesh (routes verified deliveries directly into SAP/Tally and alerts drivers on WhatsApp).",
+        brakes: "Consignee Tax & Weight Interlock (flags discrepancy between billed weight vs toll weighbridge before billing).",
+      },
+      howItHelpsGrow: [
+        "Cuts billing reconciliation cycle from 7 days down to 45 minutes.",
+        "Zero freight invoice rejections from enterprise shippers (Tata, Reliance, ITC).",
+        "Saves 40+ hours/week of manual data entry per regional hub.",
+      ],
+      estimatedRoi: "₹24L annual operational savings + 3x faster shipper settlement",
+      timeToDeploy: "14-day production deployment",
+    },
   },
   {
-    id: "documents",
-    tag: "Document Extraction",
-    workerType: "Laxvish Thread: Doc Parser v3",
-    prompt:
-      "Extract 450 multi-page scanned logistics bills of lading and e-way bills. Validate consignee GSTINs, parse line-item tax rates, and push reconciled batches into SAP ERP with zero human re-keying and full cryptographic audit trails.",
-    metrics: [
-      { label: "Bills Parsed", value: "450 / 450" },
-      { label: "Accuracy", value: "99.8%" },
-      { label: "ERP Sync", value: "Verified" },
-    ],
-    pills: ["E-Way Validation", "Tax Rate Parser", "Brakes: Zero-Data-Leak"],
-    governance: "Encrypted payload · DPDP compliance policy enforced",
+    id: "finance_ap",
+    tag: "D2C & Retail AP",
+    companyName: "Kavya Lifestyle (Multi-Brand D2C)",
+    industry: "E-Commerce & Retail Supply",
+    challenge:
+      "We process 1,500+ vendor invoices monthly across 40 suppliers. 12% have GST-2B tax mismatches or missing PO line-item matches, causing Input Tax Credit (ITC) blockage and manual disputes with suppliers.",
+    sampleDocName: "q3_vendor_invoices_gst2b.xlsx",
+    sampleDocSize: "1.4 MB",
+    solution: {
+      whatWeBuild: {
+        workers: "3-Way AP Match Worker (cross-references PO, Goods Receipt Note, and Vendor Tax Invoice).",
+        brain: "Vendor Settlement Coordinator (triggers automated clarification requests to vendors for mismatches).",
+        brakes: "ITC Lockout Brake (blocks payment release on unverified GSTINs to prevent tax department fines).",
+      },
+      howItHelpsGrow: [
+        "Unlocks 100% of eligible Input Tax Credit (ITC) before monthly return deadlines.",
+        "Reduces invoice processing cost by 78% while maintaining audit-grade ledgers.",
+        "Eliminates vendor phone tag with automated WhatsApp clarification workflows.",
+      ],
+      estimatedRoi: "₹18L preserved tax credit + 4.2x faster supplier payouts",
+      timeToDeploy: "10-day pilot deployment",
+    },
+  },
+  {
+    id: "healthcare",
+    tag: "Healthcare & Labs",
+    companyName: "Apex Diagnostics (24 Centers)",
+    industry: "Diagnostics & Pathology Chain",
+    challenge:
+      "Doctors and lab technicians spend hours manually entering diagnostic reports, cross-checking test parameter ranges, and escalating critical abnormal values to consulting doctors across disparate centers.",
+    sampleDocName: "diagnostic_pathology_sops.pdf",
+    sampleDocSize: "3.2 MB",
+    solution: {
+      whatWeBuild: {
+        workers: "Clinical Report Extraction Worker (digitizes analyzer outputs and validates test ranges).",
+        brain: "Critical Alert Router (instantly dispatches abnormal telemetry to attending physician on priority channel).",
+        brakes: "Zero-Hallucination Medical Policy Brake (strict schema constraint on all patient diagnostic records).",
+      },
+      howItHelpsGrow: [
+        "Sub-second alert dispatch for panic/critical medical test values.",
+        "DPDP & HIPAA-ready encrypted data handling with zero local leakage.",
+        "Frees lab specialists to handle 2.5x more daily sample throughput.",
+      ],
+      estimatedRoi: "Zero reporting SLA breaches + 60% reduction in lab clerical load",
+      timeToDeploy: "21-day HIPAA-compliant setup",
+    },
   },
   {
     id: "support",
-    tag: "Customer Voice & WhatsApp",
-    workerType: "Laxvish Thread: CallMe Agent",
-    prompt:
-      "Triage 3,800 omnichannel customer queries across Hindi and English. Execute Tier-1 automated resolutions via WhatsApp API, escalate SLA breaches to senior operations managers, and enforce zero-hallucination compliance brakes.",
-    metrics: [
-      { label: "Tickets", value: "3,800 queued" },
-      { label: "Voice SLA", value: "< 280ms" },
-      { label: "Escalations", value: "4.2%" },
-    ],
-    pills: ["Hindi + English NLP", "WhatsApp Business API", "Brakes: Hallucination Guard"],
-    governance: "All voice interactions logged with biometric-free telemetry",
+    tag: "Customer Telephony & Voice",
+    companyName: "FinEase NBFC (Micro-Loans)",
+    industry: "Fintech & Lending",
+    challenge:
+      "Our call center is overwhelmed with 10,000+ monthly calls in Hindi and English regarding loan application status, repayment schedules, and KYC verification. Human agent attrition is 35% and wait times exceed 6 minutes.",
+    sampleDocName: "customer_kyc_telephony_logs.csv",
+    sampleDocSize: "950 KB",
+    solution: {
+      whatWeBuild: {
+        workers: "CallMe Realtime Voice AI Worker (handles natural bilingual Hindi/English conversations under 280ms latency).",
+        brain: "Omnichannel Intent Dispatcher (resolves Tier-1 queries instantly, updates CRM, and schedules callbacks).",
+        brakes: "RBI Fair Practices Compliance Brake (enforces strict script guardrails and call recording verification).",
+      },
+      howItHelpsGrow: [
+        "Reduces customer wait time from 6 minutes to 0 seconds (24/7 instant pick-up).",
+        "Resolves 68% of routine loan and KYC inquiries without human agent intervention.",
+        "Lowers per-call support cost by 82% while increasing borrower satisfaction.",
+      ],
+      estimatedRoi: "₹32L annual support cost reduction + 99.4% SLA adherence",
+      timeToDeploy: "7-day voice agent rollout",
+    },
   },
 ];
 
-interface ConversationalBoxProps {
-  className?: string;
+interface AttachedFile {
+  name: string;
+  size: string;
 }
 
-/**
- * ConversationalBox — Control Surface Prompt Interface.
- *
- * Implements the structural composition from the reference:
- * - Top: High-density prompt area with real enterprise workflow instructions.
- * - Bottom: Layer selector, capability pills, and primary execution controls.
- * - Adheres strictly to the Laxvish monochrome design system:
- *   #FAFAFA base, #111111 ink, #EAEAEA elevated surface, #666666 metadata.
- */
-export function ConversationalBox({ className = "" }: ConversationalBoxProps) {
-  const [activePresetIndex, setActivePresetIndex] = useState(0);
-  const [isCopied, setIsCopied] = useState(false);
-  const [isExecuting, setIsExecuting] = useState(false);
-  const activePreset = PRESETS[activePresetIndex];
+export function ConversationalBox({ className = "" }: { className?: string }) {
+  const [selectedPresetId, setSelectedPresetId] = useState<string>("logistics");
+  const [companyInput, setCompanyInput] = useState<string>(PRESETS[0].challenge);
+  const [companyName, setCompanyName] = useState<string>(PRESETS[0].companyName);
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([
+    { name: PRESETS[0].sampleDocName, size: PRESETS[0].sampleDocSize },
+  ]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showBlueprint, setShowBlueprint] = useState(false);
+  const [activeTab, setActiveTab] = useState<"input" | "blueprint">("input");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleCopy = () => {
-    navigator.clipboard?.writeText(activePreset.prompt);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
+  const currentPreset = PRESETS.find((p) => p.id === selectedPresetId) || PRESETS[0];
+
+  const handleSelectPreset = (preset: CompanyPreset) => {
+    setSelectedPresetId(preset.id);
+    setCompanyName(preset.companyName);
+    setCompanyInput(preset.challenge);
+    setAttachedFiles([{ name: preset.sampleDocName, size: preset.sampleDocSize }]);
+    setShowBlueprint(false);
+    setActiveTab("input");
   };
 
-  const handleExecute = () => {
-    setIsExecuting(true);
-    setTimeout(() => setIsExecuting(false), 2400);
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+      const newFile: AttachedFile = {
+        name: file.name,
+        size: `${sizeMb} MB`,
+      };
+      setAttachedFiles((prev) => [...prev.filter((f) => f.name !== file.name), newFile]);
+    }
   };
+
+  const removeFile = (fileName: string) => {
+    setAttachedFiles((prev) => prev.filter((f) => f.name !== fileName));
+  };
+
+  const handleGenerateBlueprint = () => {
+    setIsGenerating(true);
+    setTimeout(() => {
+      setIsGenerating(false);
+      setShowBlueprint(true);
+      setActiveTab("blueprint");
+    }, 1200);
+  };
+
+  const bookDemoUrl = getBookDemoUrl();
 
   return (
     <div
-      className={`relative w-full max-w-4xl mx-auto rounded-2xl border border-charcoal/20 bg-obsidian p-5 sm:p-7 lg:p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] transition-all duration-300 hover:border-charcoal/40 ${className}`}
+      className={`relative w-full max-w-4xl mx-auto rounded-2xl border border-charcoal/20 bg-obsidian p-4 sm:p-6 lg:p-7 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] transition-all duration-300 hover:border-charcoal/40 ${className}`}
     >
-      {/* ——— Top System Bar: Status & Scenario Switcher ——— */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-charcoal/10 pb-4">
+      {/* ——— Top Bar: System ID & Mobile-Friendly Mode Selector ——— */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-charcoal/10 pb-3 sm:pb-4">
         <div className="flex items-center gap-2">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-charcoal opacity-40"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-charcoal"></span>
           </span>
-          <span className="text-[10px] sm:text-[11px] font-mono font-medium tracking-[0.16em] text-neonCyan uppercase">
-            CONTROL SURFACE // WORKFLOW DISPATCH
+          <span className="text-[10px] sm:text-xs font-mono font-medium tracking-[0.16em] text-neonCyan uppercase">
+            LAXVISH // ENTERPRISE SOLUTION ARCHITECT
           </span>
         </div>
 
-        {/* Workflow scenario tabs */}
-        <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          {PRESETS.map((preset, idx) => {
-            const isActive = idx === activePresetIndex;
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => setActivePresetIndex(idx)}
-                className={`text-[10px] sm:text-xs font-medium px-2.5 py-1 rounded-md transition-all duration-200 ${
-                  isActive
-                    ? "bg-charcoal text-obsidian shadow-sm"
-                    : "text-charcoal/60 hover:text-charcoal hover:bg-vaultAmber/60"
-                }`}
-              >
-                {preset.tag}
-              </button>
-            );
-          })}
+        {/* View Toggle Tabs (Input Challenge vs Generated Blueprint) */}
+        <div className="flex items-center gap-1 w-full sm:w-auto bg-vaultAmber/60 p-1 rounded-lg">
+          <button
+            type="button"
+            onClick={() => setActiveTab("input")}
+            className={`flex-1 sm:flex-initial text-[11px] sm:text-xs font-medium px-3 py-1.5 rounded-md transition-all ${
+              activeTab === "input"
+                ? "bg-obsidian text-charcoal shadow-2xs font-semibold"
+                : "text-charcoal/60 hover:text-charcoal"
+            }`}
+          >
+            1. Your Challenge & Docs
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setShowBlueprint(true);
+              setActiveTab("blueprint");
+            }}
+            className={`flex-1 sm:flex-initial text-[11px] sm:text-xs font-medium px-3 py-1.5 rounded-md transition-all flex items-center justify-center gap-1.5 ${
+              activeTab === "blueprint"
+                ? "bg-obsidian text-charcoal shadow-2xs font-semibold"
+                : "text-charcoal/60 hover:text-charcoal"
+            }`}
+          >
+            <span>2. Laxvish Blueprint</span>
+            {showBlueprint && (
+              <span className="h-1.5 w-1.5 rounded-full bg-charcoal"></span>
+            )}
+          </button>
         </div>
       </div>
 
-      {/* ——— Main Conversational Prompt Area ——— */}
-      <div className="py-5 sm:py-7">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activePreset.id}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
-            className="space-y-3"
-          >
-            <p className="text-base sm:text-lg lg:text-xl font-normal leading-relaxed tracking-tight text-charcoal select-text">
-              &ldquo;{activePreset.prompt}&rdquo;
-            </p>
+      {/* ——— Quick Industry Archetype Presets ——— */}
+      <div className="pt-3 pb-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <span className="text-[10px] font-mono text-neonCyan uppercase shrink-0">
+          Try Example:
+        </span>
+        {PRESETS.map((preset) => {
+          const isSelected = preset.id === selectedPresetId;
+          return (
+            <button
+              key={preset.id}
+              type="button"
+              onClick={() => handleSelectPreset(preset)}
+              className={`shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-md border transition-all ${
+                isSelected
+                  ? "bg-charcoal text-obsidian border-charcoal"
+                  : "bg-vaultAmber/30 text-charcoal/70 border-charcoal/15 hover:border-charcoal/30 hover:bg-vaultAmber/70"
+              }`}
+            >
+              {preset.tag}
+            </button>
+          );
+        })}
+      </div>
 
-            {/* Micro Telemetry Bar */}
-            <div className="pt-2 flex flex-wrap items-center gap-4 sm:gap-6 text-[10px] sm:text-xs text-neonCyan font-mono">
-              {activePreset.metrics.map((m, i) => (
-                <div key={i} className="flex items-center gap-1.5">
-                  <span className="text-charcoal/40 uppercase">{m.label}:</span>
-                  <span className="font-semibold text-charcoal">{m.value}</span>
+      {/* ——— TAB 1: User Company Input & Document Upload Zone ——— */}
+      {activeTab === "input" && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="py-3 sm:py-4 space-y-3.5"
+        >
+          {/* Company Name / Descriptor */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-mono uppercase tracking-wider text-neonCyan block">
+              Company / Business Unit:
+            </label>
+            <input
+              type="text"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="e.g. Acme Logistics, Reliance Retail AP Team..."
+              className="w-full rounded-lg border border-charcoal/20 bg-white/70 px-3 py-2 text-sm text-charcoal font-medium placeholder:text-charcoal/40 focus:border-charcoal focus:outline-none focus:ring-1 focus:ring-charcoal transition-all"
+            />
+          </div>
+
+          {/* Operational Bottleneck Textarea */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-mono uppercase tracking-wider text-neonCyan block">
+              What operational issues or bottlenecks is your company facing?
+            </label>
+            <textarea
+              rows={3}
+              value={companyInput}
+              onChange={(e) => setCompanyInput(e.target.value)}
+              placeholder="Describe what your team manually does, where delays happen, or what software/ERP you need to automate..."
+              className="w-full rounded-xl border border-charcoal/20 bg-white/70 p-3 sm:p-3.5 text-sm sm:text-base text-charcoal font-normal leading-relaxed placeholder:text-charcoal/40 focus:border-charcoal focus:outline-none focus:ring-1 focus:ring-charcoal transition-all resize-none"
+            />
+          </div>
+
+          {/* Document Upload & Attached Files Area ("put docs inside") */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-mono uppercase tracking-wider text-neonCyan">
+                Attached Documents / Sample Workflows:
+              </label>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-[11px] font-medium text-charcoal underline hover:text-neonCyan flex items-center gap-1"
+              >
+                <span>+ Upload docs (PDF, XLSX, CSV, SOP)</span>
+              </button>
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              onChange={handleFileUpload}
+              className="hidden"
+              accept=".pdf,.xlsx,.csv,.docx,.txt"
+            />
+
+            {/* Attached Chips */}
+            <div className="flex flex-wrap gap-2">
+              {attachedFiles.length > 0 ? (
+                attachedFiles.map((file) => (
+                  <div
+                    key={file.name}
+                    className="inline-flex items-center gap-2 rounded-lg border border-charcoal/20 bg-vaultAmber/50 px-3 py-1.5 text-xs text-charcoal font-mono"
+                  >
+                    <svg
+                      className="h-3.5 w-3.5 text-neonCyan"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    <span className="truncate max-w-[180px] sm:max-w-[280px]">
+                      {file.name}
+                    </span>
+                    <span className="text-[10px] text-neonCyan">({file.size})</span>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(file.name)}
+                      className="text-charcoal/40 hover:text-charcoal text-xs ml-1"
+                      aria-label={`Remove ${file.name}`}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full border border-dashed border-charcoal/30 rounded-lg p-3 text-center cursor-pointer hover:bg-vaultAmber/30 transition-colors"
+                >
+                  <p className="text-xs text-neonCyan font-mono">
+                    Click to attach invoices, spreadsheets, or SOP documents for automated AI analysis
+                  </p>
                 </div>
-              ))}
-              <span className="hidden sm:inline text-charcoal/20">|</span>
-              <span className="text-[10px] text-neonCyan/80 truncate">
-                {activePreset.governance}
+              )}
+            </div>
+          </div>
+
+          {/* Action Row */}
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-charcoal/10">
+            <span className="text-[10px] sm:text-xs text-neonCyan font-mono">
+              DPDP-compliant · Zero data retention on public sandbox
+            </span>
+
+            <button
+              type="button"
+              onClick={handleGenerateBlueprint}
+              disabled={isGenerating}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-charcoal px-5 py-2.5 text-xs sm:text-sm font-medium text-obsidian transition-colors hover:bg-neonCyan disabled:opacity-75 shadow-sm"
+            >
+              {isGenerating ? (
+                <>
+                  <svg
+                    className="animate-spin h-4 w-4 text-obsidian"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span>Synthesizing Laxvish Architecture...</span>
+                </>
+              ) : (
+                <>
+                  <span>Analyze & Generate Solution Blueprint</span>
+                  <svg
+                    className="h-3.5 w-3.5 text-obsidian"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </>
+              )}
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ——— TAB 2: Generated Laxvish AI Blueprint (What We Build + How It Helps Grow) ——— */}
+      {activeTab === "blueprint" && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="py-3 sm:py-4 space-y-4"
+        >
+          {/* Header Summary */}
+          <div className="rounded-xl border border-charcoal/15 bg-white/80 p-3.5 sm:p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-charcoal/10 pb-2.5">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-neonCyan">
+                  Tailored System Blueprint For:
+                </span>
+                <h4 className="text-base sm:text-lg font-normal text-charcoal">
+                  {companyName}
+                </h4>
+              </div>
+              <div className="flex items-center gap-2 font-mono text-[10px] text-neonCyan">
+                <span className="rounded bg-vaultAmber px-2 py-0.5 font-semibold text-charcoal">
+                  {currentPreset.solution.timeToDeploy}
+                </span>
+              </div>
+            </div>
+
+            {/* Part 1: What Laxvish Will Build For You */}
+            <div className="pt-3 space-y-2">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-charcoal font-semibold block">
+                1. What Laxvish Will Build For You:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div className="rounded-lg border border-charcoal/10 bg-obsidian p-2.5 space-y-1">
+                  <span className="text-[10px] font-mono uppercase text-neonCyan font-semibold block">
+                    ● Custom Workers
+                  </span>
+                  <p className="text-charcoal/80 leading-snug">
+                    {currentPreset.solution.whatWeBuild.workers}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-charcoal/10 bg-obsidian p-2.5 space-y-1">
+                  <span className="text-[10px] font-mono uppercase text-neonCyan font-semibold block">
+                    ● Laxvish Brain
+                  </span>
+                  <p className="text-charcoal/80 leading-snug">
+                    {currentPreset.solution.whatWeBuild.brain}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-charcoal/10 bg-obsidian p-2.5 space-y-1">
+                  <span className="text-[10px] font-mono uppercase text-neonCyan font-semibold block">
+                    ● Governance Brakes
+                  </span>
+                  <p className="text-charcoal/80 leading-snug">
+                    {currentPreset.solution.whatWeBuild.brakes}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Part 2: How Laxvish Helps You Grow */}
+            <div className="pt-3.5 space-y-2">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-charcoal font-semibold block">
+                2. How Laxvish Helps You Grow:
+              </span>
+              <ul className="space-y-1.5 text-xs text-charcoal/90">
+                {currentPreset.solution.howItHelpsGrow.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-charcoal font-bold mt-0.5">✓</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Projected ROI Highlight */}
+            <div className="mt-3.5 pt-3 border-t border-charcoal/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+              <span className="font-mono text-neonCyan">ESTIMATED BUSINESS IMPACT:</span>
+              <span className="font-semibold text-charcoal">
+                {currentPreset.solution.estimatedRoi}
               </span>
             </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+          </div>
 
-      {/* ——— Bottom Control Bar (IA Reference Layout) ——— */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-t border-charcoal/10 pt-4 sm:pt-5">
-        {/* Left Side: Agent/Layer Selector + Capability Pills */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-          {/* Layer / Worker Trigger */}
-          <div className="inline-flex items-center gap-2 rounded-lg border border-charcoal/25 bg-vaultAmber/40 px-3 py-1.5 text-xs font-medium text-charcoal shadow-2xs">
-            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-charcoal text-[9px] font-bold text-obsidian">
-              L
-            </span>
-            <span className="truncate max-w-[150px] sm:max-w-none">
-              {activePreset.workerType}
-            </span>
-            <svg
-              className="h-3 w-3 text-neonCyan shrink-0"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
+          {/* Action Row */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-charcoal/10 pt-3">
+            <button
+              type="button"
+              onClick={() => setActiveTab("input")}
+              className="text-xs font-medium text-charcoal underline hover:text-neonCyan text-center sm:text-left"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
+              ← Edit challenge or attach more docs
+            </button>
 
-          {/* Capability Tags / Rules */}
-          <div className="hidden md:flex items-center gap-1.5">
-            {activePreset.pills.map((pill, i) => (
-              <span
-                key={i}
-                className="text-[10px] font-medium tracking-wide uppercase px-2 py-1 rounded bg-obsidian border border-charcoal/15 text-charcoal/75"
-              >
-                {pill}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Side: Secondary Export & Primary Run CTA */}
-        <div className="flex items-center justify-end gap-2.5 shrink-0">
-          {/* Copy Prompt / Export Ledger Button */}
-          <button
-            type="button"
-            onClick={handleCopy}
-            title="Copy prompt payload"
-            aria-label="Copy prompt payload to clipboard"
-            className="inline-flex items-center justify-center rounded-lg border border-charcoal/20 bg-obsidian p-2 text-charcoal transition-colors hover:border-charcoal hover:bg-vaultAmber"
-          >
-            {isCopied ? (
-              <svg className="h-4 w-4 text-charcoal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            <a
+              href={bookDemoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-charcoal px-5 py-2.5 text-xs sm:text-sm font-medium text-obsidian transition-colors hover:bg-neonCyan shadow-sm text-center"
+            >
+              <span>Book Working Session with this Blueprint</span>
+              <svg className="h-3.5 w-3.5 text-obsidian" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
-            ) : (
-              <svg className="h-4 w-4 text-charcoal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-            )}
-          </button>
-
-          {/* Primary Action Button (Execute) */}
-          <button
-            type="button"
-            onClick={handleExecute}
-            disabled={isExecuting}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-charcoal px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium text-obsidian transition-colors hover:bg-neonCyan disabled:opacity-75 shadow-sm"
-          >
-            {isExecuting ? (
-              <>
-                <svg className="animate-spin h-3.5 w-3.5 text-obsidian" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>Dispatching...</span>
-              </>
-            ) : (
-              <>
-                <span>Run System</span>
-                <svg className="h-3.5 w-3.5 text-obsidian" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                </svg>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
+            </a>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
