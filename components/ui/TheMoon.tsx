@@ -13,6 +13,11 @@ import { MouseEvent, useRef } from "react";
 const VELLUM = "#EAEAEA";
 const PAPER = "#FAFAFA";
 
+export interface TheMoonProps {
+  progress?: any; // MotionValue<number>
+  disableOuterTransform?: boolean;
+}
+
 /**
  * The Moon — Metamorphic Scroll-Driven Celestial Surface.
  *
@@ -24,7 +29,7 @@ const PAPER = "#FAFAFA";
  * iridescent center-originating fluid rainbow wave spectrum with organic wave distortion
  * and ambient chromatic halo.
  */
-export function TheMoon() {
+export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const motionEnabled = !prefersReducedMotion;
@@ -32,31 +37,35 @@ export function TheMoon() {
   // Track global window scroll progress for smooth continuous metamorphosis
   const { scrollY } = useScroll();
 
-  // Scroll mapping (0px -> 380px scroll distance)
-  // 1. Chromatic color awakening (0 -> 1)
-  const rawChromatic = useTransform(scrollY, [0, 360], [0, 1]);
+  // Scroll mapping:
+  // If parent passes a normalized scroll progress (0 -> 1), use it; otherwise map scrollY.
+  const rawChromatic = progress
+    ? useTransform(progress, [0.15, 0.65], [0, 1])
+    : useTransform(scrollY, [0, 360], [0, 1]);
+
   const chromaticProgress = useSpring(rawChromatic, {
-    stiffness: 70,
-    damping: 24,
+    stiffness: 55,
+    damping: 22,
     mass: 0.8,
   });
 
-  // 2. Monochrome layer fade out (1 -> 0)
-  const rawMono = useTransform(scrollY, [0, 360], [1, 0]);
+  const rawMono = progress
+    ? useTransform(progress, [0.15, 0.65], [1, 0])
+    : useTransform(scrollY, [0, 360], [1, 0]);
+
   const monoProgress = useSpring(rawMono, {
-    stiffness: 70,
-    damping: 24,
+    stiffness: 55,
+    damping: 22,
     mass: 0.8,
   });
 
-  // 3. Desktop horizontal shift towards center
+  // Standalone fallback transforms if not controlled by parent
   const rawShiftX = useTransform(scrollY, [0, 420], [0, -90]);
   const shiftX = useSpring(rawShiftX, {
     stiffness: 55,
     damping: 22,
   });
 
-  // 4. Subtle vertical float & scale on scroll
   const rawShiftY = useTransform(scrollY, [0, 420], [0, 45]);
   const shiftY = useSpring(rawShiftY, {
     stiffness: 55,
@@ -69,8 +78,11 @@ export function TheMoon() {
     damping: 24,
   });
 
-  // 5. Chromatic wave gentle rotation with scroll
-  const rawWaveRotate = useTransform(scrollY, [0, 600], [0, 24]);
+  // Chromatic wave gentle rotation with scroll
+  const rawWaveRotate = progress
+    ? useTransform(progress, [0, 1], [0, 26])
+    : useTransform(scrollY, [0, 600], [0, 24]);
+
   const waveRotate = useSpring(rawWaveRotate, {
     stiffness: 40,
     damping: 20,
@@ -119,9 +131,9 @@ export function TheMoon() {
         style={{
           rotateX,
           rotateY,
-          x: motionEnabled ? shiftX : 0,
-          y: motionEnabled ? shiftY : 0,
-          scale: motionEnabled ? scrollScale : 1,
+          x: motionEnabled && !disableOuterTransform ? shiftX : 0,
+          y: motionEnabled && !disableOuterTransform ? shiftY : 0,
+          scale: motionEnabled && !disableOuterTransform ? scrollScale : 1,
           transformPerspective: 1200,
         }}
         className="w-full will-change-transform"
