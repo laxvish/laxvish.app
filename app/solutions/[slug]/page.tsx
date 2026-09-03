@@ -28,67 +28,67 @@ export async function generateMetadata({
 const SOLUTION_IMAGES: Record<string, { src: string; alt: string; caption: string }> = {
   "sales-automation": {
     src: "/images/solutions-sales-telemetry.png",
-    alt: "Precision chronograph needles and minimalist gauge markings on dial",
+    alt: "AI inbound lead scoring and automated sales pipeline qualification",
     caption: "SPEC. 01 / INBOUND PIPELINE TELEMETRY",
   },
   "marketing-operations": {
     src: "/images/solutions-sales-telemetry.png",
-    alt: "Precision chronograph needles and campaign telemetry",
+    alt: "Automated marketing operations and lead attribution intelligence",
     caption: "SPEC. 01 / CAMPAIGN PIPELINE TELEMETRY",
   },
   "customer-support": {
     src: "/images/solutions-support-acoustic.png",
-    alt: "Acoustic waveform etched into brushed aluminum plate",
+    alt: "Omnichannel customer support AI and ticket resolution stream",
     caption: "SPEC. 02 / REALTIME CONVERSATIONAL ENGINE",
   },
   "voice-whatsapp": {
     src: "/images/callme-acoustic-macro.png",
-    alt: "Studio acoustic condenser capsule and audio transducer",
+    alt: "Realtime voice and WhatsApp conversational AI engine",
     caption: "SPEC. 02 / MULTI-MODAL VOICE & WHATSAPP ENGINE",
   },
   "document-processing": {
     src: "/images/solutions-document-optical.png",
-    alt: "Precision optical glass prism scanning over document substrate",
+    alt: "Intelligent document processing and neural optical data extraction",
     caption: "SPEC. 03 / OPTICAL EXTRACTION & OCR",
   },
   "contract-automation": {
     src: "/images/solutions-document-optical.png",
-    alt: "Precision optical document extraction and contract verification",
+    alt: "Automated contract clause extraction and compliance verification",
     caption: "SPEC. 03 / CONTRACT CLAUSE VERIFICATION",
   },
   "internal-knowledge": {
     src: "/images/brain-routing-mesh.png",
-    alt: "Optical fiber routing channels and enterprise knowledge index",
+    alt: "Enterprise semantic knowledge vector mesh and RAG index",
     caption: "SPEC. 05 / ENTERPRISE KNOWLEDGE MESH",
   },
   "it-helpdesk": {
     src: "/images/workers-actuator-macro.png",
-    alt: "Robotic micro-actuators and IT automation infrastructure",
+    alt: "Autonomous IT incident resolution and ticket remediation worker",
     caption: "SPEC. 06 / TICKET RESOLUTION WORKER",
   },
   "finance-ap": {
     src: "/images/solutions-finance-balance.png",
-    alt: "Micro-engraved calibration weights and polished stainless balance pivot",
+    alt: "Autonomous accounts payable reconciliation and 3-way invoice matching",
     caption: "SPEC. 04 / ACCOUNTS PAYABLE & RECONCILIATION",
   },
   "procurement": {
     src: "/images/solutions-finance-balance.png",
-    alt: "Micro-engraved calibration balance and purchase verification",
+    alt: "AI purchase order verification and vendor invoice matching",
     caption: "SPEC. 04 / PURCHASE ORDER VERIFICATION",
   },
   "reporting-analytics": {
     src: "/images/verification-wafer-macro.png",
-    alt: "Laser-etched serial telemetry and real-time operational reporting",
+    alt: "Realtime enterprise analytics synthesis and AI telemetry",
     caption: "SPEC. 07 / RECONCILED ANALYTICS TELEMETRY",
   },
   "executive-intelligence": {
     src: "/images/security-vault-bolt.png",
-    alt: "Solid stainless steel vault locking bolt and executive trust",
+    alt: "Executive decision intelligence and multi-source AI synthesis",
     caption: "SPEC. 08 / EXECUTIVE DECISION CONTROL",
   },
   "hr-operations": {
     src: "/images/final-cta-architecture.png",
-    alt: "Precision-milled aluminum plates and structured employee lifecycle",
+    alt: "AI employee lifecycle automation and HR workflow orchestration",
     caption: "SPEC. 09 / HR WORKFLOW ARCHITECTURE",
   },
 };

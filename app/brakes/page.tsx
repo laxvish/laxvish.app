@@ -27,8 +27,8 @@ export default function BrakesPage() {
         summary={content.summary}
         image={{
           src: "/images/brakes-interlock-macro.png",
-          alt: "Solid steel mechanical interlocking brake caliper and safety mechanism",
-          caption: "FIG. 01 / VERIFICATION BRAKE INTERLOCK",
+          alt: "Real-time enterprise AI governance guardrails and policy interlock surface",
+          caption: "FIG. 01 / AI GOVERNANCE INTERLOCK",
         }}
       />
       <PageBlocks

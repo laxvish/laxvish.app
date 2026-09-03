@@ -59,7 +59,7 @@ export function FinalCta() {
             <div className="relative overflow-hidden border border-charcoal/20 bg-vaultAmber group">
               <Image
                 src="/images/final-cta-architecture.png"
-                alt="Precision-milled aluminum plates and razor shadow lines"
+                alt="Enterprise multi-agent AI system architecture and autonomous deployment mesh"
                 width={800}
                 height={450}
                 className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"

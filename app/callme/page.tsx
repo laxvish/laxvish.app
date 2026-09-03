@@ -27,8 +27,8 @@ export default function CallmePage() {
         summary={content.summary}
         image={{
           src: "/images/callme-ribbon-mic.png",
-          alt: "Broadcast ribbon microphone corrugated acoustic element",
-          caption: "FIG. 01 / ACOUSTIC TRANSDUCER INTERFACE",
+          alt: "Realtime neural speech-to-intent engine and acoustic intelligence surface",
+          caption: "FIG. 01 / ACOUSTIC INTELLIGENCE ENGINE",
         }}
       />
       <PageBlocks

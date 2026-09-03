@@ -27,8 +27,8 @@ export default function WorkersPage() {
         summary={content.summary}
         image={{
           src: "/images/workers-actuator-macro.png",
-          alt: "Precision robotic micro-actuators and industrial mechanical linkages",
-          caption: "FIG. 01 / WORKER EXECUTION MESH",
+          alt: "Autonomous enterprise AI domain worker execution pipeline and task queue",
+          caption: "FIG. 01 / AI WORKER EXECUTION MESH",
         }}
       />
       <PageBlocks

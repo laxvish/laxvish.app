@@ -22,8 +22,8 @@ export default function SecurityTrustPage() {
         summary={content.summary}
         image={{
           src: "/images/security-vault-bolt.png",
-          alt: "Solid stainless steel vault locking bolt mechanism",
-          caption: "FIG. 01 / TRUST & ENCRYPTION POSTURE",
+          alt: "Enterprise AI cryptographic security enclave and DPDP data isolation boundary",
+          caption: "FIG. 01 / CRYPTOGRAPHIC TRUST & DPDP POSTURE",
         }}
       />
       <PageBlocks details={content.details} outcomes={content.outcomes} />
