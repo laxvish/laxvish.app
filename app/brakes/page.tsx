@@ -26,7 +26,7 @@ export default function BrakesPage() {
         title={content.title}
         summary={content.summary}
         image={{
-          src: "/images/brakes-interlock-macro.png",
+          src: "/images/editorial-governance-interlock.png",
           alt: "Real-time enterprise AI governance guardrails and policy interlock surface",
           caption: "FIG. 01 / AI GOVERNANCE INTERLOCK",
         }}

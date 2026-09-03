@@ -66,7 +66,7 @@ export function ProofBand() {
           <FadeIn delay={0.25} className="mt-8">
             <div className="relative w-full max-w-full overflow-hidden border border-charcoal/20 bg-vaultAmber group">
               <Image
-                src="/images/verification-wafer-macro.png"
+                src="/images/editorial-verification-ledger.png"
                 alt="Enterprise AI cryptographic verification ledger and deterministic execution audit trail"
                 width={800}
                 height={450}

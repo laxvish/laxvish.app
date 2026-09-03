@@ -21,7 +21,7 @@ export default function AboutPage() {
         title={content.title}
         summary={content.summary}
         image={{
-          src: "/images/brain-routing-mesh.png",
+          src: "/images/editorial-system-architecture.png",
           alt: "Laxvish enterprise AI systems and engineering principles",
           caption: "SPEC. 01 / SYSTEM PROVENANCE",
         }}

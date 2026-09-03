@@ -26,7 +26,7 @@ export default function CallmePage() {
         title={content.title}
         summary={content.summary}
         image={{
-          src: "/images/callme-ribbon-mic.png",
+          src: "/images/editorial-speech-intent.png",
           alt: "Realtime neural speech-to-intent engine and acoustic intelligence surface",
           caption: "FIG. 01 / ACOUSTIC INTELLIGENCE ENGINE",
         }}

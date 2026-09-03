@@ -60,7 +60,7 @@ export function CallmeSection() {
           <FadeIn delay={0.25} className="my-8 sm:my-10">
             <div className="relative w-full max-w-full overflow-hidden border border-charcoal/20 bg-obsidian group">
               <Image
-                src="/images/callme-acoustic-macro.png"
+                src="/images/editorial-voice-dialogue.png"
                 alt="Realtime enterprise conversational voice AI stream and neural intent telemetry"
                 width={800}
                 height={450}

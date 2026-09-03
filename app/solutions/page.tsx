@@ -29,7 +29,7 @@ export default function SolutionsPage() {
         title={content.title}
         summary={content.summary}
         image={{
-          src: "/images/final-cta-architecture.png",
+          src: "/images/editorial-system-architecture.png",
           alt: "Enterprise multi-agent AI solutions and automation architecture",
           caption: "SPEC. 01 / ENTERPRISE AUTOMATION CATALOG",
         }}

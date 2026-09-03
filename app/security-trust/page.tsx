@@ -21,7 +21,7 @@ export default function SecurityTrustPage() {
         title={content.title}
         summary={content.summary}
         image={{
-          src: "/images/security-vault-bolt.png",
+          src: "/images/editorial-security-fortress.png",
           alt: "Enterprise AI cryptographic security enclave and DPDP data isolation boundary",
           caption: "FIG. 01 / CRYPTOGRAPHIC TRUST & DPDP POSTURE",
         }}

@@ -26,7 +26,7 @@ export default function BrainPage() {
         title={content.title}
         summary={content.summary}
         image={{
-          src: "/images/brain-routing-mesh.png",
+          src: "/images/editorial-orchestration-mesh.png",
           alt: "Enterprise AI multi-agent orchestration engine and neural routing DAG",
           caption: "FIG. 01 / ORCHESTRATION ROUTING MESH",
         }}

@@ -27,67 +27,67 @@ export async function generateMetadata({
 
 const SOLUTION_IMAGES: Record<string, { src: string; alt: string; caption: string }> = {
   "sales-automation": {
-    src: "/images/solutions-sales-telemetry.png",
+    src: "/images/editorial-sales-pipeline.png",
     alt: "AI inbound lead scoring and automated sales pipeline qualification",
     caption: "SPEC. 01 / INBOUND PIPELINE TELEMETRY",
   },
   "marketing-operations": {
-    src: "/images/solutions-sales-telemetry.png",
+    src: "/images/editorial-sales-pipeline.png",
     alt: "Automated marketing operations and lead attribution intelligence",
     caption: "SPEC. 01 / CAMPAIGN PIPELINE TELEMETRY",
   },
   "customer-support": {
-    src: "/images/solutions-support-acoustic.png",
+    src: "/images/editorial-support-resolution.png",
     alt: "Omnichannel customer support AI and ticket resolution stream",
     caption: "SPEC. 02 / REALTIME CONVERSATIONAL ENGINE",
   },
   "voice-whatsapp": {
-    src: "/images/callme-acoustic-macro.png",
+    src: "/images/editorial-voice-dialogue.png",
     alt: "Realtime voice and WhatsApp conversational AI engine",
     caption: "SPEC. 02 / MULTI-MODAL VOICE & WHATSAPP ENGINE",
   },
   "document-processing": {
-    src: "/images/solutions-document-optical.png",
+    src: "/images/editorial-document-extraction.png",
     alt: "Intelligent document processing and neural optical data extraction",
     caption: "SPEC. 03 / OPTICAL EXTRACTION & OCR",
   },
   "contract-automation": {
-    src: "/images/solutions-document-optical.png",
+    src: "/images/editorial-document-extraction.png",
     alt: "Automated contract clause extraction and compliance verification",
     caption: "SPEC. 03 / CONTRACT CLAUSE VERIFICATION",
   },
   "internal-knowledge": {
-    src: "/images/brain-routing-mesh.png",
+    src: "/images/editorial-orchestration-mesh.png",
     alt: "Enterprise semantic knowledge vector mesh and RAG index",
     caption: "SPEC. 05 / ENTERPRISE KNOWLEDGE MESH",
   },
   "it-helpdesk": {
-    src: "/images/workers-actuator-macro.png",
+    src: "/images/editorial-worker-execution.png",
     alt: "Autonomous IT incident resolution and ticket remediation worker",
     caption: "SPEC. 06 / TICKET RESOLUTION WORKER",
   },
   "finance-ap": {
-    src: "/images/solutions-finance-balance.png",
+    src: "/images/editorial-finance-reconciliation.png",
     alt: "Autonomous accounts payable reconciliation and 3-way invoice matching",
     caption: "SPEC. 04 / ACCOUNTS PAYABLE & RECONCILIATION",
   },
   "procurement": {
-    src: "/images/solutions-finance-balance.png",
+    src: "/images/editorial-finance-reconciliation.png",
     alt: "AI purchase order verification and vendor invoice matching",
     caption: "SPEC. 04 / PURCHASE ORDER VERIFICATION",
   },
   "reporting-analytics": {
-    src: "/images/verification-wafer-macro.png",
+    src: "/images/editorial-verification-ledger.png",
     alt: "Realtime enterprise analytics synthesis and AI telemetry",
     caption: "SPEC. 07 / RECONCILED ANALYTICS TELEMETRY",
   },
   "executive-intelligence": {
-    src: "/images/security-vault-bolt.png",
+    src: "/images/editorial-security-fortress.png",
     alt: "Executive decision intelligence and multi-source AI synthesis",
     caption: "SPEC. 08 / EXECUTIVE DECISION CONTROL",
   },
   "hr-operations": {
-    src: "/images/final-cta-architecture.png",
+    src: "/images/editorial-system-architecture.png",
     alt: "AI employee lifecycle automation and HR workflow orchestration",
     caption: "SPEC. 09 / HR WORKFLOW ARCHITECTURE",
   },

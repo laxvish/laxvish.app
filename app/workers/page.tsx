@@ -26,7 +26,7 @@ export default function WorkersPage() {
         title={content.title}
         summary={content.summary}
         image={{
-          src: "/images/workers-actuator-macro.png",
+          src: "/images/editorial-worker-execution.png",
           alt: "Autonomous enterprise AI domain worker execution pipeline and task queue",
           caption: "FIG. 01 / AI WORKER EXECUTION MESH",
         }}
