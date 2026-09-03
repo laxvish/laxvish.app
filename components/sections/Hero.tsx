@@ -21,19 +21,24 @@ import {
 } from "@/lib/site-navigation";
 
 /**
- * Hero — Mobile-First Scroll-Driven Establishing Shot & Solution Architecture Surface.
+ * Hero — Two-Phase Scroll Architecture with Post-Completion Hold.
  *
- * Cinematic Scroll Journey:
- * 1. Rest State (Scroll Progress 0%):
- *    - Desktop: Split composition with Hero copy on the left and serene monochrome Moon on the right (scale 1.00).
- *    - Mobile: Clean stacked hero with Moon hovering above the high-contrast display headline.
- * 2. Gliding & Disorganized Metamorphosis (Scroll Progress 12% -> 62%):
- *    - Hero copy gently dissolves and drifts upward.
- *    - The Moon glides smoothly from its right-aligned hero spot to the exact horizontal center.
- *    - Moon scales up by 30% (scale 1.00 -> 1.30) while its color palette gets disorganized, turbulent, and refracts into swirling chromatic ribbons.
- * 3. Unified Alignment & Emergence (Scroll Progress 40% -> 65%):
- *    - The minimal Gemini/ChatGPT-style prompt interface emerges directly beneath the centered moon.
- *    - The disorganized spectrum resolves into a harmonic iridescent glow as both align together in unison.
+ * Total Track Height: ~480vh
+ *
+ * PHASE 1 — Cinematic Transformation (0% -> 76% of track, ~365vh):
+ * - animationProgress: 0.0 -> 1.0
+ * - Hero copy dissolves upward.
+ * - Monochrome Moon glides from right to horizontal center and scales up by 30% (1.00 -> 1.30).
+ * - Internal disorganized chromatic dispersion swirls and develops into full iridescent rainbow spectrum.
+ * - Minimal Gemini/ChatGPT prompt interface emerges directly beneath the Moon.
+ * - By animationProgress = 1.0 (at section progress 0.76), transformation reaches 100%.
+ *
+ * PHASE 2 — Final State Hold (76% -> 100% of track, ~115vh):
+ * - animationProgress stays clamped at 1.0.
+ * - Moon remains centered, at final scale, and fully colored.
+ * - Moon's internal surface autonomously rotates 360 degrees around its own axis in place.
+ * - Background and UI remain completely stable.
+ * - The user physically scrolls through the dedicated hold distance before the hero unpins and next section enters.
  */
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,45 +54,54 @@ export function Hero() {
     return () => window.removeEventListener("resize", checkDesktop);
   }, []);
 
-  // Normalized scroll progress across the narrative track
+  // 1. Normalized scroll progress across the ENTIRE 480vh track (0.0 -> 1.0)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Calm, high-inertia spring smoothing (no snapping, no bounce)
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 50,
+  // Calm, high-inertia spring smoothing across the track
+  const smoothSectionProgress = useSpring(scrollYProgress, {
+    stiffness: 48,
     damping: 24,
     mass: 0.85,
   });
 
-  // ——— 1. Hero Copy Transforms ———
-  const rawHeroOpacity = useTransform(smoothProgress, [0.08, 0.32], [1, 0]);
-  const rawHeroY = useTransform(smoothProgress, [0.08, 0.32], [0, -32]);
+  // 2. PHASE 1: Cinematic Animation Progress (0.0 -> 1.0 during section progress 0.0 -> 0.76)
+  const rawAnimationProgress = useTransform(
+    smoothSectionProgress,
+    [0.0, 0.76],
+    [0.0, 1.0],
+    { clamp: true }
+  );
+  const animationProgress = motionEnabled
+    ? rawAnimationProgress
+    : useTransform(scrollYProgress, () => 1.0);
+
+  // ——— Hero Copy Transforms (Mapped strictly to animationProgress) ———
+  const rawHeroOpacity = useTransform(animationProgress, [0.06, 0.32], [1, 0]);
+  const rawHeroY = useTransform(animationProgress, [0.06, 0.32], [0, -32]);
   const heroOpacity = motionEnabled ? rawHeroOpacity : 1;
   const heroY = motionEnabled ? rawHeroY : 0;
-  const heroPointerEvents = useTransform(smoothProgress, (v) =>
-    v > 0.30 ? "none" : "auto"
+  const heroPointerEvents = useTransform(animationProgress, (v) =>
+    v > 0.32 ? "none" : "auto"
   );
 
-  // ——— 2. The Moon Trajectory & Calibration ———
-  // Desktop: Glides from right-column offset (+26vw) to exact center (0vw). Mobile: Stays centered (0vw).
+  // ——— The Moon Trajectory & Scale Transforms (0.0 -> 1.0) ———
+  // Desktop: Glides from right-column (+26vw) to center (0vw). Mobile: Centered (0vw).
   const rawMoonShiftX = useTransform(
-    smoothProgress,
-    [0.12, 0.62],
+    animationProgress,
+    [0.12, 0.85],
     [isDesktop ? "26vw" : "0vw", "0vw"]
   );
-  // Scale increases gradually by 30% from 1.00 to 1.30
   const rawMoonScale = useTransform(
-    smoothProgress,
-    [0.12, 0.62],
+    animationProgress,
+    [0.12, 0.85],
     [1.0, 1.30]
   );
-  // Vertical hovering calibration
   const rawMoonShiftY = useTransform(
-    smoothProgress,
-    [0.12, 0.62],
+    animationProgress,
+    [0.12, 0.85],
     [0, -12]
   );
 
@@ -95,16 +109,16 @@ export function Hero() {
   const moonShiftY = motionEnabled ? rawMoonShiftY : 0;
   const moonScale = motionEnabled ? rawMoonScale : 1.0;
 
-  // ——— 3. Conversational / Chatbox Synchronized Emergence ———
-  const rawBoxOpacity = useTransform(smoothProgress, [0.38, 0.64], [0, 1]);
-  const rawBoxY = useTransform(smoothProgress, [0.38, 0.64], [32, 0]);
-  const rawBoxScale = useTransform(smoothProgress, [0.38, 0.64], [0.97, 1.0]);
+  // ——— Conversational Chatbox Emergence (0.0 -> 1.0) ———
+  const rawBoxOpacity = useTransform(animationProgress, [0.50, 0.88], [0, 1]);
+  const rawBoxY = useTransform(animationProgress, [0.50, 0.88], [32, 0]);
+  const rawBoxScale = useTransform(animationProgress, [0.50, 0.88], [0.97, 1.0]);
 
   const boxOpacity = motionEnabled ? rawBoxOpacity : 1;
   const boxY = motionEnabled ? rawBoxY : 0;
   const boxScale = motionEnabled ? rawBoxScale : 1;
-  const boxPointerEvents = useTransform(smoothProgress, (v) =>
-    v > 0.45 ? "auto" : "none"
+  const boxPointerEvents = useTransform(animationProgress, (v) =>
+    v > 0.55 ? "auto" : "none"
   );
 
   return (
@@ -112,10 +126,10 @@ export function Hero() {
       ref={containerRef}
       className="relative isolate border-b border-charcoal/10 bg-obsidian"
       style={{
-        minHeight: motionEnabled ? "240vh" : "auto",
+        minHeight: motionEnabled ? "480vh" : "auto",
       }}
     >
-      {/* Sticky Viewport Stage */}
+      {/* Sticky Viewport Stage — Pinned during both Transformation & Hold Phases */}
       <div
         className={
           motionEnabled
@@ -129,7 +143,7 @@ export function Hero() {
         <div className="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-12 flex flex-col justify-center items-center">
           
           {/* ============================================================ */}
-          {/* LAYER 1: HERO COPY (Visible at Scroll 0, Fades on Scroll)   */}
+          {/* LAYER 1: HERO COPY (Visible at Scroll 0, Dissolves on Scroll)*/}
           {/* ============================================================ */}
           <motion.div
             style={{
@@ -204,7 +218,7 @@ export function Hero() {
               className="w-full max-w-[170px] sm:max-w-[210px] lg:max-w-[260px] mx-auto will-change-transform z-30"
             >
               <TheMoon
-                progress={motionEnabled ? smoothProgress : undefined}
+                progress={motionEnabled ? animationProgress : undefined}
                 disableOuterTransform={true}
               />
             </motion.div>
