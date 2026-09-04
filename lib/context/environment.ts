@@ -28,7 +28,47 @@ const REGIONAL_CLUSTER_MAP: Record<string, Partial<EnvironmentCategoryDensity>> 
   Pune: { industrial: 0.85, education: 0.80, business: 0.75 },
   Ahmedabad: { industrial: 0.85, business: 0.78, finance: 0.65 },
   Jaipur: { cultural: 0.90, healthcare: 0.65, education: 0.60, business: 0.55 },
+  Kolkata: { business: 0.80, cultural: 0.85, finance: 0.70, education: 0.65 },
 };
+
+export const KNOWN_CITY_COORDINATES: Array<{ city: string; lat: number; lon: number; maxRadiusKm: number }> = [
+  { city: "Bengaluru", lat: 12.9716, lon: 77.5946, maxRadiusKm: 50 },
+  { city: "Mumbai", lat: 19.0760, lon: 72.8777, maxRadiusKm: 50 },
+  { city: "Delhi", lat: 28.7041, lon: 77.1025, maxRadiusKm: 40 },
+  { city: "Gurugram", lat: 28.4595, lon: 77.0266, maxRadiusKm: 30 },
+  { city: "Noida", lat: 28.5355, lon: 77.3910, maxRadiusKm: 30 },
+  { city: "Hyderabad", lat: 17.3850, lon: 78.4867, maxRadiusKm: 50 },
+  { city: "Chennai", lat: 13.0827, lon: 80.2707, maxRadiusKm: 50 },
+  { city: "Pune", lat: 18.5204, lon: 73.8567, maxRadiusKm: 45 },
+  { city: "Kolkata", lat: 22.5726, lon: 88.3639, maxRadiusKm: 45 },
+  { city: "Ahmedabad", lat: 23.0225, lon: 72.5714, maxRadiusKm: 45 },
+  { city: "Jaipur", lat: 26.9124, lon: 75.7873, maxRadiusKm: 40 },
+];
+
+function haversineDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const toRad = (x: number) => (x * Math.PI) / 180;
+  const R = 6371; // Earth's radius in km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+/**
+ * Resolves city name from latitude and longitude by checking proximity to known enterprise hubs.
+ */
+export function resolveCityFromCoordinates(latitude: number, longitude: number): string | undefined {
+  for (const hub of KNOWN_CITY_COORDINATES) {
+    const dist = haversineDistanceKm(latitude, longitude, hub.lat, hub.lon);
+    if (dist <= hub.maxRadiusKm) {
+      return hub.city;
+    }
+  }
+  return undefined;
+}
 
 /**
  * Extracts approximate location from incoming edge HTTP request headers
@@ -98,13 +138,14 @@ export function buildGpsEnvironmentModel(
   const confidenceTier: LocationConfidenceTier = accuracyMeters <= 50 ? "L4" : "L3";
   const locationConfidence = accuracyMeters <= 50 ? 0.95 : 0.85;
 
-  const categoryDensity = buildCategoryDensity(existingCity);
+  const resolvedCity = resolveCityFromCoordinates(latitude, longitude) || existingCity;
+  const categoryDensity = buildCategoryDensity(resolvedCity);
 
   return {
     locationSource: "gps",
     locationConfidence,
     confidenceTier,
-    city: existingCity || "Local Region",
+    city: resolvedCity || "Local Region",
     country: "IN",
     latitude,
     longitude,

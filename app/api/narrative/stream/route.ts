@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { streamNarrativeFromPoolside } from "@/lib/context/poolside";
+import { extractThoughtAndNarrative, streamNarrativeFromPoolside } from "@/lib/context/poolside";
 import {
   findCachedNarrative,
   getSessionFromMemory,
@@ -106,9 +106,13 @@ export async function POST(request: NextRequest) {
             }
           }
 
+          const { thought, text: cleanText } = extractThoughtAndNarrative(fullText);
+          const narrativeText = cleanText || fullText;
+
           const moment = {
             stage,
-            text: fullText,
+            text: narrativeText,
+            thought: thought || undefined,
             confidence: graph.hypotheses[0]?.confidence || 0.85,
             evidenceUsed: graph.hypotheses[0]?.supportingEvidence || [],
             problemHypothesis: graph.hypotheses[0]?.title,
@@ -128,7 +132,15 @@ export async function POST(request: NextRequest) {
           }
 
           controller.enqueue(
-            encoder.encode(`event: done\ndata: ${JSON.stringify({ stage, fullText, latencyMs: Date.now() - startTime })}\n\n`)
+            encoder.encode(
+              `event: done\ndata: ${JSON.stringify({
+                stage,
+                fullText,
+                text: narrativeText,
+                thought,
+                latencyMs: Date.now() - startTime,
+              })}\n\n`
+            )
           );
         } catch (err) {
           console.error("[SSE Stream Generation Error]", err);

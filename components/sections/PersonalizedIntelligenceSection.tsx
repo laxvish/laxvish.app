@@ -15,7 +15,25 @@ const ROTATION_STAGES: NarrativeStage[] = [
 
 const ROTATION_INTERVAL_MS = 3000;
 const TRANSITION_MS = 550;
-const PARTIAL_FLUSH_MS = 200;
+const PARTIAL_FLUSH_MS = 150;
+
+function parseThoughtAndNarrative(raw: string): { thought: string; text: string } {
+  if (!raw) return { thought: "", text: "" };
+
+  const thinkMatch = raw.match(/<think>([\s\S]*?)<\/think>/i);
+  if (thinkMatch) {
+    const thought = thinkMatch[1].trim();
+    const text = raw.replace(/<think>[\s\S]*?<\/think>/i, "").trim();
+    return { thought, text };
+  }
+
+  const openThinkMatch = raw.match(/<think>([\s\S]*)$/i);
+  if (openThinkMatch) {
+    return { thought: openThinkMatch[1].trim(), text: "" };
+  }
+
+  return { thought: "", text: raw.trim() };
+}
 
 export function PersonalizedIntelligenceSection() {
   const { contextGraph } = useLaxvishContext();
@@ -23,6 +41,8 @@ export function PersonalizedIntelligenceSection() {
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [liveTexts, setLiveTexts] = useState<Partial<Record<NarrativeStage, string>>>({});
+  const [liveThoughts, setLiveThoughts] = useState<Partial<Record<NarrativeStage, string>>>({});
+  const [showInspector, setShowInspector] = useState<boolean>(false);
 
   const firedForSession = useRef<string>("");
   const abortRef = useRef<AbortController[]>([]);
@@ -41,8 +61,6 @@ export function PersonalizedIntelligenceSection() {
   // The stages are independent server-side, so wall-clock time is the slowest
   // single stream rather than the sum of five serial streams. The displayed
   // stage streams visibly; the other four warm silently in the background.
-  // Gated on sessionId because init is asynchronous: mount-time calls made
-  // before the session exists would otherwise bail out and never retry.
   useEffect(() => {
     if (!sessionId || firedForSession.current === sessionId) return;
     firedForSession.current = sessionId;
@@ -55,14 +73,21 @@ export function PersonalizedIntelligenceSection() {
 
       void (async () => {
         let buffered = "";
-        let finalText: string | null = null;
+        let finalCleanText: string | null = null;
+        let finalThought: string | null = null;
         let lastFlush = 0;
 
         const flush = () => {
           const now = Date.now();
           if (now - lastFlush >= PARTIAL_FLUSH_MS) {
             lastFlush = now;
-            setLiveTexts((prev) => ({ ...prev, [stage]: buffered }));
+            const parsed = parseThoughtAndNarrative(buffered);
+            if (parsed.text) {
+              setLiveTexts((prev) => ({ ...prev, [stage]: parsed.text }));
+            }
+            if (parsed.thought) {
+              setLiveThoughts((prev) => ({ ...prev, [stage]: parsed.thought }));
+            }
           }
         };
 
@@ -95,10 +120,16 @@ export function PersonalizedIntelligenceSection() {
                   buffered += parsed.token;
                   flush();
                 }
-                // Prefer the authoritative done-event text over accumulated
-                // tokens, which can lose fragments at chunk boundaries.
-                if (parsed.fullText) {
-                  finalText = parsed.fullText;
+                if (parsed.text) {
+                  finalCleanText = parsed.text;
+                }
+                if (parsed.thought) {
+                  finalThought = parsed.thought;
+                }
+                if (parsed.fullText && !finalCleanText) {
+                  const extracted = parseThoughtAndNarrative(parsed.fullText);
+                  finalCleanText = extracted.text || parsed.fullText;
+                  if (extracted.thought) finalThought = extracted.thought;
                 }
               } catch {
                 // Ignore a JSON object split across network chunks.
@@ -106,9 +137,15 @@ export function PersonalizedIntelligenceSection() {
             }
           }
 
-          const text = finalText ?? buffered;
+          const resolved = parseThoughtAndNarrative(buffered);
+          const text = finalCleanText ?? resolved.text;
+          const thought = finalThought ?? resolved.thought;
+
           if (text) {
             setLiveTexts((prev) => ({ ...prev, [stage]: text }));
+          }
+          if (thought) {
+            setLiveThoughts((prev) => ({ ...prev, [stage]: thought }));
           }
         } catch {
           // Aborted or failed: keep any partial text that already landed.
@@ -126,13 +163,29 @@ export function PersonalizedIntelligenceSection() {
   }, []);
 
   const currentStage = ROTATION_STAGES[activeIndex];
-  const currentText = useMemo(
-    () =>
-      liveTexts[currentStage] ||
-      contextGraph.narratives[currentStage]?.text ||
-      "—",
-    [liveTexts, contextGraph.narratives, currentStage]
-  );
+
+  const currentText = useMemo(() => {
+    const live = liveTexts[currentStage];
+    if (live) return live;
+
+    const fromGraph = contextGraph.narratives[currentStage]?.text;
+    if (fromGraph) {
+      return parseThoughtAndNarrative(fromGraph).text || fromGraph;
+    }
+    return "—";
+  }, [liveTexts, contextGraph.narratives, currentStage]);
+
+  const currentThought = useMemo(() => {
+    return (
+      liveThoughts[currentStage] ||
+      contextGraph.narratives[currentStage]?.thought ||
+      ""
+    );
+  }, [liveThoughts, contextGraph.narratives, currentStage]);
+
+  const evidenceUsed = useMemo(() => {
+    return contextGraph.narratives[currentStage]?.evidenceUsed || [];
+  }, [contextGraph.narratives, currentStage]);
 
   return (
     <section
@@ -140,8 +193,27 @@ export function PersonalizedIntelligenceSection() {
       className="w-full bg-obsidian border-b border-charcoal/20 py-20 sm:py-32 lg:py-40"
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
-        <div className="border border-charcoal/20 bg-obsidian min-h-[60vh] sm:min-h-[72vh] p-8 sm:p-16 lg:p-24 flex items-end">
-          <div className="max-w-3xl w-full">
+        <div className="border border-charcoal/20 bg-obsidian min-h-[60vh] sm:min-h-[72vh] p-8 sm:p-16 lg:p-24 flex flex-col justify-between">
+          {/* Top metadata & Discrete Thinking Inspector Toggle */}
+          <div className="flex items-center justify-between w-full pb-8 border-b border-charcoal/10">
+            <div className="flex items-center gap-3">
+              <span className="inline-block w-1.5 h-1.5 bg-charcoal" />
+              <span className="text-[11px] font-mono tracking-[0.2em] text-neonCyan uppercase">
+                {`MOMENT 0${activeIndex + 1} // ${currentStage.toUpperCase()}`}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowInspector((prev) => !prev)}
+              aria-expanded={showInspector}
+              className="text-[11px] font-mono tracking-[0.15em] text-neonCyan hover:text-charcoal border border-charcoal/20 px-2.5 py-1 bg-obsidian hover:bg-vaultAmber transition-colors uppercase cursor-pointer"
+            >
+              {`[ SYS_THINK // ${showInspector ? "HIDE" : "INSPECT"} ]`}
+            </button>
+          </div>
+
+          {/* Main Editorial Paragraph (Thinking is hidden here) */}
+          <div className="max-w-3xl w-full my-auto py-8">
             <AnimatePresence mode="wait">
               <motion.p
                 key={currentStage}
@@ -155,6 +227,41 @@ export function PersonalizedIntelligenceSection() {
               </motion.p>
             </AnimatePresence>
           </div>
+
+          {/* Optional Collapsible Thinking Inspector Panel */}
+          <AnimatePresence>
+            {showInspector && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                className="overflow-hidden border-t border-charcoal/20 pt-6 mt-4"
+              >
+                <div className="bg-vaultAmber/40 border border-charcoal/15 p-5 sm:p-6 font-mono">
+                  <div className="flex items-center justify-between text-[10px] tracking-[0.18em] text-neonCyan uppercase pb-3 border-b border-charcoal/10 mb-3">
+                    <span>REASONING TRACE // {currentStage.toUpperCase()}</span>
+                    <span>CONFIDENCE: {(contextGraph.narratives[currentStage]?.confidence ?? 0.85) * 100}%</span>
+                  </div>
+                  <p className="text-xs sm:text-[13px] text-charcoal/90 leading-relaxed font-mono whitespace-pre-wrap">
+                    {currentThought || "Synthesizing real-time telemetry and environmental observations..."}
+                  </p>
+                  {evidenceUsed.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-charcoal/10">
+                      {evidenceUsed.map((ev) => (
+                        <span
+                          key={ev}
+                          className="text-[10px] tracking-wider text-neonCyan border border-charcoal/15 px-2 py-0.5 uppercase"
+                        >
+                          {ev}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>

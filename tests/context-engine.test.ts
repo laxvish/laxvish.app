@@ -1,8 +1,16 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { extractEdgeLocation, buildGpsEnvironmentModel } from "../lib/context/environment.ts";
+import {
+  extractEdgeLocation,
+  buildGpsEnvironmentModel,
+  resolveCityFromCoordinates,
+} from "../lib/context/environment.ts";
 import { scoreProblemHypotheses } from "../lib/context/ontology.ts";
-import { generateDeterministicNarrative, validateNarrativeOutput } from "../lib/context/poolside.ts";
+import {
+  generateDeterministicNarrative,
+  validateNarrativeOutput,
+  extractThoughtAndNarrative,
+} from "../lib/context/poolside.ts";
 import type { LaxvishContextGraph } from "../lib/context/types.ts";
 
 function createMockGraph(): LaxvishContextGraph {
@@ -90,8 +98,26 @@ test("extractEdgeLocation correctly parses Vercel and Cloudflare IP geo headers"
   assert.ok((loc.categories?.business || 0) > 0.8, "Bengaluru should have high business density");
 });
 
-test("buildGpsEnvironmentModel assigns L4 confidence for precision GPS <= 50m", () => {
-  const gpsEnv = buildGpsEnvironmentModel(13.0827, 80.2707, 15, "Chennai");
+test("resolveCityFromCoordinates accurately matches Indian metropolitan clusters", () => {
+  // Mumbai coordinates (approx 19.0760, 72.8777)
+  const mumbai = resolveCityFromCoordinates(19.076, 72.877);
+  assert.equal(mumbai, "Mumbai");
+
+  // Delhi coordinates (approx 28.7041, 77.1025)
+  const delhi = resolveCityFromCoordinates(28.704, 77.102);
+  assert.equal(delhi, "Delhi");
+
+  // Chennai coordinates (approx 13.0827, 80.2707)
+  const chennai = resolveCityFromCoordinates(13.082, 80.27);
+  assert.equal(chennai, "Chennai");
+
+  // Remote coordinates (e.g. open ocean or distant location)
+  const remote = resolveCityFromCoordinates(0, 0);
+  assert.equal(remote, undefined);
+});
+
+test("buildGpsEnvironmentModel assigns L4 confidence for precision GPS <= 50m and resolves city", () => {
+  const gpsEnv = buildGpsEnvironmentModel(13.0827, 80.2707, 15);
   assert.equal(gpsEnv.locationSource, "gps");
   assert.equal(gpsEnv.confidenceTier, "L4");
   assert.equal(gpsEnv.locationConfidence, 0.95);
@@ -115,20 +141,37 @@ test("scoreProblemHypotheses gives top priority to direct user inquiry", () => {
   assert.equal(topSolution?.recommendedWorker, "Voice AI Agent");
 });
 
-test("validateNarrativeOutput blocks surveillance claims and allows valid text", () => {
-  const bad1 = validateNarrativeOutput("We noticed your WhatsApp conversations about sales leads.");
+test("extractThoughtAndNarrative separates reasoning from narrative statement", () => {
+  const input = "<think>Analyzing Mumbai financial cluster signals.</think>Enterprise workflows running at high density.";
+  const result = extractThoughtAndNarrative(input);
+  assert.equal(result.thought, "Analyzing Mumbai financial cluster signals.");
+  assert.equal(result.text, "Enterprise workflows running at high density.");
+
+  const openInput = "<think>Streaming reasoning in progress...";
+  const openResult = extractThoughtAndNarrative(openInput);
+  assert.equal(openResult.thought, "Streaming reasoning in progress...");
+  assert.equal(openResult.text, "");
+
+  const plainInput = "Direct narrative text without thinking tags.";
+  const plainResult = extractThoughtAndNarrative(plainInput);
+  assert.equal(plainResult.thought, "");
+  assert.equal(plainResult.text, "Direct narrative text without thinking tags.");
+});
+
+test("validateNarrativeOutput blocks surveillance claims and validates thinking-wrapped text", () => {
+  const bad1 = validateNarrativeOutput("<think>Inspecting private files</think>We noticed your WhatsApp conversations.");
   assert.equal(bad1.valid, false);
 
   const bad2 = validateNarrativeOutput("Based on your Gmail and other tabs, you need AI.");
   assert.equal(bad2.valid, false);
 
   const good = validateNarrativeOutput(
-    "High-density commercial ecosystems contain repetitive coordination that AI workers can quietly eliminate."
+    "<think>Evaluating operational density.</think>High-density commercial ecosystems contain repetitive coordination that AI workers can quietly eliminate."
   );
   assert.equal(good.valid, true);
 });
 
-test("generateDeterministicNarrative generates valid moments for all 5 stages", () => {
+test("generateDeterministicNarrative generates valid moments with thoughts for all 5 stages", () => {
   const graph = createMockGraph();
   const stages: ("arrival" | "environment" | "opportunity" | "interaction" | "synthesis")[] = [
     "arrival",
@@ -142,6 +185,7 @@ test("generateDeterministicNarrative generates valid moments for all 5 stages", 
     const moment = generateDeterministicNarrative(graph, stage);
     assert.equal(moment.stage, stage);
     assert.ok(moment.text.length > 15, `Stage ${stage} text should not be empty`);
+    assert.ok(typeof moment.thought === "string" && moment.thought.length > 10, `Stage ${stage} thought should be populated`);
     assert.ok(moment.confidence >= 0.40, `Stage ${stage} confidence should be >= 0.4`);
     assert.ok(moment.evidenceUsed.length > 0, `Stage ${stage} should have evidence tags`);
   }

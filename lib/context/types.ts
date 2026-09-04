@@ -118,6 +118,7 @@ export interface SolutionCandidate {
 export interface NarrativeMoment {
   stage: NarrativeStage;
   text: string;
+  thought?: string;
   confidence: number;
   evidenceUsed: string[];
   problemHypothesis?: string;
