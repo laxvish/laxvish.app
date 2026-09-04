@@ -21,26 +21,21 @@ export interface TheMoonProps {
 }
 
 /**
- * The Moon — Metamorphic Scroll-Driven Celestial Surface with Continuous Post-Scroll Axial Rotation.
+ * The Moon — Metamorphic Scroll-Driven Celestial Surface.
  *
  * 1. Rest State (Scroll 0):
  *    - Serene, breathing, 90% opaque monochrome moon with lunar maria, craters, and Tycho rays.
  *
- * 2. Moving Metamorphosis (Scroll 0.12 -> 0.65):
+ * 2. Moving Metamorphosis (Scroll 0.12 -> 0.76 of hold track):
  *    - As the moon moves towards the center, the color palette becomes disorganized & turbulent.
  *    - Color channels (Red/Orange, Green/Cyan, Blue/Violet) scatter, swirl, and refract at differing angular velocities.
  *    - The fluid turbulence displacement creates a dynamic disorganized prismatic vortex.
  *
- * 3. Settled State (Scroll 0.65 -> 0.92):
- *    - Reaches the exact center and aligns seamlessly directly above the Conversational Box.
- *    - The disorganized chromatic storm stabilizes into a luminous, rich iridescent rainbow spectrum.
- *
- * 4. Continuous Axial Rotation (Scroll 100% / progress >= 0.92+):
- *    - Once scroll-driven transformation reaches 100%, the Moon's spherical colored surface begins a
- *      continuous, slow, seamless 360-degree axial rotation around its own center (16s linear loop).
- *    - The external atmospheric aura and 3D directional specular shading remain fixed in space,
- *      creating an authentic, dimensional rotating celestial sphere.
- *    - All surface layers remain strictly hard-clipped to #moon-sphere-clip throughout the entire rotation.
+ * 3. Settled & Continuous Color Circulation (Scroll 100% / progress >= 0.92+):
+ *    - The Moon sphere, craters (Tycho, Copernicus, Plato), maria, and 3D spherical lighting stay COMPLETELY FIXED in place.
+ *    - ONLY the internal chromatic rainbow fluid wave rotates 360 degrees continuously around the center (16s linear loop).
+ *    - The stationary lunar features create the unmistakable perception of colored light swirling inside an unmoving crystal moon.
+ *    - All color layers remain strictly hard-clipped to #moon-sphere-clip.
  */
 export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -62,7 +57,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
     mass: 0.8,
   });
 
-  // Continuous rotation trigger: starts after scroll reaches 100%
+  // Continuous color circulation trigger: starts after transformation reaches 100%
   useMotionValueEvent(smoothProgress, "change", (latest) => {
     if (latest >= 0.92 && !isFullySettled) {
       setIsFullySettled(true);
@@ -153,7 +148,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
     <div ref={containerRef} className="relative w-full">
       <motion.div
         role="img"
-        aria-label="Metamorphic moon emblem: transitions from serene monochrome to luminous disorganized chromatic rainbow spectrum during movement, then aligns gracefully above the solution interface and rotates continuously in place"
+        aria-label="Metamorphic moon emblem: transitions from serene monochrome to luminous disorganized chromatic rainbow spectrum during movement, then aligns gracefully above the solution interface with internal circulating colored light"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         initial={motionEnabled ? { opacity: 0 } : false}
@@ -386,15 +381,13 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                     opacity: 0.9,
                     y: 0,
                     scale: [1, 1.015, 1],
-                    rotate: [-2, 2, -2],
                   }
-                : { opacity: 0.9, y: 0, scale: 1, rotate: 0 }
+                : { opacity: 0.9, y: 0, scale: 1 }
             }
             transition={{
               opacity: { duration: 1.2, delay: 0.2 },
               y: { type: "spring", stiffness: 50, damping: 18, delay: 0.2 },
               scale: { duration: 12, repeat: Infinity, ease: "easeInOut" },
-              rotate: { duration: 24, repeat: Infinity, ease: "easeInOut" },
             }}
             style={{ originX: `${MOON_CX}px`, originY: `${MOON_CY}px` }}
           >
@@ -409,8 +402,22 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
               {/* AUTHORITATIVE CLIPPED MOON BODY: ZERO RAINBOW PIXELS OUTSIDE */}
               <g clipPath="url(#moon-sphere-clip)">
                 
-                {/* ROTATING INTERNAL MOON SURFACE (Continuous 360-degree axial rotation once 100% scroll is reached) */}
+                {/* 1. BASE MONOCHROME SPHERE (Stationary) */}
+                <motion.circle
+                  cx="400"
+                  cy="400"
+                  r="240"
+                  fill="url(#minimal-moon-base)"
+                  style={{ opacity: monoProgress }}
+                />
+
+                {/* 2. ROTATING INTERNAL CHROMATIC RAINBOW FLUID FIELD (Only the color light rotates inside!) */}
                 <motion.g
+                  style={{
+                    opacity: chromaticProgress,
+                    originX: "400px",
+                    originY: "400px",
+                  }}
                   animate={
                     motionEnabled && isFullySettled
                       ? { rotate: 360 }
@@ -421,21 +428,9 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                       ? { duration: 16, ease: "linear", repeat: Infinity }
                       : { duration: 0.6, ease: "easeOut" }
                   }
-                  style={{ originX: "400px", originY: "400px" }}
                 >
-                  {/* LAYER 1: Monochrome Base Moon Body (Fades out on scroll) */}
-                  <motion.circle
-                    cx="400"
-                    cy="400"
-                    r="240"
-                    fill="url(#minimal-moon-base)"
-                    style={{ opacity: monoProgress }}
-                  />
-
-                  {/* LAYER 2: Chromatic Disorganized Swirling Fluid Rainbow Field Base */}
                   <motion.g
                     style={{
-                      opacity: chromaticProgress,
                       originX: "400px",
                       originY: "400px",
                       rotate: coreWaveRotate,
@@ -529,136 +524,113 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                       />
                     </g>
                   </motion.g>
-
-                  {/* LAYER 3: Surface Details & Lunar Maria */}
-                  <path
-                    d="M 160 400 A 240 240 0 0 0 640 400 A 240 160 0 0 1 160 400"
-                    fill="#FFFFFF"
-                    opacity="0.18"
-                  />
-                  <path
-                    d="M 400 160 A 240 240 0 0 0 400 640 A 160 240 0 0 1 400 160"
-                    fill="#000000"
-                    opacity="0.12"
-                  />
-
-                  {/* Surface Shimmer — Maria */}
-                  <motion.g
-                    animate={
-                      motionEnabled ? { opacity: [0.85, 1, 0.85] } : { opacity: 1 }
-                    }
-                    transition={{
-                      duration: 9,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <g fill="#FFFFFF" opacity="0.16">
-                      {/* Mare Imbrium / Procellarum */}
-                      <path d="M 220 250 C 180 300, 200 380, 250 400 C 300 420, 330 350, 320 290 C 310 230, 250 210, 220 250 Z" />
-                      {/* Mare Serenitatis / Tranquillitatis */}
-                      <path d="M 380 230 C 440 210, 500 250, 480 310 C 460 360, 400 360, 370 320 C 340 280, 340 240, 380 230 Z" />
-                      {/* Mare Foecunditatis */}
-                      <path d="M 440 380 C 500 370, 530 420, 500 470 C 470 500, 420 470, 420 420 C 420 395, 430 385, 440 380 Z" />
-                      {/* Mare Crisium */}
-                      <ellipse
-                        cx="530"
-                        cy="270"
-                        rx="26"
-                        ry="18"
-                        transform="rotate(-15 530 270)"
-                      />
-                    </g>
-
-                    {/* Lunar Crater Rings & Markings */}
-                    <g fill="none" opacity="0.28">
-                      {/* Tycho */}
-                      <circle
-                        cx="370"
-                        cy="580"
-                        r="20"
-                        stroke="#FFFFFF"
-                        strokeWidth="1.5"
-                      />
-                      <circle cx="370" cy="580" r="5" fill="#FFFFFF" stroke="none" />
-
-                      {/* Copernicus */}
-                      <circle
-                        cx="270"
-                        cy="370"
-                        r="22"
-                        stroke="#FFFFFF"
-                        strokeWidth="1.5"
-                      />
-                      <circle cx="270" cy="370" r="6" fill="#FFFFFF" stroke="none" />
-
-                      {/* Aristarchus Accent */}
-                      <circle
-                        cx="210"
-                        cy="260"
-                        r="12"
-                        stroke="#FFFFFF"
-                        strokeWidth="2"
-                        opacity="0.8"
-                      />
-
-                      {/* Plato */}
-                      <ellipse
-                        cx="330"
-                        cy="180"
-                        rx="16"
-                        ry="10"
-                        stroke="#FFFFFF"
-                        strokeWidth="1.2"
-                      />
-
-                      {/* Secondary Craters */}
-                      <circle
-                        cx="200"
-                        cy="350"
-                        r="12"
-                        stroke="#1F2937"
-                        strokeWidth="1"
-                      />
-                      <circle
-                        cx="510"
-                        cy="400"
-                        r="15"
-                        stroke="#1F2937"
-                        strokeWidth="1"
-                      />
-                      <circle
-                        cx="430"
-                        cy="530"
-                        r="10"
-                        stroke="#1F2937"
-                        strokeWidth="1"
-                      />
-                    </g>
-                  </motion.g>
-
-                  {/* Tycho Ray Accent Lines */}
-                  <motion.g
-                    stroke="#FFFFFF"
-                    strokeLinecap="round"
-                    opacity={0.25}
-                    animate={
-                      motionEnabled ? { opacity: [0.18, 0.35, 0.18] } : { opacity: 0.25 }
-                    }
-                    transition={{
-                      duration: 6,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <line x1="370" y1="580" x2="220" y2="680" strokeWidth="1" />
-                    <line x1="370" y1="580" x2="160" y2="520" strokeWidth="1" />
-                    <line x1="370" y1="580" x2="260" y2="380" strokeWidth="1" />
-                    <line x1="370" y1="580" x2="500" y2="420" strokeWidth="1" />
-                  </motion.g>
                 </motion.g>
 
-                {/* LAYER 4: Stationary Volumetric Spherical Shading & Top Specular Highlights */}
+                {/* 3. SURFACE TOPOGRAPHY & LUNAR MARIA (Stationary on the Moon — Anchored Landforms) */}
+                <path
+                  d="M 160 400 A 240 240 0 0 0 640 400 A 240 160 0 0 1 160 400"
+                  fill="#FFFFFF"
+                  opacity="0.18"
+                />
+                <path
+                  d="M 400 160 A 240 240 0 0 0 400 640 A 160 240 0 0 1 400 160"
+                  fill="#000000"
+                  opacity="0.12"
+                />
+
+                {/* Surface Shimmer — Stationary Maria Plains */}
+                <g fill="#FFFFFF" opacity="0.16">
+                  {/* Mare Imbrium / Procellarum */}
+                  <path d="M 220 250 C 180 300, 200 380, 250 400 C 300 420, 330 350, 320 290 C 310 230, 250 210, 220 250 Z" />
+                  {/* Mare Serenitatis / Tranquillitatis */}
+                  <path d="M 380 230 C 440 210, 500 250, 480 310 C 460 360, 400 360, 370 320 C 340 280, 340 240, 380 230 Z" />
+                  {/* Mare Foecunditatis */}
+                  <path d="M 440 380 C 500 370, 530 420, 500 470 C 470 500, 420 470, 420 420 C 420 395, 430 385, 440 380 Z" />
+                  {/* Mare Crisium */}
+                  <ellipse
+                    cx="530"
+                    cy="270"
+                    rx="26"
+                    ry="18"
+                    transform="rotate(-15 530 270)"
+                  />
+                </g>
+
+                {/* Lunar Crater Rings & Markings (Stationary Landforms) */}
+                <g fill="none" opacity="0.28">
+                  {/* Tycho */}
+                  <circle
+                    cx="370"
+                    cy="580"
+                    r="20"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.5"
+                  />
+                  <circle cx="370" cy="580" r="5" fill="#FFFFFF" stroke="none" />
+
+                  {/* Copernicus */}
+                  <circle
+                    cx="270"
+                    cy="370"
+                    r="22"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.5"
+                  />
+                  <circle cx="270" cy="370" r="6" fill="#FFFFFF" stroke="none" />
+
+                  {/* Aristarchus Accent */}
+                  <circle
+                    cx="210"
+                    cy="260"
+                    r="12"
+                    stroke="#FFFFFF"
+                    strokeWidth="2"
+                    opacity="0.8"
+                  />
+
+                  {/* Plato */}
+                  <ellipse
+                    cx="330"
+                    cy="180"
+                    rx="16"
+                    ry="10"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.2"
+                  />
+
+                  {/* Secondary Craters */}
+                  <circle
+                    cx="200"
+                    cy="350"
+                    r="12"
+                    stroke="#1F2937"
+                    strokeWidth="1"
+                  />
+                  <circle
+                    cx="510"
+                    cy="400"
+                    r="15"
+                    stroke="#1F2937"
+                    strokeWidth="1"
+                  />
+                  <circle
+                    cx="430"
+                    cy="530"
+                    r="10"
+                    stroke="#1F2937"
+                    strokeWidth="1"
+                  />
+                </g>
+
+                {/* Tycho Ray Accent Lines (Stationary) */}
+                <g stroke="#FFFFFF" strokeLinecap="round" opacity={0.25}>
+                  <line x1="370" y1="580" x2="220" y2="680" strokeWidth="1" />
+                  <line x1="370" y1="580" x2="160" y2="520" strokeWidth="1" />
+                  <line x1="370" y1="580" x2="260" y2="380" strokeWidth="1" />
+                  <line x1="370" y1="580" x2="500" y2="420" strokeWidth="1" />
+                </g>
+
+                {/* 4. STATIONARY VOLUMETRIC SHADING & TOP SPECULAR HIGHLIGHTS */}
                 {/* Volumetric Spherical Shading (Monochrome mode) */}
                 <motion.circle
                   cx="400"
@@ -677,7 +649,7 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                   style={{ opacity: chromaticProgress }}
                 />
 
-                {/* Top Specular & Crescent Rim Highlights */}
+                {/* Top Specular & Crescent Rim Highlights (Stationary Light Source) */}
                 <motion.path
                   d="M 220 200 A 200 200 0 0 1 580 180 A 230 230 0 0 0 220 200"
                   fill="#FFFFFF"
