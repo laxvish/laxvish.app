@@ -168,7 +168,7 @@ export function AIFabric({
       onMouseEnter={() => !isFocus && isInteracting.set(1)}
       onMouseLeave={() => !isFocus && isInteracting.set(0)}
     >
-<div className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: baseOpacity }}>
+<div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden" style={{ opacity: baseOpacity }}>
       {/* Dynamic Cinematic Lighting System */}
       <motion.div 
         className={`absolute inset-0 pointer-events-none z-30 ${theme === "light" ? "mix-blend-multiply" : "mix-blend-screen"}`}
@@ -192,7 +192,7 @@ export function AIFabric({
 
       {/* CAMERA SYSTEM */}
       <motion.div 
-        className="w-full h-full relative flex items-center justify-end transform-gpu pr-[10vw]"
+        className="w-full h-full relative flex items-center justify-end transform-gpu pr-[10vw] overflow-hidden"
         style={{ 
           rotateX: cameraRotateX, 
           rotateY: cameraRotateY, 

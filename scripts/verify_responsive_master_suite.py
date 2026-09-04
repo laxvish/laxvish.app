@@ -156,9 +156,10 @@ async def run_suite():
         page = await context.new_page()
         await page.goto("http://localhost:3060/", wait_until="networkidle")
 
-        # Scroll to hero hold state so ConversationalBox is fully visible and interactive
-        await page.evaluate("window.scrollTo(0, window.innerHeight * 3)")
-        await asyncio.sleep(0.6)
+        # Trigger one scroll gesture and wait for smooth emergence
+        await page.mouse.move(195, 420)
+        await page.mouse.wheel(0, 80)
+        await asyncio.sleep(2.2)
 
         # Test textarea placeholder and typing
         total_tests += 1
@@ -195,7 +196,7 @@ async def run_suite():
         total_tests += 1
         synth_btn = page.locator("button:has-text('Synthesize Architecture')")
         await synth_btn.click()
-        await asyncio.sleep(1.2)
+        await asyncio.sleep(1.8)
         dossier = page.locator("text=SYSTEM ARCHITECTURE DOSSIER")
         workers_col = page.locator("text=01 // WORKERS")
         brain_col = page.locator("text=02 // BRAIN")

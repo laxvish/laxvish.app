@@ -34,7 +34,7 @@ export function PersonalizedIntelligenceSection() {
     <section
       id="intelligence"
       ref={containerRef}
-      className="relative isolate w-full border-b border-charcoal/20 bg-obsidian py-16 sm:py-24 lg:py-28"
+      className="relative isolate w-full border-b border-charcoal/20 bg-obsidian py-16 sm:py-24 lg:py-28 overflow-hidden"
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
         {/* Section Header */}
