@@ -63,6 +63,121 @@ OUTPUT RULE:
 - No conversational prefixes, labels, markdown quotes, or JSON brackets.`;
 
 /**
+ * Strict Server-Side Anti-Leak Sanitizer
+ * Strips all internal thinking, reasoning, analysis tags, and markdown code fences.
+ */
+export function sanitizeModelOutput(raw: string): string {
+  if (!raw) return "";
+  return raw
+    .replace(/<think>[\s\S]*?<\/think>/gi, "")
+    .replace(/<analysis>[\s\S]*?<\/analysis>/gi, "")
+    .replace(/<reasoning>[\s\S]*?<\/reasoning>/gi, "")
+    .replace(/<think>[\s\S]*$/gi, "") // unclosed think tag
+    .replace(/```(?:json)?([\s\S]*?)```/gi, "$1")
+    .trim();
+}
+
+const SOLUTION_SYNTHESIS_SYSTEM_PROMPT = `You are the Laxvish AI Solution Synthesizer.
+
+Laxvish is an AI operating system for Indian enterprises. Your job is to take the visitor's top 5 ranked AI opportunities and ensure their descriptions are crisp, highly relevant, and easy to read.
+
+CORE RULES:
+1. Use simple everyday language at a Class 6 to 8 reading level.
+2. An Indian founder or COO must understand each opportunity in 3 seconds.
+3. Keep sentences short (maximum 15 words per sentence). Maximum 2 sentences per description.
+4. No marketing fluff (never use "transform", "revolutionize", "unlock", "game-changing", or "seamlessly").
+5. Output ONLY a valid JSON object matching this schema:
+{
+  "solutions": [
+    {
+      "id": "solution_id_matching_input",
+      "headline": "Punchy 3-6 word feature headline",
+      "description": "1-2 sentence crisp description of what Laxvish builds for this organization.",
+      "rationale": "Short customer-facing sentence on why this is valuable (e.g. Based on your industry focus and regional ecosystem)."
+    }
+  ]
+}
+6. NEVER include <think>, reasoning, or system traces in the JSON values.`;
+
+/**
+ * Refines the 5 predicted solutions with the LLM when available,
+ * falling back gracefully to the deterministic solution definitions.
+ */
+export async function refinePredictedSolutionsWithLLM(
+  graph: LaxvishContextGraph,
+  baseSolutions: import("./types.ts").PredictedSolutionOpportunity[]
+): Promise<import("./types.ts").PredictedSolutionOpportunity[]> {
+  const client = getPoolsideClient();
+  if (!client || baseSolutions.length === 0) {
+    return baseSolutions;
+  }
+
+  const promptPayload = {
+    city: graph.environment.city,
+    environmentCategories: graph.environment.categories,
+    device: graph.technical.deviceClass,
+    topics: graph.behavior.topicsOfInterest,
+    directQuery: graph.direct.promptQueries.join(" "),
+    solutions: baseSolutions.map((s) => ({
+      id: s.id,
+      title: s.title,
+      category: s.category,
+      currentHeadline: s.headline,
+      currentDescription: s.description,
+    })),
+  };
+
+  try {
+    const completion = await client.chat.completions.create({
+      model: POOLSIDE_MODEL,
+      messages: [
+        { role: "system", content: SOLUTION_SYNTHESIS_SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: `Refine these 5 predicted AI opportunities: ${JSON.stringify(promptPayload)}`,
+        },
+      ],
+      temperature: 0.2,
+      max_tokens: 800,
+    });
+
+    const rawContent = completion.choices?.[0]?.message?.content || "";
+    const cleanJson = sanitizeModelOutput(rawContent);
+    const parsed = JSON.parse(cleanJson);
+
+    if (parsed && Array.isArray(parsed.solutions) && parsed.solutions.length > 0) {
+      const refinedMap = new Map<string, { headline?: string; description?: string; rationale?: string }>();
+      for (const item of parsed.solutions) {
+        if (item.id) {
+          refinedMap.set(item.id, {
+            headline: sanitizeModelOutput(item.headline || ""),
+            description: sanitizeModelOutput(item.description || ""),
+            rationale: sanitizeModelOutput(item.rationale || ""),
+          });
+        }
+      }
+
+      return baseSolutions.map((base) => {
+        const match = refinedMap.get(base.id);
+        if (match && match.description && match.description.length >= 15) {
+          return {
+            ...base,
+            headline: match.headline || base.headline,
+            description: match.description,
+            rationale: match.rationale || base.rationale,
+          };
+        }
+        return base;
+      });
+    }
+  } catch {
+    // If LLM fails, times out, or returns invalid JSON, return deterministic baseSolutions
+  }
+
+  return baseSolutions;
+}
+
+/**
  * Extracts reasoning thinking block and clean editorial text from raw model output.
  */
 export function extractThoughtAndNarrative(rawText: string): { thought: string; text: string } {

@@ -14,7 +14,9 @@ import {
   LaxvishEvent,
   NarrativeMoment,
   NarrativeStage,
+  PredictedSolutionOpportunity,
 } from "./types.ts";
+import { scoreAndRankPredictedSolutions } from "@/lib/context/ontology";
 
 interface LaxvishContextValue {
   contextGraph: LaxvishContextGraph;
@@ -25,63 +27,78 @@ interface LaxvishContextValue {
   isLocationCalibrating: boolean;
   requestPreciseLocation: () => void;
   streamingToken: string;
+  predictedSolutions: PredictedSolutionOpportunity[];
+  activeSolutionIndex: number;
+  setActiveSolutionIndex: (index: number) => void;
+  isPredicting: boolean;
+  refreshPredictedSolutions: (directQuery?: string) => Promise<void>;
 }
+
+const INITIAL_ENVIRONMENT = {
+  locationSource: "none" as const,
+  locationConfidence: 0.35,
+  confidenceTier: "L1" as const,
+  city: "India Region",
+  country: "IN",
+  categories: {
+    healthcare: 0.25,
+    education: 0.30,
+    business: 0.75,
+    finance: 0.40,
+    government: 0.20,
+    retail: 0.35,
+    transport: 0.30,
+    hospitality: 0.25,
+    industrial: 0.45,
+    residential: 0.50,
+    cultural: 0.20,
+  },
+  nearestRepresentative: [],
+};
+
+const INITIAL_BEHAVIOR = {
+  sections: {},
+  topicsOfInterest: {},
+  attentionScore: 0.5,
+  readingDepthScore: 0.2,
+  backtrackingRatio: 0.0,
+  ctasClicked: [],
+  searchQueries: [],
+};
+
+const INITIAL_DIRECT = {
+  promptQueries: [],
+};
+
+const INITIAL_TEMPORAL = {
+  clientTimestamp: Date.now(),
+  serverTimestamp: Date.now(),
+  timezone: "Asia/Kolkata",
+  localHour: 12,
+  localDayOfWeek: "Friday",
+  isWeekend: false,
+  sessionDurationSec: 0,
+};
+
+const INITIAL_TECHNICAL = {
+  platform: "Android" as const,
+  deviceClass: "mobile" as const,
+  browser: "Chrome" as const,
+  viewport: { width: 412, height: 915, pixelRatio: 2.6 },
+  touchSupported: true,
+  prefersReducedMotion: false,
+  colorScheme: "light" as const,
+};
 
 const DEFAULT_GRAPH: LaxvishContextGraph = {
   sessionId: "",
   anonymousVisitorId: "",
   isReturning: false,
-  technical: {
-    platform: "Android",
-    deviceClass: "mobile",
-    browser: "Chrome",
-    viewport: { width: 412, height: 915, pixelRatio: 2.6 },
-    touchSupported: true,
-    prefersReducedMotion: false,
-    colorScheme: "light",
-  },
-  temporal: {
-    clientTimestamp: Date.now(),
-    serverTimestamp: Date.now(),
-    timezone: "Asia/Kolkata",
-    localHour: 12,
-    localDayOfWeek: "Friday",
-    isWeekend: false,
-    sessionDurationSec: 0,
-  },
-  environment: {
-    locationSource: "none",
-    locationConfidence: 0.35,
-    confidenceTier: "L1",
-    city: "India Region",
-    country: "IN",
-    categories: {
-      healthcare: 0.25,
-      education: 0.30,
-      business: 0.75,
-      finance: 0.40,
-      government: 0.20,
-      retail: 0.35,
-      transport: 0.30,
-      hospitality: 0.25,
-      industrial: 0.45,
-      residential: 0.50,
-      cultural: 0.20,
-    },
-    nearestRepresentative: [],
-  },
-  behavior: {
-    sections: {},
-    topicsOfInterest: {},
-    attentionScore: 0.5,
-    readingDepthScore: 0.2,
-    backtrackingRatio: 0.0,
-    ctasClicked: [],
-    searchQueries: [],
-  },
-  direct: {
-    promptQueries: [],
-  },
+  technical: INITIAL_TECHNICAL,
+  temporal: INITIAL_TEMPORAL,
+  environment: INITIAL_ENVIRONMENT,
+  behavior: INITIAL_BEHAVIOR,
+  direct: INITIAL_DIRECT,
   hypotheses: [
     {
       id: "hyp_init",
@@ -92,6 +109,13 @@ const DEFAULT_GRAPH: LaxvishContextGraph = {
       status: "hypothesis",
     },
   ],
+  predictedSolutions: scoreAndRankPredictedSolutions(
+    INITIAL_ENVIRONMENT,
+    INITIAL_BEHAVIOR,
+    INITIAL_DIRECT,
+    INITIAL_TEMPORAL,
+    INITIAL_TECHNICAL
+  ),
   narratives: {},
   activeStage: "arrival",
 };
@@ -104,6 +128,8 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [streamingToken, setStreamingToken] = useState<string>("");
   const [isLocationCalibrating, setIsLocationCalibrating] = useState<boolean>(false);
+  const [activeSolutionIndex, setActiveSolutionIndex] = useState<number>(0);
+  const [isPredicting, setIsPredicting] = useState<boolean>(false);
 
   const eventBufferRef = useRef<LaxvishEvent[]>([]);
   const activeStageRef = useRef<NarrativeStage>(activeStage);
@@ -156,6 +182,7 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
                     ...prev,
                     environment: data.data.environment,
                     hypotheses: data.data.activeHypothesis ? [data.data.activeHypothesis, ...prev.hypotheses.slice(1)] : prev.hypotheses,
+                    predictedSolutions: data.data.solutions || data.data.predictedSolutions || prev.predictedSolutions,
                   }));
                 }
               } catch (err) {
@@ -194,12 +221,11 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // 2. Stream Narrative Stage from Server SSE
+  // 2. Stream Narrative Stage from Server SSE (Legacy compatibility)
   const streamNarrativeStage = useCallback(
     async (stage: NarrativeStage) => {
       if (!sessionIdRef.current || isStreamingRef.current) return;
 
-      // If already generated and cached, switch directly
       if (narrativesRef.current[stage]?.text) {
         setActiveStage(stage);
         return;
@@ -296,7 +322,6 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        // Final text must land exactly once at stream end
         flushToState();
 
         const newMoment: NarrativeMoment = {
@@ -327,7 +352,34 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  // 3. Initial Session Boot & Silent Geolocation on mount
+  // 3. Refresh Predicted Solutions
+  const refreshPredictedSolutions = useCallback(async (directQuery?: string) => {
+    if (!sessionIdRef.current) return;
+    try {
+      setIsPredicting(true);
+      const res = await fetch("/api/context/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: sessionIdRef.current,
+          directQuery,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && Array.isArray(data.data?.solutions) && data.data.solutions.length > 0) {
+        setContextGraph((prev) => ({
+          ...prev,
+          predictedSolutions: data.data.solutions,
+        }));
+      }
+    } catch (err) {
+      console.error("[Refresh Predicted Solutions Error]", err);
+    } finally {
+      setIsPredicting(false);
+    }
+  }, []);
+
+  // 4. Initial Session Boot & Silent Geolocation on mount
   useEffect(() => {
     let isMounted = true;
 
@@ -379,10 +431,10 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
             environment: json.data.environment || prev.environment,
             hypotheses: json.data.hypotheses || prev.hypotheses,
             topSolution: json.data.topSolution || prev.topSolution,
+            predictedSolutions: json.data.solutions || json.data.predictedSolutions || prev.predictedSolutions,
             narratives: json.data.narratives || prev.narratives,
           }));
 
-          // Trigger silent background location calibration immediately upon opening website
           requestPreciseLocation();
         }
       } catch (err) {
@@ -397,7 +449,7 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
     };
   }, [requestPreciseLocation]);
 
-  // 4. Batched Event Dispatch Loop (Every 2.5s)
+  // 5. Batched Event Dispatch Loop (Every 2.5s)
   useEffect(() => {
     const interval = setInterval(async () => {
       if (!sessionIdRef.current || eventBufferRef.current.length === 0) return;
@@ -406,7 +458,7 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
       eventBufferRef.current = [];
 
       try {
-        await fetch("/api/context/events", {
+        const res = await fetch("/api/context/events", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -419,6 +471,13 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
             },
           }),
         });
+        const data = await res.json();
+        if (data.ok && (data.data?.solutions || data.data?.predictedSolutions)) {
+          setContextGraph((prev) => ({
+            ...prev,
+            predictedSolutions: data.data.solutions || data.data.predictedSolutions,
+          }));
+        }
       } catch (err) {
         console.error("[Events Batch Error]", err);
       }
@@ -426,6 +485,8 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
 
     return () => clearInterval(interval);
   }, []);
+
+  const predictedSolutions = contextGraph.predictedSolutions || [];
 
   return (
     <LaxvishContext.Provider
@@ -438,6 +499,11 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
         isLocationCalibrating,
         requestPreciseLocation,
         streamingToken,
+        predictedSolutions,
+        activeSolutionIndex,
+        setActiveSolutionIndex,
+        isPredicting,
+        refreshPredictedSolutions,
       }}
     >
       {children}

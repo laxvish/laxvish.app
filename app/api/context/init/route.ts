@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractEdgeLocation } from "@/lib/context/environment";
-import { scoreProblemHypotheses } from "@/lib/context/ontology";
+import { scoreAndRankPredictedSolutions, scoreProblemHypotheses } from "@/lib/context/ontology";
 import { generateDeterministicNarrative } from "@/lib/context/poolside";
 import { getSessionFromMemory, persistContextSession } from "@/lib/context/session-store";
 import { getRateLimitStore, getRequesterKey } from "@/lib/rate-limit";
@@ -111,6 +111,14 @@ export async function POST(request: NextRequest) {
       technical
     );
 
+    const predictedSolutions = scoreAndRankPredictedSolutions(
+      environment,
+      behavior,
+      direct,
+      temporal,
+      technical
+    );
+
     const initialGraph: LaxvishContextGraph = {
       sessionId: clientSessionId,
       anonymousVisitorId,
@@ -122,6 +130,7 @@ export async function POST(request: NextRequest) {
       direct,
       hypotheses,
       topSolution,
+      predictedSolutions,
       narratives: {},
       activeStage: "arrival",
     };
@@ -145,6 +154,8 @@ export async function POST(request: NextRequest) {
         environment: initialGraph.environment,
         hypotheses: initialGraph.hypotheses,
         topSolution: initialGraph.topSolution,
+        solutions: initialGraph.predictedSolutions,
+        predictedSolutions: initialGraph.predictedSolutions,
         narratives: initialGraph.narratives,
       },
     });

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildGpsEnvironmentModel } from "@/lib/context/environment";
-import { scoreProblemHypotheses } from "@/lib/context/ontology";
+import { scoreAndRankPredictedSolutions, scoreProblemHypotheses } from "@/lib/context/ontology";
 import { getSessionFromMemory, persistContextSession } from "@/lib/context/session-store";
 import { getRateLimitStore, getRequesterKey } from "@/lib/rate-limit";
 
@@ -68,8 +68,17 @@ export async function POST(request: NextRequest) {
         graph.technical
       );
 
+      const predictedSolutions = scoreAndRankPredictedSolutions(
+        graph.environment,
+        graph.behavior,
+        graph.direct,
+        graph.temporal,
+        graph.technical
+      );
+
       graph.hypotheses = hypotheses;
       graph.topSolution = topSolution;
+      graph.predictedSolutions = predictedSolutions;
 
       const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
       await persistContextSession(graph, clientIp, { immediate: true });
@@ -82,6 +91,8 @@ export async function POST(request: NextRequest) {
           confidenceTier: graph.environment.confidenceTier,
           environment: graph.environment,
           activeHypothesis: graph.hypotheses[0],
+          solutions: graph.predictedSolutions,
+          predictedSolutions: graph.predictedSolutions,
         },
       });
     }

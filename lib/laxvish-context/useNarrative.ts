@@ -11,9 +11,15 @@ export function useNarrative() {
     isStreaming,
     streamingToken,
     isLocationCalibrating,
+    predictedSolutions,
+    activeSolutionIndex,
+    setActiveSolutionIndex,
+    isPredicting,
+    refreshPredictedSolutions,
   } = useLaxvishContext();
 
   const currentNarrative = contextGraph.narratives[activeStage];
+  const currentSolution = predictedSolutions[activeSolutionIndex] || predictedSolutions[0];
 
   return {
     activeStage,
@@ -27,5 +33,11 @@ export function useNarrative() {
     isStreaming,
     streamingToken,
     isLocationCalibrating,
+    predictedSolutions,
+    currentSolution,
+    activeSolutionIndex,
+    setActiveSolutionIndex,
+    isPredicting,
+    refreshPredictedSolutions,
   };
 }

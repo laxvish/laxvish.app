@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { scoreProblemHypotheses } from "@/lib/context/ontology";
+import { scoreAndRankPredictedSolutions, scoreProblemHypotheses } from "@/lib/context/ontology";
 import { getSessionFromMemory, persistContextSession, persistEvents } from "@/lib/context/session-store";
 import { getRateLimitStore, getRequesterKey } from "@/lib/rate-limit";
 import { LaxvishEvent } from "@/lib/context/types";
@@ -73,8 +73,16 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Recalculate hypotheses
+      // Recalculate hypotheses and predicted solution opportunities
       const { hypotheses, topSolution } = scoreProblemHypotheses(
+        graph.environment,
+        graph.behavior,
+        graph.direct,
+        graph.temporal,
+        graph.technical
+      );
+
+      const predictedSolutions = scoreAndRankPredictedSolutions(
         graph.environment,
         graph.behavior,
         graph.direct,
@@ -84,6 +92,7 @@ export async function POST(request: NextRequest) {
 
       graph.hypotheses = hypotheses;
       graph.topSolution = topSolution;
+      graph.predictedSolutions = predictedSolutions;
 
       const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
       await persistContextSession(graph, clientIp);
@@ -96,6 +105,8 @@ export async function POST(request: NextRequest) {
           updatedTopicScores: graph.behavior.topicsOfInterest,
           activeHypothesis: graph.hypotheses[0],
           topSolution: graph.topSolution,
+          solutions: graph.predictedSolutions,
+          predictedSolutions: graph.predictedSolutions,
         },
       });
     }

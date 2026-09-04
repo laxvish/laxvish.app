@@ -1,327 +1,317 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLaxvishContext } from "@/lib/laxvish-context/client";
-import { NarrativeStage } from "@/lib/context/types";
+import type { PredictedSolutionOpportunity } from "@/lib/context/types";
 
-const ROTATION_STAGES: NarrativeStage[] = [
-  "arrival",
-  "environment",
-  "opportunity",
-  "interaction",
-  "synthesis",
-];
-
-const TRANSITION_MS = 550;
-const PARTIAL_FLUSH_MS = 150;
-const TYPEWRITER_TICK_MS = 28;
-const HOLD_DURATION_MS = 3000;
-
-function parseThoughtAndNarrative(raw: string): { thought: string; text: string } {
-  if (!raw) return { thought: "", text: "" };
-
-  const thinkMatch = raw.match(/<think>([\s\S]*?)<\/think>/i);
-  if (thinkMatch) {
-    const thought = thinkMatch[1].trim();
-    const text = raw.replace(/<think>[\s\S]*?<\/think>/i, "").trim();
-    return { thought, text };
-  }
-
-  const openThinkMatch = raw.match(/<think>([\s\S]*)$/i);
-  if (openThinkMatch) {
-    return { thought: openThinkMatch[1].trim(), text: "" };
-  }
-
-  return { thought: "", text: raw.trim() };
-}
+const ROTATION_INTERVAL_MS = 6000;
+const TRANSITION_DURATION = 0.45;
 
 export function PersonalizedIntelligenceSection() {
-  const { contextGraph } = useLaxvishContext();
-  const sessionId = contextGraph.sessionId;
+  const {
+    predictedSolutions,
+    activeSolutionIndex,
+    setActiveSolutionIndex,
+    contextGraph,
+  } = useLaxvishContext();
 
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [liveTexts, setLiveTexts] = useState<Partial<Record<NarrativeStage, string>>>({});
-  const [liveThoughts, setLiveThoughts] = useState<Partial<Record<NarrativeStage, string>>>({});
-  const [showInspector, setShowInspector] = useState<boolean>(false);
-  const [displayedLength, setDisplayedLength] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [showRationale, setShowRationale] = useState<boolean>(false);
 
   const prefersReducedMotion = Boolean(
-    contextGraph.technical?.prefersReducedMotion ||
+    contextGraph?.technical?.prefersReducedMotion ||
       (typeof window !== "undefined" &&
         window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches)
   );
 
-  const firedForSession = useRef<string>("");
-  const abortRef = useRef<AbortController[]>([]);
-
-  // Abort in-flight streams on unmount and re-arm the fire guard so a
-  // StrictMode remount can refetch instead of skipping an aborted prefetch.
-  useEffect(() => {
-    return () => {
-      abortRef.current.forEach((controller) => controller.abort());
-      abortRef.current = [];
-      firedForSession.current = "";
-    };
-  }, []);
-
-  // Fetch all five narratives in parallel once the session exists.
-  // The stages are independent server-side, so wall-clock time is the slowest
-  // single stream rather than the sum of five serial streams. The displayed
-  // stage streams visibly; the other four warm silently in the background.
-  useEffect(() => {
-    if (!sessionId || firedForSession.current === sessionId) return;
-    firedForSession.current = sessionId;
-
-    const controllers = ROTATION_STAGES.map(() => new AbortController());
-    abortRef.current = controllers;
-
-    ROTATION_STAGES.forEach((stage, index) => {
-      const controller = controllers[index];
-
-      void (async () => {
-        let buffered = "";
-        let finalCleanText: string | null = null;
-        let finalThought: string | null = null;
-        let lastFlush = 0;
-
-        const flush = () => {
-          const now = Date.now();
-          if (now - lastFlush >= PARTIAL_FLUSH_MS) {
-            lastFlush = now;
-            const parsed = parseThoughtAndNarrative(buffered);
-            if (parsed.text) {
-              setLiveTexts((prev) => ({ ...prev, [stage]: parsed.text }));
-            }
-            if (parsed.thought) {
-              setLiveThoughts((prev) => ({ ...prev, [stage]: parsed.thought }));
-            }
-          }
-        };
-
-        try {
-          const response = await fetch("/api/narrative/stream", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId, stage }),
-            signal: controller.signal,
-          });
-          if (!response.ok || !response.body) return;
-
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let carry = "";
-
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            carry += decoder.decode(value, { stream: true });
-            const lines = carry.split("\n");
-            carry = lines.pop() ?? "";
-
-            for (const line of lines) {
-              if (!line.startsWith("data: ")) continue;
-              try {
-                const parsed = JSON.parse(line.slice(6));
-                if (parsed.token) {
-                  buffered += parsed.token;
-                  flush();
-                }
-                if (parsed.text) {
-                  finalCleanText = parsed.text;
-                }
-                if (parsed.thought) {
-                  finalThought = parsed.thought;
-                }
-                if (parsed.fullText && !finalCleanText) {
-                  const extracted = parseThoughtAndNarrative(parsed.fullText);
-                  finalCleanText = extracted.text || parsed.fullText;
-                  if (extracted.thought) finalThought = extracted.thought;
-                }
-              } catch {
-                // Ignore a JSON object split across network chunks.
-              }
-            }
-          }
-
-          const resolved = parseThoughtAndNarrative(buffered);
-          const text = finalCleanText ?? resolved.text;
-          const thought = finalThought ?? resolved.thought;
-
-          if (text) {
-            setLiveTexts((prev) => ({ ...prev, [stage]: text }));
-          }
-          if (thought) {
-            setLiveThoughts((prev) => ({ ...prev, [stage]: thought }));
-          }
-        } catch {
-          // Aborted or failed: keep any partial text that already landed.
-        }
-      })();
-    });
-  }, [sessionId]);
-
-  const currentStage = ROTATION_STAGES[activeIndex];
-
-  const currentText = useMemo(() => {
-    const live = liveTexts[currentStage];
-    if (live) return live;
-
-    const fromGraph = contextGraph.narratives[currentStage]?.text;
-    if (fromGraph) {
-      return parseThoughtAndNarrative(fromGraph).text || fromGraph;
+  const solutions: PredictedSolutionOpportunity[] = useMemo(() => {
+    if (Array.isArray(predictedSolutions) && predictedSolutions.length >= 5) {
+      return predictedSolutions.slice(0, 5);
     }
-    return "Connecting to enterprise intelligence context...";
-  }, [liveTexts, contextGraph.narratives, currentStage]);
+    return [
+      {
+        id: "ai_operations_automation",
+        rank: 1,
+        title: "AI for Operations",
+        category: "operations",
+        headline: "Autonomous Cross-System Enterprise Workflows",
+        description: "We can turn repetitive business processes into autonomous AI workflows that operate safely across your existing software systems.",
+        rationale: "Designed for multi-department enterprises with legacy databases and modern cloud ERPs.",
+        targetIndustries: ["Manufacturing", "IT Services", "Logistics"],
+        targetRoles: ["COO", "VP Operations"],
+        problemDomains: ["Cross-Tool Data Sync", "Manual Status Updates"],
+        laxvishCapabilities: ["Workers", "Brain", "Brakes"],
+        ctaText: "Explore Operations AI",
+        ctaHref: "/workers",
+        confidence: 0.92,
+      },
+      {
+        id: "ai_sales_telephony_agent",
+        rank: 2,
+        title: "AI for Sales",
+        category: "sales",
+        headline: "Autonomous Voice Qualification & Inbound Triage",
+        description: "We can build AI agents that qualify leads, handle customer conversations in natural Indian languages, and keep your sales pipeline moving.",
+        rationale: "Optimized for fast-moving sales teams and high-volume inbound pipelines.",
+        targetIndustries: ["B2B SaaS", "Real Estate", "Insurance"],
+        targetRoles: ["VP Sales", "Chief Commercial Officer"],
+        problemDomains: ["Lead Response Time", "Inbound Call Qualification"],
+        laxvishCapabilities: ["Telephony", "Workers", "Brain"],
+        ctaText: "Explore Sales AI",
+        ctaHref: "/callme",
+        confidence: 0.88,
+      },
+      {
+        id: "ai_document_intelligence",
+        rank: 3,
+        title: "AI for Documents",
+        category: "document",
+        headline: "Deterministic Extraction for Invoices, Contracts & Records",
+        description: "We can extract, validate, and verify unstructured enterprise documents with zero hallucination risk and cryptographic audit trails.",
+        rationale: "Built for paperwork-heavy compliance, legal, and operational environments.",
+        targetIndustries: ["Banking", "Insurance", "Logistics"],
+        targetRoles: ["Head of Shared Services", "Compliance Lead"],
+        problemDomains: ["Manual Data Entry", "KYC Verification"],
+        laxvishCapabilities: ["Brain", "Brakes"],
+        ctaText: "Explore Document AI",
+        ctaHref: "/brain",
+        confidence: 0.84,
+      },
+      {
+        id: "ai_finance_platform",
+        rank: 4,
+        title: "AI for Finance",
+        category: "finance",
+        headline: "Autonomous Invoicing, Reconciliation & Cash Flow Intelligence",
+        description: "We can help you scale your finance operations with AI — from repetitive reconciliations to instant decision-support.",
+        rationale: "Tailored for high-volume enterprise financial operations and commercial corridors.",
+        targetIndustries: ["Banking", "Fintech", "Corporate"],
+        targetRoles: ["CFO", "Finance Controller"],
+        problemDomains: ["Invoice Reconciliation", "Ledger Auditing"],
+        laxvishCapabilities: ["Workers", "Brain", "Brakes"],
+        ctaText: "Explore Finance AI",
+        ctaHref: "/workers",
+        confidence: 0.80,
+      },
+      {
+        id: "ai_enterprise_brain",
+        rank: 5,
+        title: "AI for Enterprise Knowledge",
+        category: "knowledge",
+        headline: "Unified Semantic Memory & Internal AI Copilots",
+        description: "We can connect your company's distributed documents, communications, and databases into a single searchable thinking backbone.",
+        rationale: "Created for organizations seeking to eliminate internal knowledge silos.",
+        targetIndustries: ["Enterprises", "Consulting", "Engineering"],
+        targetRoles: ["CTO", "CIO"],
+        problemDomains: ["Internal Silos", "Information Retrieval Delays"],
+        laxvishCapabilities: ["Brain", "Workers"],
+        ctaText: "Explore Enterprise Brain",
+        ctaHref: "/brain",
+        confidence: 0.76,
+      },
+    ];
+  }, [predictedSolutions]);
 
-  // Reset typewriter on stage switch, or set full text when reduced motion is preferred.
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      setDisplayedLength(currentText.length);
-    } else {
-      setDisplayedLength(0);
-    }
-  }, [activeIndex, prefersReducedMotion]);
+  const activeIndex = Math.min(Math.max(0, activeSolutionIndex), solutions.length - 1);
+  const currentSolution = solutions[activeIndex] || solutions[0];
 
-  // Incremental typewriter reveal toward currentText length at calm readable cadence
+  // Auto-advance loop when not paused and not reduced-motion
   useEffect(() => {
-    if (prefersReducedMotion) {
-      setDisplayedLength(currentText.length);
+    if (isPaused || prefersReducedMotion || solutions.length <= 1) {
       return;
     }
 
-    if (displayedLength >= currentText.length) {
-      return;
-    }
+    const timer = setInterval(() => {
+      setActiveSolutionIndex((activeIndex + 1) % solutions.length);
+    }, ROTATION_INTERVAL_MS);
 
-    const timer = setTimeout(() => {
-      setDisplayedLength((prev) => {
-        if (prev >= currentText.length) {
-          return prev;
-        }
-        const remaining = currentText.length - prev;
-        const step = remaining > 160 ? 2 : 1;
-        return Math.min(prev + step, currentText.length);
-      });
-    }, TYPEWRITER_TICK_MS);
-
-    return () => clearTimeout(timer);
-  }, [currentText.length, displayedLength, prefersReducedMotion]);
-
-  // Completion-driven stage advance: hold completed text on screen before advancing
-  useEffect(() => {
-    // Stage NEVER advances while displayedLength < currentText.length
-    if (displayedLength < currentText.length || currentText.length === 0) {
-      return;
-    }
-
-    const holdTimer = setTimeout(() => {
-      setActiveIndex((prev) => (prev + 1) % ROTATION_STAGES.length);
-    }, HOLD_DURATION_MS);
-
-    return () => clearTimeout(holdTimer);
-  }, [activeIndex, currentText.length, displayedLength]);
-
-  const displayedText = prefersReducedMotion
-    ? currentText
-    : currentText.slice(0, displayedLength);
-
-  const isTyping = !prefersReducedMotion && displayedLength < currentText.length;
-
-  const currentThought = useMemo(() => {
-    return (
-      liveThoughts[currentStage] ||
-      contextGraph.narratives[currentStage]?.thought ||
-      ""
-    );
-  }, [liveThoughts, contextGraph.narratives, currentStage]);
-
-  const evidenceUsed = useMemo(() => {
-    return contextGraph.narratives[currentStage]?.evidenceUsed || [];
-  }, [contextGraph.narratives, currentStage]);
+    return () => clearInterval(timer);
+  }, [activeIndex, isPaused, prefersReducedMotion, setActiveSolutionIndex, solutions.length]);
 
   return (
     <section
       id="intelligence"
-      className="w-full bg-obsidian border-b border-charcoal/20 py-20 sm:py-32 lg:py-40"
+      aria-label="Personalized AI Opportunities"
+      className="w-full bg-obsidian border-b border-charcoal/20 py-16 sm:py-24 lg:py-32"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
-        <div className="border border-charcoal/20 bg-obsidian min-h-[60vh] sm:min-h-[72vh] p-8 sm:p-16 lg:p-24 flex flex-col justify-between">
-          {/* Top metadata & Discrete Thinking Inspector Toggle */}
-          <div className="flex items-center justify-between w-full pb-8 border-b border-charcoal/10 relative z-10">
+        <div className="border border-charcoal/20 bg-obsidian p-6 sm:p-12 lg:p-16 flex flex-col justify-between min-h-[560px]">
+          {/* Top Bar: Section Title + Interactive 5 Opportunity Selectors */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-charcoal/10">
             <div className="flex items-center gap-3">
-              <span className="inline-block w-1.5 h-1.5 bg-charcoal" />
-              <span className="text-[11px] font-mono tracking-[0.2em] text-neonCyan uppercase">
-                {`MOMENT 0${activeIndex + 1} / 0${ROTATION_STAGES.length}`}
+              <span className="inline-block w-2 h-2 bg-charcoal" />
+              <span className="text-xs font-mono tracking-[0.2em] text-neonCyan uppercase">
+                WHAT LAXVISH CAN BUILD FOR YOU // 0{activeIndex + 1} OF 0{solutions.length}
               </span>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowInspector((prev) => !prev)}
-              aria-expanded={showInspector}
-              className="text-[11px] font-mono tracking-[0.15em] text-neonCyan hover:text-charcoal border border-charcoal/20 px-2.5 py-1 bg-obsidian hover:bg-vaultAmber transition-colors uppercase cursor-pointer select-none touch-manipulation"
-            >
-              {`[ SYS_THINK // ${showInspector ? "HIDE" : "INSPECT"} ]`}
-            </button>
+
+            {/* 5 Solution Navigation Pills */}
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2" role="tablist" aria-label="Predicted AI Solutions">
+              {solutions.map((sol, index) => {
+                const isCurrent = index === activeIndex;
+                const shortLabel = sol.title.replace(/^AI for\s+/i, "");
+                return (
+                  <button
+                    key={sol.id || index}
+                    role="tab"
+                    aria-selected={isCurrent}
+                    type="button"
+                    onClick={() => {
+                      setActiveSolutionIndex(index);
+                      setIsPaused(true);
+                    }}
+                    className={`px-3 py-1 text-[11px] font-mono tracking-[0.1em] uppercase transition-all border cursor-pointer ${
+                      isCurrent
+                        ? "bg-charcoal text-obsidian border-charcoal font-semibold shadow-sm"
+                        : "bg-obsidian text-neonCyan border-charcoal/20 hover:border-charcoal/50 hover:text-charcoal hover:bg-vaultAmber"
+                    }`}
+                  >
+                    0{index + 1} {shortLabel}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Main Editorial Paragraph (Thinking is hidden here) */}
-          <div className="max-w-3xl w-full my-auto py-8">
+          {/* Center Display: Active Solution Details */}
+          <div className="py-8 sm:py-12 my-auto max-w-4xl">
             <AnimatePresence mode="wait">
-              <motion.p
-                key={currentStage}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: TRANSITION_MS / 1000, ease: [0.4, 0, 0.2, 1] }}
-                className="text-[clamp(1.25rem,2.4vw,1.875rem)] font-normal leading-[1.5] tracking-[-0.01em] text-charcoal font-space-grotesk"
-              >
-                {displayedText}
-                {isTyping && (
-                  <span
-                    aria-hidden="true"
-                    className="inline-block w-[2px] h-[0.9em] bg-charcoal ml-1.5 align-baseline animate-pulse"
-                  />
-                )}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-
-          {/* Optional Collapsible Thinking Inspector Panel */}
-          <AnimatePresence>
-            {showInspector && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                className="overflow-hidden border-t border-charcoal/20 pt-6 mt-4"
+                key={currentSolution.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: prefersReducedMotion ? 0 : TRANSITION_DURATION, ease: [0.4, 0, 0.2, 1] }}
+                className="space-y-4 sm:space-y-6"
               >
-                <div className="bg-vaultAmber/40 border border-charcoal/15 p-5 sm:p-6 font-mono">
-                  <div className="flex items-center justify-between text-[10px] tracking-[0.18em] text-neonCyan uppercase pb-3 border-b border-charcoal/10 mb-3">
-                    <span>REASONING TRACE</span>
-                    <span>CONFIDENCE: {(contextGraph.narratives[currentStage]?.confidence ?? 0.85) * 100}%</span>
-                  </div>
-                  <p className="text-xs sm:text-[13px] text-charcoal/90 leading-relaxed font-mono whitespace-pre-wrap">
-                    {currentThought || "Synthesizing real-time telemetry and environmental observations..."}
-                  </p>
-                  {evidenceUsed.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-charcoal/10">
-                      {evidenceUsed.map((ev) => (
-                        <span
-                          key={ev}
-                          className="text-[10px] tracking-wider text-neonCyan border border-charcoal/15 px-2 py-0.5 uppercase"
-                        >
-                          {ev}
-                        </span>
-                      ))}
+                {/* Category & Headline */}
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono uppercase tracking-[0.18em] text-neonCyan">
+                    // PREDICTED SOLUTION
+                  </span>
+                  <span className="text-xs font-mono text-neonCyan/60">·</span>
+                  <span className="text-xs font-mono uppercase tracking-wider text-charcoal/80">
+                    {currentSolution.headline}
+                  </span>
+                </div>
+
+                {/* Primary Display Title */}
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal tracking-[-0.02em] text-charcoal font-space-grotesk">
+                  {currentSolution.title}
+                </h2>
+
+                {/* Main Editorial Copy */}
+                <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-relaxed text-charcoal/90 font-space-grotesk max-w-3xl">
+                  {currentSolution.description}
+                </p>
+
+                {/* Actions and Capabilities */}
+                <div className="pt-4 flex flex-wrap items-center gap-4">
+                  <Link
+                    href={currentSolution.ctaHref || "/workers"}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-obsidian text-xs font-mono uppercase tracking-[0.15em] hover:bg-neonCyan transition-colors"
+                  >
+                    <span>{currentSolution.ctaText || "Explore Solution"}</span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowRationale((prev) => !prev)}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 border border-charcoal/20 bg-obsidian text-charcoal text-xs font-mono uppercase tracking-[0.12em] hover:border-charcoal hover:bg-vaultAmber transition-colors cursor-pointer"
+                  >
+                    <span>{showRationale ? "Hide Context" : "Why This Matters"}</span>
+                  </button>
+
+                  {/* Capabilities Tags */}
+                  {currentSolution.laxvishCapabilities && currentSolution.laxvishCapabilities.length > 0 && (
+                    <div className="flex items-center gap-1.5 ml-auto text-[11px] font-mono text-neonCyan tracking-wider uppercase">
+                      <span>BUILT WITH:</span>
+                      <span className="text-charcoal font-semibold">
+                        {currentSolution.laxvishCapabilities.join(" + ")}
+                      </span>
                     </div>
                   )}
                 </div>
+
+                {/* Why This Matters Drawer (Customer-facing rationale only - Zero think leakage!) */}
+                <AnimatePresence>
+                  {showRationale && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                      className="overflow-hidden pt-2"
+                    >
+                      <div className="p-4 bg-vaultAmber/60 border border-charcoal/15 font-mono text-xs text-charcoal/90 leading-relaxed">
+                        <span className="text-neonCyan uppercase tracking-wider block mb-1">
+                          [ RELEVANCE SIGNAL ]
+                        </span>
+                        {currentSolution.rationale || "Synthesized from your operational workflow preferences and regional business ecosystem."}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
-            )}
-          </AnimatePresence>
+            </AnimatePresence>
+          </div>
+
+          {/* Bottom Bar: Carousel Controls & Navigation Dots */}
+          <div className="flex items-center justify-between pt-6 border-t border-charcoal/10 text-xs font-mono text-neonCyan">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveSolutionIndex((activeIndex - 1 + solutions.length) % solutions.length);
+                  setIsPaused(true);
+                }}
+                aria-label="Previous opportunity"
+                className="px-2.5 py-1 border border-charcoal/20 hover:border-charcoal hover:text-charcoal transition-colors cursor-pointer"
+              >
+                ← PREV
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveSolutionIndex((activeIndex + 1) % solutions.length);
+                  setIsPaused(true);
+                }}
+                aria-label="Next opportunity"
+                className="px-2.5 py-1 border border-charcoal/20 hover:border-charcoal hover:text-charcoal transition-colors cursor-pointer"
+              >
+                NEXT →
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsPaused((prev) => !prev)}
+                className="px-2.5 py-1 border border-charcoal/20 hover:border-charcoal hover:text-charcoal transition-colors cursor-pointer uppercase"
+              >
+                {isPaused ? "▶ PLAY" : "❚❚ PAUSE"}
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {solutions.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  type="button"
+                  onClick={() => {
+                    setActiveSolutionIndex(dotIdx);
+                    setIsPaused(true);
+                  }}
+                  aria-label={`Go to opportunity 0${dotIdx + 1}`}
+                  className={`h-1.5 transition-all cursor-pointer ${
+                    dotIdx === activeIndex ? "w-6 bg-charcoal" : "w-2 bg-charcoal/20 hover:bg-charcoal/50"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
