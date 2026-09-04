@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { extractEdgeLocation, buildGpsEnvironmentModel } from "../lib/context/environment.ts";
-import { scoreProblemHypotheses, LAXVISH_PROBLEM_TAXONOMY } from "../lib/context/ontology.ts";
+import { scoreProblemHypotheses } from "../lib/context/ontology.ts";
 import { generateDeterministicNarrative, validateNarrativeOutput } from "../lib/context/poolside.ts";
 import type { LaxvishContextGraph } from "../lib/context/types.ts";
 

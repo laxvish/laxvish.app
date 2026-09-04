@@ -50,7 +50,7 @@ export function generateDeterministicNarrative(
   graph: LaxvishContextGraph,
   stage: NarrativeStage
 ): NarrativeMoment {
-  const { environment, temporal, technical, behavior, direct, hypotheses, topSolution } = graph;
+  const { environment, temporal, technical, behavior, hypotheses, topSolution } = graph;
   const timeStr = temporal.localHour >= 18 || temporal.localHour < 6 ? "after-hours" : "working hours";
   const cityStr = environment.city || "Indian enterprise ecosystem";
   const topHypothesis = hypotheses[0];

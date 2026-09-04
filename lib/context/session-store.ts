@@ -1,10 +1,9 @@
 import { getPrismaClient } from "@/lib/prisma";
-import type { LaxvishContextGraph, LaxvishEvent, NarrativeMoment, NarrativeStage, ProblemHypothesis } from "./types.ts";
+import type { LaxvishContextGraph, LaxvishEvent, NarrativeMoment } from "./types.ts";
 import crypto from "crypto";
 
 declare global {
   // In-memory hot cache for zero-latency lookups & offline fallback
-  // eslint-disable-next-line no-var
   var contextSessionMemory: Map<string, LaxvishContextGraph> | undefined;
 }
 

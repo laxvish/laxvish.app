@@ -107,7 +107,10 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
 
   const eventBufferRef = useRef<LaxvishEvent[]>([]);
   const activeStageRef = useRef<NarrativeStage>(activeStage);
-  activeStageRef.current = activeStage;
+
+  useEffect(() => {
+    activeStageRef.current = activeStage;
+  }, [activeStage]);
 
   const sessionIdRef = useRef<string>("");
 
@@ -146,6 +149,7 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
       },
       (err) => {
         // Silent failure - do not show invasive warnings
+        void err;
         setIsLocationCalibrating(false);
       },
       { timeout: 8000, enableHighAccuracy: true, maximumAge: 60000 }
