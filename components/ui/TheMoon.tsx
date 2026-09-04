@@ -50,34 +50,26 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
   const fallbackProgress = useTransform(scrollY, [0, 450], [0, 1]);
   const activeProgress = progress ?? fallbackProgress;
 
-  // Smooth inertial spring
-  const smoothProgress = useSpring(activeProgress, {
+  // Inertial spring for standalone scroll fallback, or direct motion value from parent
+  const fallbackSpring = useSpring(fallbackProgress, {
     stiffness: 52,
     damping: 22,
     mass: 0.8,
   });
+  const smoothProgress = progress ? activeProgress : fallbackSpring;
 
   // Continuous color circulation trigger: starts after transformation reaches 100%
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    if (latest >= 0.92 && !isFullySettled) {
+    if (latest >= 0.90 && !isFullySettled) {
       setIsFullySettled(true);
-    } else if (latest < 0.86 && isFullySettled) {
+    } else if (latest < 0.80 && isFullySettled) {
       setIsFullySettled(false);
     }
   });
 
   // ——— 1. Metamorphic Cross-Fade (Monochrome -> Chromatic) ———
-  const rawChromatic = useTransform(smoothProgress, [0.12, 0.65], [0, 1]);
-  const rawMono = useTransform(smoothProgress, [0.12, 0.65], [1, 0]);
-
-  const chromaticProgress = useSpring(rawChromatic, {
-    stiffness: 55,
-    damping: 22,
-  });
-  const monoProgress = useSpring(rawMono, {
-    stiffness: 55,
-    damping: 22,
-  });
+  const chromaticProgress = useTransform(smoothProgress, [0.12, 0.65], [0, 1]);
+  const monoProgress = useTransform(smoothProgress, [0.12, 0.65], [1, 0]);
 
   // ——— 2. Disorganized Color Palette Swirl on Movement ———
   // Dynamic chaotic angular rotation per color band (Disorganized Chromatic Dispersion)

@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import {
+  animate,
   motion,
+  useMotionValue,
   useReducedMotion,
   useScroll,
-  useSpring,
   useTransform,
 } from "framer-motion";
 import { AIFabric } from "@/components/ui/AIFabric";
@@ -21,27 +22,16 @@ import {
 } from "@/lib/site-navigation";
 
 /**
- * Hero — Two-Phase Responsive Scroll Architecture with Post-Completion Hold.
+ * Hero — Refined Scroll-Assisted Cinematic Moon Interaction with Post-Completion Hold.
  *
- * Responsive Track Height:
- * - Mobile: ~360vh (fluid touch scroll)
- * - Tablet: ~420vh
- * - Desktop: ~480vh
- *
- * PHASE 1 — Cinematic Transformation (0% -> 76% of track):
- * - animationProgress: 0.0 -> 1.0
- * - Hero copy dissolves upward gracefully.
- * - Monochrome Moon glides to horizontal center and scales up responsively.
- * - Internal disorganized chromatic dispersion swirls and develops into full iridescent rainbow spectrum.
- * - Minimal AI Solutions operational interface emerges directly beneath the Moon.
- * - By animationProgress = 1.0 (at section progress 0.76), transformation reaches 100%.
- *
- * PHASE 2 — Final State Hold (76% -> 100% of track):
- * - animationProgress stays clamped at 1.0.
- * - Moon remains centered, at final scale, and fully colored.
- * - Moon's internal surface autonomously rotates 360 degrees around its own axis in place.
- * - Background and UI remain completely stable.
- * - The user physically scrolls through the dedicated hold distance before the hero unpins and next section enters.
+ * SCROLL INTERACTION:
+ * - One intentional downward scroll gesture triggers the smooth cinematic transformation.
+ * - The animation smoothly travels currentProgress -> 1.0 with a calm cinematic curve [0.16, 1, 0.3, 1].
+ * - NO auto-scrolling of the webpage (document remains under 100% natural browser scroll).
+ * - When 100% is reached: all Moon position/scale transforms freeze completely.
+ * - Inside the Moon, ONLY the internal chromatic rainbow fluid wave rotates 360° continuously.
+ * - The Moon itself, its craters, maria, lighting, and sphere NEVER rotate.
+ * - If the user scrolls back to the very top, the hero smoothly returns to its rest state.
  */
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -50,6 +40,11 @@ export function Hero() {
   const bookDemoUrl = getBookDemoUrl();
   const [deviceTier, setDeviceTier] = useState<"mobile" | "tablet" | "desktop">("desktop");
   const [isShortHeight, setIsShortHeight] = useState(false);
+
+  // 1. Internal cinematic progress value (0.0 -> 1.0)
+  const cinematicProgress = useMotionValue(0.0);
+  const activeAnimationRef = useRef<ReturnType<typeof animate> | null>(null);
+  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
     const checkViewport = () => {
@@ -70,28 +65,114 @@ export function Hero() {
     return () => window.removeEventListener("resize", checkViewport);
   }, []);
 
-  // 1. Normalized scroll progress across the responsive track (0.0 -> 1.0)
+  // 2. Scroll-Assisted Trigger: Detect intentional scroll gesture and smoothly animate progress to 1.0
+  useEffect(() => {
+    if (!motionEnabled) {
+      cinematicProgress.set(1.0);
+      return;
+    }
+
+    const animateTo = (target: number, customDuration?: number) => {
+      const current = cinematicProgress.get();
+      if (Math.abs(current - target) < 0.005) {
+        cinematicProgress.set(target);
+        return;
+      }
+
+      activeAnimationRef.current?.stop();
+
+      const distance = Math.abs(target - current);
+      // Scaled duration: full range ~1.8s, half ~0.9s, near completion ~0.45s
+      const duration = customDuration ?? Math.max(0.4, Math.min(2.0, distance * 1.8));
+
+      activeAnimationRef.current = animate(cinematicProgress, target, {
+        duration,
+        ease: [0.16, 1, 0.3, 1], // Calm, cinematic ease-out curve (no overshoot, no bounce)
+      });
+    };
+
+    // A. Natural scroll listener
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+
+      // Downward scroll threshold: initiate smooth progression
+      if (scrollY > 15) {
+        if (!hasTriggeredRef.current || cinematicProgress.get() < 1.0) {
+          hasTriggeredRef.current = true;
+          animateTo(1.0);
+        }
+      } else if (scrollY <= 5) {
+        // Return to rest state when scrolled back to very top
+        hasTriggeredRef.current = false;
+        animateTo(0.0, 1.0);
+      }
+    };
+
+    // B. Mouse wheel listener (detects immediate intention before physical distance)
+    const handleWheel = (e: WheelEvent) => {
+      const heroEl = containerRef.current;
+      if (!heroEl) return;
+      const heroRect = heroEl.getBoundingClientRect();
+
+      // Only trigger if hero is in active viewport
+      if (heroRect.bottom > 80 && heroRect.top < window.innerHeight) {
+        if (e.deltaY > 2) {
+          if (cinematicProgress.get() < 1.0) {
+            hasTriggeredRef.current = true;
+            animateTo(1.0);
+          }
+        } else if (e.deltaY < -2 && window.scrollY < 60) {
+          hasTriggeredRef.current = false;
+          animateTo(0.0, 1.0);
+        }
+      }
+    };
+
+    // C. Touch listener for mobile devices
+    let touchStartY = 0;
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+    const handleTouchMove = (e: TouchEvent) => {
+      const touchY = e.touches[0].clientY;
+      const deltaY = touchStartY - touchY;
+      if (deltaY > 8) {
+        if (cinematicProgress.get() < 1.0) {
+          hasTriggeredRef.current = true;
+          animateTo(1.0);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+
+    // Handle initial page load with scroll offset (e.g. refresh or back navigation)
+    if (window.scrollY > 30) {
+      hasTriggeredRef.current = true;
+      cinematicProgress.set(1.0);
+    }
+
+    return () => {
+      activeAnimationRef.current?.stop();
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, [motionEnabled, cinematicProgress]);
+
+  // Global scroll tracker for container boundaries
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Calm, high-inertia spring smoothing across the track
-  const smoothSectionProgress = useSpring(scrollYProgress, {
-    stiffness: 48,
-    damping: 24,
-    mass: 0.85,
-  });
-
-  // 2. PHASE 1: Cinematic Animation Progress (0.0 -> 1.0 during section progress 0.0 -> 0.76)
-  const rawAnimationProgress = useTransform(
-    smoothSectionProgress,
-    [0.0, 0.76],
-    [0.0, 1.0],
-    { clamp: true }
-  );
+  // Active animation progress (0.0 -> 1.0)
   const animationProgress = motionEnabled
-    ? rawAnimationProgress
+    ? cinematicProgress
     : useTransform(scrollYProgress, () => 1.0);
 
   // ——— Hero Copy Transforms (Mapped strictly to animationProgress) ———
@@ -154,10 +235,10 @@ export function Hero() {
       style={{
         minHeight: motionEnabled
           ? deviceTier === "mobile"
-            ? "360vh"
+            ? "180vh"
             : deviceTier === "tablet"
-            ? "420vh"
-            : "480vh"
+            ? "200vh"
+            : "220vh"
           : "auto",
       }}
     >
