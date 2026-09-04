@@ -3,16 +3,21 @@
 import { useState, useRef, useEffect, ChangeEvent, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getBookDemoUrl } from "@/lib/site-navigation";
+import {
+  ConversationMessage,
+  ConversationSuccessResponse,
+  RawAttachmentInput,
+  StructuredBlueprint,
+} from "@/lib/conversation/types";
 
-interface ConversationTurn {
-  role: "user" | "assistant";
-  text: string;
-}
-
-interface AttachedDoc {
+interface AttachedClientDoc {
   name: string;
-  size: string;
+  sizeStr: string;
+  sizeBytes: number;
   tag: "IMG" | "DOC" | "SHEET";
+  type: string;
+  rawText?: string;
+  statusLabel?: string;
 }
 
 const ATTACHMENT_OPTIONS = [
@@ -41,19 +46,17 @@ const CONVERSATION_UNAVAILABLE_MESSAGE =
 
 export function ConversationalBox({ className = "" }: { className?: string }) {
   const [directive, setDirective] = useState("");
-  const [attachedDocs, setAttachedDocs] = useState<AttachedDoc[]>([]);
+  const [attachedDocs, setAttachedDocs] = useState<AttachedClientDoc[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [fileAcceptType, setFileAcceptType] = useState(
     ".pdf,.xlsx,.csv,.docx,.txt,.png,.jpg,.jpeg,.webp"
   );
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [conversation, setConversation] = useState<{
-    directiveText: string;
-    attachedDocs: AttachedDoc[];
-  } | null>(null);
-  const [turns, setTurns] = useState<ConversationTurn[]>([]);
+  const [engineState, setEngineState] = useState<"idle" | "reading" | "synthesizing" | "dossier">("idle");
+  const [blueprint, setBlueprint] = useState<StructuredBlueprint | null>(null);
+  const [turns, setTurns] = useState<ConversationMessage[]>([]);
   const [followUp, setFollowUp] = useState("");
   const [conversationError, setConversationError] = useState(false);
+  const [activeDirectiveSummary, setActiveDirectiveSummary] = useState("");
   const requestSeqRef = useRef(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -78,7 +81,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
   const getFileTag = (fileName: string): "IMG" | "DOC" | "SHEET" => {
     const ext = fileName.split(".").pop()?.toLowerCase() || "";
     if (["png", "jpg", "jpeg", "webp", "gif", "svg"].includes(ext)) return "IMG";
-    if (["xlsx", "xls", "csv"].includes(ext)) return "SHEET";
+    if (["xlsx", "xls", "csv", "tsv"].includes(ext)) return "SHEET";
     return "DOC";
   };
 
@@ -93,23 +96,50 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
     }, 50);
   };
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const newFiles: AttachedDoc[] = Array.from(e.target.files).map((file) => {
-        const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-        return {
-          name: file.name,
-          size: `${sizeMb} MB`,
-          tag: getFileTag(file.name),
-        };
-      });
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
 
-      setAttachedDocs((prev) => [
-        ...prev.filter((d) => !newFiles.some((nf) => nf.name === d.name)),
-        ...newFiles,
-      ]);
+    setEngineState("reading");
+    const files = Array.from(e.target.files);
+    const newDocs: AttachedClientDoc[] = [];
+
+    for (const file of files) {
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+      const tag = getFileTag(file.name);
+      let textContent: string | undefined;
+
+      // Extract text content for text-based formats
+      if (
+        file.name.endsWith(".csv") ||
+        file.name.endsWith(".txt") ||
+        file.name.endsWith(".json") ||
+        file.name.endsWith(".md") ||
+        file.name.endsWith(".tsv") ||
+        file.type.startsWith("text/")
+      ) {
+        try {
+          textContent = await file.text();
+        } catch {
+          // Keep undefined on read error
+        }
+      }
+
+      newDocs.push({
+        name: file.name,
+        sizeStr: `${sizeMb} MB`,
+        sizeBytes: file.size,
+        tag,
+        type: file.type || "application/octet-stream",
+        rawText: textContent,
+      });
     }
-    // Reset file input value so re-uploading same file works
+
+    setAttachedDocs((prev) => [
+      ...prev.filter((d) => !newDocs.some((nf) => nf.name === d.name)),
+      ...newDocs,
+    ]);
+
+    setEngineState("idle");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -117,78 +147,101 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
     setAttachedDocs((prev) => prev.filter((d) => d.name !== name));
   };
 
-  const buildOpeningContent = (text: string, docs: AttachedDoc[]): string => {
-    const trimmed = text.trim();
-    if (docs.length === 0) return trimmed;
-    const names = docs.map((d) => d.name).join(", ");
-    return trimmed
-      ? `${trimmed}\n[Attached files for context (names only): ${names}]`
-      : `Analyze attached files (${names}) and explain how Laxvish can help.`;
-  };
-
   const postConversation = async (
-    history: ConversationTurn[],
+    history: ConversationMessage[],
+    docs: AttachedClientDoc[] = []
   ): Promise<boolean> => {
     const seq = requestSeqRef.current + 1;
     requestSeqRef.current = seq;
-    setIsGenerating(true);
+    setEngineState("synthesizing");
     setConversationError(false);
+
+    const rawAttachments: RawAttachmentInput[] = docs.map((d) => ({
+      name: d.name,
+      size: d.sizeBytes,
+      type: d.type,
+      content: d.rawText,
+      encoding: "utf-8",
+    }));
+
     try {
       const response = await fetch("/api/conversation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: history.slice(-20).map((t) => ({
-            role: t.role,
-            content: t.text,
-          })),
+          messages: history.slice(-20),
+          attachments: rawAttachments,
         }),
       });
-      const parsed = (await response.json().catch(() => null)) as {
-        reply?: unknown;
-      } | null;
-      if (!response.ok || typeof parsed?.reply !== "string" || !parsed.reply.trim()) {
-        if (requestSeqRef.current === seq) setConversationError(true);
+
+      const parsed = (await response.json().catch(() => null)) as ConversationSuccessResponse | null;
+
+      if (!response.ok || !parsed || typeof parsed.reply !== "string" || !parsed.reply.trim()) {
+        if (requestSeqRef.current === seq) {
+          setConversationError(true);
+          setEngineState("dossier");
+        }
         return false;
       }
+
       if (requestSeqRef.current === seq) {
-        setTurns([...history, { role: "assistant", text: parsed.reply.trim() }]);
+        const replyText = parsed.reply.trim();
+        setTurns([...history, { role: "assistant", content: replyText }]);
+        if (parsed.blueprint) {
+          setBlueprint(parsed.blueprint);
+        }
+
+        // Update attachment status labels with extraction metadata if returned
+        if (parsed.attachments && parsed.attachments.length > 0) {
+          setAttachedDocs((prev) =>
+            prev.map((doc) => {
+              const matched = parsed.attachments?.find((a) => a.name === doc.name);
+              if (matched) {
+                const label = matched.factsCount > 0
+                  ? `Extracted · ${matched.factsCount} facts`
+                  : matched.status === "processed"
+                  ? "Processed"
+                  : "Referenced";
+                return { ...doc, statusLabel: label };
+              }
+              return doc;
+            })
+          );
+        }
+
+        setEngineState("dossier");
       }
       return true;
     } catch {
-      if (requestSeqRef.current === seq) setConversationError(true);
+      if (requestSeqRef.current === seq) {
+        setConversationError(true);
+        setEngineState("dossier");
+      }
       return false;
-    } finally {
-      if (requestSeqRef.current === seq) setIsGenerating(false);
     }
   };
 
   const handleSynthesize = () => {
-    if (isGenerating) return;
+    if (engineState === "synthesizing" || engineState === "reading") return;
     if (!directive.trim() && attachedDocs.length === 0) return;
 
-    const opening = buildOpeningContent(directive, attachedDocs);
-    const history: ConversationTurn[] = [{ role: "user", text: opening }];
-    setConversation({
-      directiveText:
-        directive.trim() ||
-        `Analyze attached files (${attachedDocs.map((d) => d.name).join(", ")}) and explain how Laxvish can help.`,
-      attachedDocs: [...attachedDocs],
-    });
+    const openingText = directive.trim() || `Analyze the attached operational evidence and synthesize an enterprise architecture blueprint.`;
+    setActiveDirectiveSummary(openingText);
+
+    const history: ConversationMessage[] = [{ role: "user", content: openingText }];
     setTurns(history);
-    void postConversation(history);
+    void postConversation(history, attachedDocs);
   };
 
   const handleFollowUp = () => {
-    if (isGenerating) return;
-    if (!followUp.trim()) return;
-    const history: ConversationTurn[] = [
+    if (engineState === "synthesizing" || !followUp.trim()) return;
+    const history: ConversationMessage[] = [
       ...turns,
-      { role: "user", text: followUp.trim() },
+      { role: "user", content: followUp.trim() },
     ];
     setTurns(history);
     setFollowUp("");
-    void postConversation(history);
+    void postConversation(history, attachedDocs);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -207,11 +260,11 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
 
   const handleReset = () => {
     requestSeqRef.current += 1;
-    setConversation(null);
+    setEngineState("idle");
+    setBlueprint(null);
     setTurns([]);
     setFollowUp("");
     setConversationError(false);
-    setIsGenerating(false);
   };
 
   return (
@@ -229,7 +282,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
       />
 
       <AnimatePresence mode="wait">
-        {!conversation ? (
+        {engineState === "idle" || engineState === "reading" ? (
           /* ============================================================ */
           /* 1. MINIMAL AI SOLUTIONS OPERATIONAL SURFACE                  */
           /* ============================================================ */
@@ -324,8 +377,13 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                         {doc.name}
                       </span>
                       <span className="text-[10px] text-neonCyan/70">
-                        ({doc.size})
+                        ({doc.sizeStr})
                       </span>
+                      {doc.statusLabel && (
+                        <span className="text-[9px] text-neonCyan/80 border-l border-charcoal/10 pl-1.5 ml-0.5">
+                          {doc.statusLabel}
+                        </span>
+                      )}
                       <button
                         type="button"
                         onClick={() => removeDoc(doc.name)}
@@ -349,11 +407,11 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
               <button
                 type="button"
                 onClick={handleSynthesize}
-                disabled={isGenerating || (!directive.trim() && attachedDocs.length === 0)}
+                disabled={engineState === "reading" || (!directive.trim() && attachedDocs.length === 0)}
                 className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2.5 text-xs font-mono tracking-wider inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed w-full sm:w-auto text-center"
               >
-                {isGenerating ? (
-                  <span>Synthesizing...</span>
+                {engineState === "reading" ? (
+                  <span>Extracting File...</span>
                 ) : (
                   <>
                     <span>Synthesize Architecture</span>
@@ -378,53 +436,70 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             {/* Top Bar: Restrained Architectural Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 px-4 sm:px-6 py-2.5 border-b border-charcoal/10">
               <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
-                CONVERSATION RESPONSE
+                ARCHITECTURAL DOSSIER
               </span>
               <span className="text-[10px] font-mono tracking-wider text-neonCyan uppercase">
-                LAXVISH CONVERSATION · LIVE
+                LAXVISH SYNTHESIS · LIVE
               </span>
             </div>
 
             {/* Problem Directive Summary */}
             <div className="px-4 sm:px-6 py-3.5 border-b border-charcoal/10 text-xs text-charcoal space-y-1">
               <div className="flex items-center justify-between font-mono text-[10px] text-neonCyan uppercase tracking-wider">
-                <span>PROBLEM DIRECTIVE</span>
-                <span>STATUS: ANALYZED</span>
+                <span>OPERATIONAL DIRECTIVE</span>
+                <span>STATUS: GROUNDED & ANALYZED</span>
               </div>
-              <p className="leading-relaxed text-charcoal/90">{conversation.directiveText}</p>
-              {conversation.attachedDocs.length > 0 && (
-                <div className="pt-1 flex flex-wrap gap-2">
-                  {conversation.attachedDocs.map((doc) => (
+              <p className="leading-relaxed text-charcoal/90">{activeDirectiveSummary}</p>
+              {attachedDocs.length > 0 && (
+                <div className="pt-1.5 flex flex-wrap gap-2">
+                  {attachedDocs.map((doc) => (
                     <span
                       key={doc.name}
-                      className="font-mono text-[10px] text-neonCyan"
+                      className="font-mono text-[10px] text-neonCyan border border-charcoal/15 px-2 py-0.5"
                     >
-                      [{doc.tag}: {doc.name}]
+                      [{doc.tag}: {doc.name}] {doc.statusLabel ? `— ${doc.statusLabel}` : ""}
                     </span>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Conversation Turns: genuine Laxvish replies, newest last */}
+            {/* Conversation Turns & Structured Response */}
             <div className="px-4 sm:px-6 py-4 space-y-4 border-b border-charcoal/10 text-xs">
               <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
-                LAXVISH RESPONSE
+                LAXVISH ARCHITECTURAL BLUEPRINT
               </span>
-              {isGenerating && turns.every((t) => t.role === "user") && (
-                <p className="text-charcoal/85 leading-relaxed font-mono text-xs">
-                  Synthesizing...
+              {engineState === "synthesizing" && (
+                <p className="text-charcoal/85 leading-relaxed font-mono text-xs animate-pulse">
+                  Reasoning over normalized evidence & synthesizing pipeline...
                 </p>
               )}
+
+              {/* Structured Pipeline Display (if parsed) */}
+              {blueprint && blueprint.architecture.length > 0 && turns.length <= 2 && (
+                <div className="bg-vaultAmber/30 border border-charcoal/15 p-3.5 space-y-2.5 rounded-[2px] font-mono">
+                  <div className="text-[9px] text-neonCyan uppercase tracking-[0.18em]">
+                    SYSTEM PIPELINE ARCHITECTURE
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                    {blueprint.architecture.slice(0, 3).map((stage, i) => (
+                      <div key={i} className="border border-charcoal/10 bg-white/70 p-2 text-[11px] text-charcoal">
+                        <span className="text-neonCyan text-[9px] block">0{i + 1} // STAGE</span>
+                        {stage}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {turns
                 .filter((t) => t.role === "assistant")
                 .map((turn, idx) => (
-                  <p
-                    key={idx}
-                    className="text-charcoal/85 leading-relaxed whitespace-pre-line"
-                  >
-                    {turn.text}
-                  </p>
+                  <div key={idx} className="space-y-3">
+                    <p className="text-charcoal/85 leading-relaxed whitespace-pre-line">
+                      {turn.content}
+                    </p>
+                  </div>
                 ))}
               {conversationError && (
                 <div className="space-y-2">
@@ -433,7 +508,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                   </p>
                   <button
                     type="button"
-                    onClick={() => void postConversation(turns)}
+                    onClick={() => void postConversation(turns, attachedDocs)}
                     className="text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer py-1"
                   >
                     Try again →
@@ -449,13 +524,13 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                 value={followUp}
                 onChange={(e) => setFollowUp(e.target.value)}
                 onKeyDown={handleFollowUpKeyDown}
-                placeholder="Ask a follow-up..."
+                placeholder="Refine requirements or ask a follow-up..."
                 className="flex-1 resize-none bg-transparent font-sans text-xs sm:text-sm text-charcoal placeholder:text-neonCyan/40 focus:outline-none leading-relaxed"
               />
               <button
                 type="button"
                 onClick={handleFollowUp}
-                disabled={isGenerating || !followUp.trim()}
+                disabled={engineState === "synthesizing" || !followUp.trim()}
                 className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2 text-xs font-mono tracking-wider inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed w-full sm:w-auto text-center"
               >
                 <span>Send</span>
