@@ -43,8 +43,8 @@ async def verify_moon_interaction():
         print(f"  - Natural scroll position after 1 gesture: {scroll_y_initial}px (Natural, NOT auto-scrolled)")
         assert scroll_y_initial < 400, "Document must not be aggressively auto-scrolled"
 
-        # Wait for smooth transition to complete (~2.0s total)
-        await asyncio.sleep(1.8)
+        # Wait for smooth stately transition to complete (~3.4s total)
+        await asyncio.sleep(3.2)
         final_h1_opacity = await page.evaluate("() => parseFloat(getComputedStyle(document.querySelector('h1').closest('.will-change-transform')).opacity)")
         final_box_opacity = await page.evaluate("() => { const el = document.querySelector('textarea'); return el ? parseFloat(getComputedStyle(el.closest('.will-change-transform')).opacity) : 0; }")
         
@@ -82,7 +82,7 @@ async def verify_moon_interaction():
         print("TEST 4: SCROLL TO TOP RESETS REST STATE")
         print("========================================================")
         await page.evaluate("() => window.scrollTo(0, 0)")
-        await asyncio.sleep(1.6)
+        await asyncio.sleep(2.0)
 
         reset_h1_opacity = await page.evaluate("() => parseFloat(getComputedStyle(document.querySelector('h1').closest('.will-change-transform')).opacity)")
         print(f"  - Reset H1 opacity: {reset_h1_opacity}")

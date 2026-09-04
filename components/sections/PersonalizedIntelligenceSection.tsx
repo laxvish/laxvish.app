@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { NarrativeConsole } from "./intelligence/NarrativeConsole";
 import { LiveTelemetryLedger } from "./intelligence/LiveTelemetryLedger";
@@ -19,13 +19,16 @@ export function PersonalizedIntelligenceSection() {
     isLocationCalibrating,
   } = useLaxvishContext();
 
-  const handleStageSelect = (stage: NarrativeStage) => {
-    if (contextGraph.narratives[stage]) {
-      setActiveStage(stage);
-    } else {
-      streamNarrativeStage(stage);
-    }
-  };
+  const handleStageSelect = useCallback(
+    (stage: NarrativeStage) => {
+      if (contextGraph.narratives[stage]) {
+        setActiveStage(stage);
+      } else {
+        streamNarrativeStage(stage);
+      }
+    },
+    [contextGraph.narratives, setActiveStage, streamNarrativeStage]
+  );
 
   return (
     <section

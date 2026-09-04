@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { NarrativeMoment, NarrativeStage } from "@/lib/context/types";
 
 interface NarrativeStageNavProps {
@@ -17,7 +17,7 @@ const STAGES: { key: NarrativeStage; label: string; step: string }[] = [
   { key: "synthesis", label: "SYNTHESIS", step: "05" },
 ];
 
-export function NarrativeStageNav({
+export const NarrativeStageNav = memo(function NarrativeStageNav({
   activeStage,
   narratives,
   onSelectStage,
@@ -69,4 +69,4 @@ export function NarrativeStageNav({
       })}
     </div>
   );
-}
+});

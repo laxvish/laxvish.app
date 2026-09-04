@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { LaxvishContextGraph } from "@/lib/context/types";
 
 interface LiveTelemetryLedgerProps {
@@ -8,7 +8,7 @@ interface LiveTelemetryLedgerProps {
   isCalibrating?: boolean;
 }
 
-export function LiveTelemetryLedger({
+export const LiveTelemetryLedger = memo(function LiveTelemetryLedger({
   contextGraph,
   isCalibrating,
 }: LiveTelemetryLedgerProps) {
@@ -98,4 +98,4 @@ export function LiveTelemetryLedger({
       </p>
     </div>
   );
-}
+});

@@ -107,12 +107,26 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
 
   const eventBufferRef = useRef<LaxvishEvent[]>([]);
   const activeStageRef = useRef<NarrativeStage>(activeStage);
+  const sessionIdRef = useRef<string>("");
+  const behaviorRef = useRef(contextGraph.behavior);
+  const narrativesRef = useRef(contextGraph.narratives);
+  const isStreamingRef = useRef<boolean>(isStreaming);
 
   useEffect(() => {
     activeStageRef.current = activeStage;
   }, [activeStage]);
 
-  const sessionIdRef = useRef<string>("");
+  useEffect(() => {
+    behaviorRef.current = contextGraph.behavior;
+  }, [contextGraph.behavior]);
+
+  useEffect(() => {
+    narrativesRef.current = contextGraph.narratives;
+  }, [contextGraph.narratives]);
+
+  useEffect(() => {
+    isStreamingRef.current = isStreaming;
+  }, [isStreaming]);
 
   // 1. Silent Background Geolocation Request
   const requestPreciseLocation = useCallback(() => {
@@ -159,10 +173,10 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
   // 2. Stream Narrative Stage from Server SSE
   const streamNarrativeStage = useCallback(
     async (stage: NarrativeStage) => {
-      if (!sessionIdRef.current || isStreaming) return;
+      if (!sessionIdRef.current || isStreamingRef.current) return;
 
       // If already generated and cached, switch directly
-      if (contextGraph.narratives[stage]?.text) {
+      if (narrativesRef.current[stage]?.text) {
         setActiveStage(stage);
         return;
       }
@@ -170,6 +184,48 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
       setIsStreaming(true);
       setActiveStage(stage);
       setStreamingToken("");
+
+      let rafId: number | null = null;
+      let lastFlushTime = 0;
+      let accumulatedText = "";
+      let streamMeta: Partial<NarrativeMoment> = {};
+
+      const cancelPendingFlush = () => {
+        if (rafId !== null) {
+          if (typeof cancelAnimationFrame !== "undefined") {
+            cancelAnimationFrame(rafId);
+          } else {
+            clearTimeout(rafId);
+          }
+          rafId = null;
+        }
+      };
+
+      const flushToState = () => {
+        cancelPendingFlush();
+        setStreamingToken(accumulatedText);
+        lastFlushTime = typeof performance !== "undefined" ? performance.now() : Date.now();
+      };
+
+      const scheduleFlush = () => {
+        const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+        const elapsed = now - lastFlushTime;
+        if (elapsed >= 50) {
+          flushToState();
+        } else if (rafId === null) {
+          if (typeof requestAnimationFrame !== "undefined") {
+            rafId = requestAnimationFrame(() => {
+              rafId = null;
+              flushToState();
+            });
+          } else {
+            rafId = setTimeout(() => {
+              rafId = null;
+              flushToState();
+            }, Math.max(0, 50 - elapsed)) as unknown as number;
+          }
+        }
+      };
 
       try {
         const response = await fetch("/api/narrative/stream", {
@@ -188,8 +244,6 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
-        let accumulatedText = "";
-        let streamMeta: Partial<NarrativeMoment> = {};
 
         while (true) {
           const { done, value } = await reader.read();
@@ -199,10 +253,7 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
           const lines = chunk.split("\n");
 
           for (const line of lines) {
-            if (line.startsWith("event: token")) {
-              continue;
-            }
-            if (line.startsWith("event: meta")) {
+            if (line.startsWith("event: token") || line.startsWith("event: meta")) {
               continue;
             }
             if (line.startsWith("data: ")) {
@@ -210,7 +261,7 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
                 const parsed = JSON.parse(line.slice(6));
                 if (parsed.token) {
                   accumulatedText += parsed.token;
-                  setStreamingToken(accumulatedText);
+                  scheduleFlush();
                 } else if (parsed.confidence !== undefined) {
                   streamMeta = parsed;
                 }
@@ -220,6 +271,9 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
             }
           }
         }
+
+        // Final text must land exactly once at stream end
+        flushToState();
 
         const newMoment: NarrativeMoment = {
           stage,
@@ -242,10 +296,11 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
       } catch (err) {
         console.error("[Stream Narrative Client Error]", err);
       } finally {
+        cancelPendingFlush();
         setIsStreaming(false);
       }
     },
-    [contextGraph.narratives, isStreaming]
+    []
   );
 
   // 3. Initial Session Boot & Silent Geolocation on mount
@@ -334,9 +389,9 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
             sessionId: sessionIdRef.current,
             events: eventsToSend,
             aggregatedFeatures: {
-              attentionScore: contextGraph.behavior.attentionScore,
-              readingDepthScore: contextGraph.behavior.readingDepthScore,
-              topicsOfInterest: contextGraph.behavior.topicsOfInterest,
+              attentionScore: behaviorRef.current.attentionScore,
+              readingDepthScore: behaviorRef.current.readingDepthScore,
+              topicsOfInterest: behaviorRef.current.topicsOfInterest,
             },
           }),
         });
@@ -346,7 +401,7 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [contextGraph.behavior]);
+  }, []);
 
   return (
     <LaxvishContext.Provider

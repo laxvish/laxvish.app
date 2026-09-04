@@ -417,8 +417,8 @@ export function TheMoon({ progress, disableOuterTransform = false }: TheMoonProp
                   }
                   transition={
                     motionEnabled && isFullySettled
-                      ? { duration: 16, ease: "linear", repeat: Infinity }
-                      : { duration: 0.6, ease: "easeOut" }
+                      ? { duration: 24, ease: "linear", repeat: Infinity }
+                      : { duration: 0.8, ease: "easeOut" }
                   }
                 >
                   <motion.g

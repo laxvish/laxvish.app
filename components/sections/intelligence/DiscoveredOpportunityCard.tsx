@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import Link from "next/link";
 import { ProblemHypothesis, SolutionCandidate } from "@/lib/context/types";
 import { BOOK_NOW_BUTTON_CLASS, SECONDARY_HERO_CTA_CLASS } from "@/lib/site-navigation";
@@ -10,7 +10,7 @@ interface DiscoveredOpportunityCardProps {
   solution?: SolutionCandidate;
 }
 
-export function DiscoveredOpportunityCard({
+export const DiscoveredOpportunityCard = memo(function DiscoveredOpportunityCard({
   hypothesis,
   solution,
 }: DiscoveredOpportunityCardProps) {
@@ -58,4 +58,4 @@ export function DiscoveredOpportunityCard({
       </div>
     </div>
   );
-}
+});

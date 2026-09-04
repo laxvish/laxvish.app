@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LaxvishContextGraph, NarrativeStage } from "@/lib/context/types";
 import { NarrativeStageNav } from "./NarrativeStageNav";
@@ -16,7 +16,7 @@ interface NarrativeConsoleProps {
   onSelectStage: (stage: NarrativeStage) => void;
 }
 
-export function NarrativeConsole({
+export const NarrativeConsole = memo(function NarrativeConsole({
   contextGraph,
   activeStage,
   isStreaming,
@@ -98,4 +98,4 @@ export function NarrativeConsole({
       )}
     </div>
   );
-}
+});

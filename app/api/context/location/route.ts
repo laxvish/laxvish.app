@@ -2,11 +2,33 @@ import { NextRequest, NextResponse } from "next/server";
 import { buildGpsEnvironmentModel } from "@/lib/context/environment";
 import { scoreProblemHypotheses } from "@/lib/context/ontology";
 import { getSessionFromMemory, persistContextSession } from "@/lib/context/session-store";
+import { getRateLimitStore, getRequesterKey } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
+const RATE_LIMIT_WINDOW_SECONDS = 60;
+const MAX_PER_WINDOW = 10;
+
+function tooManyRequests(retryAfterSeconds: number): NextResponse {
+  return NextResponse.json(
+    { ok: false, message: "Too many requests. Please retry shortly." },
+    { status: 429, headers: { "retry-after": String(Math.max(1, retryAfterSeconds)) } }
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const store = getRateLimitStore();
+    const { key: requesterKey, identified } = getRequesterKey(request.headers);
+    const decision = await store.hit(
+      `context-location:${requesterKey}`,
+      identified ? MAX_PER_WINDOW : MAX_PER_WINDOW * 3,
+      RATE_LIMIT_WINDOW_SECONDS
+    );
+    if (!decision.allowed) {
+      return tooManyRequests(decision.retryAfterSeconds);
+    }
+
     const body = await request.json().catch(() => ({}));
     const sessionId = body.sessionId || request.cookies.get("laxvish_session_id")?.value;
 
@@ -50,7 +72,7 @@ export async function POST(request: NextRequest) {
       graph.topSolution = topSolution;
 
       const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-      await persistContextSession(graph, clientIp);
+      await persistContextSession(graph, clientIp, { immediate: true });
 
       return NextResponse.json({
         ok: true,

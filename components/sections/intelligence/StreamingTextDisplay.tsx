@@ -1,13 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 
 interface StreamingTextDisplayProps {
   text: string;
   isStreaming: boolean;
 }
 
-export function StreamingTextDisplay({ text, isStreaming }: StreamingTextDisplayProps) {
+export const StreamingTextDisplay = memo(function StreamingTextDisplay({
+  text,
+  isStreaming,
+}: StreamingTextDisplayProps) {
   return (
     <div className="relative">
       <p className="text-lg sm:text-xl md:text-2xl font-normal leading-relaxed text-charcoal font-space-grotesk tracking-[-0.01em]">
@@ -18,4 +21,4 @@ export function StreamingTextDisplay({ text, isStreaming }: StreamingTextDisplay
       </p>
     </div>
   );
-}
+});

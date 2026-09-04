@@ -82,12 +82,12 @@ export function Hero() {
       activeAnimationRef.current?.stop();
 
       const distance = Math.abs(target - current);
-      // Scaled duration: full range ~1.8s, half ~0.9s, near completion ~0.45s
-      const duration = customDuration ?? Math.max(0.4, Math.min(2.0, distance * 1.8));
+      // Slower, majestic cinematic duration: full range ~3.2s, half ~1.6s, near completion ~0.8s
+      const duration = customDuration ?? Math.max(0.8, Math.min(3.6, distance * 3.2));
 
       activeAnimationRef.current = animate(cinematicProgress, target, {
         duration,
-        ease: [0.16, 1, 0.3, 1], // Calm, cinematic ease-out curve (no overshoot, no bounce)
+        ease: [0.16, 1, 0.3, 1], // Stately, calm cinematic ease-out curve
       });
     };
 
@@ -104,7 +104,7 @@ export function Hero() {
       } else if (scrollY <= 5) {
         // Return to rest state when scrolled back to very top
         hasTriggeredRef.current = false;
-        animateTo(0.0, 1.0);
+        animateTo(0.0, 1.6);
       }
     };
 
@@ -123,7 +123,7 @@ export function Hero() {
           }
         } else if (e.deltaY < -2 && window.scrollY < 60) {
           hasTriggeredRef.current = false;
-          animateTo(0.0, 1.0);
+          animateTo(0.0, 1.6);
         }
       }
     };

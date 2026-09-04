@@ -35,13 +35,62 @@ export function hashIpAddress(ip?: string): string | undefined {
 }
 
 /**
- * Persist or update session to PostgreSQL via Prisma with graceful fallback
+ * Persist or update session to PostgreSQL via Prisma with graceful fallback.
+ *
+ * Write coalescing: hot memory is always updated synchronously (it is the
+ * read path), but Postgres upserts are debounced to at most one per
+ * PERSIST_DEBOUNCE_MS per session. This removes the ~2.5s upsert storm
+ * that previously fired on every /api/context/events batch. Callers that
+ * must persist immediately (session init, GPS upgrade) pass
+ * `{ immediate: true }`.
  */
-export async function persistContextSession(graph: LaxvishContextGraph, clientIp?: string): Promise<void> {
-  // 1. Hot memory save
+const PERSIST_DEBOUNCE_MS = 15_000;
+const pendingPersistTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+export async function persistContextSession(
+  graph: LaxvishContextGraph,
+  clientIp?: string,
+  options?: { immediate?: boolean }
+): Promise<void> {
+  // 1. Hot memory save — synchronous, always
   saveSessionToMemory(graph.sessionId, graph);
 
-  // 2. Async Prisma DB save
+  // 2. Debounced Prisma DB save
+  const existingTimer = pendingPersistTimers.get(graph.sessionId);
+  if (existingTimer) {
+    clearTimeout(existingTimer);
+    pendingPersistTimers.delete(graph.sessionId);
+  }
+
+  if (options?.immediate) {
+    return writeContextSession(graph, clientIp);
+  }
+
+  return new Promise<void>((resolve) => {
+    const timer = setTimeout(() => {
+      pendingPersistTimers.delete(graph.sessionId);
+      void writeContextSession(graph, clientIp).finally(resolve);
+    }, PERSIST_DEBOUNCE_MS);
+    pendingPersistTimers.set(graph.sessionId, timer);
+  });
+}
+
+/**
+ * Force-flush any pending debounced persist for a session (test seam and
+ * graceful-shutdown hook).
+ */
+export function flushSession(sessionId: string): void {
+  const timer = pendingPersistTimers.get(sessionId);
+  if (!timer) return;
+  clearTimeout(timer);
+  pendingPersistTimers.delete(sessionId);
+  const graph = sessionStore.get(sessionId);
+  if (graph) {
+    void writeContextSession(graph);
+  }
+}
+
+async function writeContextSession(graph: LaxvishContextGraph, clientIp?: string): Promise<void> {
   const prisma = getPrismaClient();
   if (!prisma) return;
 
