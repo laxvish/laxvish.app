@@ -4,13 +4,9 @@ import { useState, useRef, useEffect, ChangeEvent, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getBookDemoUrl } from "@/lib/site-navigation";
 
-interface SolutionBlueprint {
-  workers: string;
-  brain: string;
-  brakes: string;
-  howItHelpsGrow: string[];
-  estimatedRoi: string;
-  timeToDeploy: string;
+interface ConversationTurn {
+  role: "user" | "assistant";
+  text: string;
 }
 
 interface AttachedDoc {
@@ -40,53 +36,8 @@ const ATTACHMENT_OPTIONS = [
   },
 ];
 
-const DEFAULT_BLUEPRINTS: Record<string, SolutionBlueprint> = {
-  logistics: {
-    workers:
-      "POD Vision Extraction Worker (auto-parses multi-page handwritten and scanned receipts, weighbridge slips, and toll logs).",
-    brain:
-      "Logistics Dispatch Mesh (reconciles trip logs against toll telemetry and pushes verified line-items directly into SAP/Tally).",
-    brakes:
-      "Consignee Tax & Weight Interlock (blocks invoice issuance if billed weight deviates from weighbridge telemetry).",
-    howItHelpsGrow: [
-      "Reconciliation cycle compressed from 7 days down to 45 minutes.",
-      "Zero invoice rejections from enterprise shippers (Tata, Reliance, ITC).",
-      "Saves 40+ hours per week of manual data entry per regional hub.",
-    ],
-    estimatedRoi: "₹24L annual operational savings + 3x faster shipper settlement",
-    timeToDeploy: "14-day production deployment",
-  },
-  finance: {
-    workers:
-      "3-Way AP Match Worker (cross-references purchase orders, goods receipts, and vendor tax invoices in real time).",
-    brain:
-      "Vendor Settlement Coordinator (triggers automated clarification requests on WhatsApp for detected discrepancies).",
-    brakes:
-      "ITC Lockout Brake (freezes payment disbursement on unverified GSTINs to eliminate tax compliance penalties).",
-    howItHelpsGrow: [
-      "Unlocks 100% of eligible Input Tax Credit (ITC) before monthly return deadlines.",
-      "Reduces invoice processing cost by 78% while maintaining audit-grade ledgers.",
-      "Automated resolution of vendor line-item disputes without phone tag.",
-    ],
-    estimatedRoi: "₹18L preserved tax credit + 4.2x faster supplier payouts",
-    timeToDeploy: "10-day pilot deployment",
-  },
-  general: {
-    workers:
-      "Autonomous Enterprise Task Workers (extract unstructured data, execute high-volume multi-system transactions).",
-    brain:
-      "Unified Process Mesh (coordinates real-time state across databases, ERPs, CRMs, and messaging channels).",
-    brakes:
-      "Policy & Deterministic Safety Brakes (enforces strict schema contracts, DPDP compliance, and financial authorization limits).",
-    howItHelpsGrow: [
-      "Up to 80% reduction in end-to-end process latency and operational overhead.",
-      "Zero data entry errors across connected operational systems.",
-      "Frees human teams to focus on revenue-generating exceptions and relationships.",
-    ],
-    estimatedRoi: "75% to 80% operational cost compression + instant SLA delivery",
-    timeToDeploy: "14-day turnkey enterprise setup",
-  },
-};
+const CONVERSATION_UNAVAILABLE_MESSAGE =
+  "Conversation is temporarily unavailable. Please try again.";
 
 export function ConversationalBox({ className = "" }: { className?: string }) {
   const [directive, setDirective] = useState("");
@@ -96,11 +47,14 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
     ".pdf,.xlsx,.csv,.docx,.txt,.png,.jpg,.jpeg,.webp"
   );
   const [isGenerating, setIsGenerating] = useState(false);
-  const [blueprintResult, setBlueprintResult] = useState<{
+  const [conversation, setConversation] = useState<{
     directiveText: string;
     attachedDocs: AttachedDoc[];
-    solution: SolutionBlueprint;
   } | null>(null);
+  const [turns, setTurns] = useState<ConversationTurn[]>([]);
+  const [followUp, setFollowUp] = useState("");
+  const [conversationError, setConversationError] = useState(false);
+  const requestSeqRef = useRef(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -163,42 +117,78 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
     setAttachedDocs((prev) => prev.filter((d) => d.name !== name));
   };
 
+  const buildOpeningContent = (text: string, docs: AttachedDoc[]): string => {
+    const trimmed = text.trim();
+    if (docs.length === 0) return trimmed;
+    const names = docs.map((d) => d.name).join(", ");
+    return trimmed
+      ? `${trimmed}\n[Attached files for context (names only): ${names}]`
+      : `Analyze attached files (${names}) and explain how Laxvish can help.`;
+  };
+
+  const postConversation = async (
+    history: ConversationTurn[],
+  ): Promise<boolean> => {
+    const seq = requestSeqRef.current + 1;
+    requestSeqRef.current = seq;
+    setIsGenerating(true);
+    setConversationError(false);
+    try {
+      const response = await fetch("/api/conversation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: history.slice(-20).map((t) => ({
+            role: t.role,
+            content: t.text,
+          })),
+        }),
+      });
+      const parsed = (await response.json().catch(() => null)) as {
+        reply?: unknown;
+      } | null;
+      if (!response.ok || typeof parsed?.reply !== "string" || !parsed.reply.trim()) {
+        if (requestSeqRef.current === seq) setConversationError(true);
+        return false;
+      }
+      if (requestSeqRef.current === seq) {
+        setTurns([...history, { role: "assistant", text: parsed.reply.trim() }]);
+      }
+      return true;
+    } catch {
+      if (requestSeqRef.current === seq) setConversationError(true);
+      return false;
+    } finally {
+      if (requestSeqRef.current === seq) setIsGenerating(false);
+    }
+  };
+
   const handleSynthesize = () => {
+    if (isGenerating) return;
     if (!directive.trim() && attachedDocs.length === 0) return;
 
-    setIsGenerating(true);
+    const opening = buildOpeningContent(directive, attachedDocs);
+    const history: ConversationTurn[] = [{ role: "user", text: opening }];
+    setConversation({
+      directiveText:
+        directive.trim() ||
+        `Analyze attached files (${attachedDocs.map((d) => d.name).join(", ")}) and explain how Laxvish can help.`,
+      attachedDocs: [...attachedDocs],
+    });
+    setTurns(history);
+    void postConversation(history);
+  };
 
-    setTimeout(() => {
-      setIsGenerating(false);
-
-      const lower = directive.toLowerCase();
-      let matchedSolution = DEFAULT_BLUEPRINTS.general;
-      if (
-        lower.includes("logistics") ||
-        lower.includes("pod") ||
-        lower.includes("fleet") ||
-        lower.includes("truck") ||
-        lower.includes("freight")
-      ) {
-        matchedSolution = DEFAULT_BLUEPRINTS.logistics;
-      } else if (
-        lower.includes("invoice") ||
-        lower.includes("gst") ||
-        lower.includes("vendor") ||
-        lower.includes("ap") ||
-        lower.includes("tax")
-      ) {
-        matchedSolution = DEFAULT_BLUEPRINTS.finance;
-      }
-
-      setBlueprintResult({
-        directiveText:
-          directive.trim() ||
-          `Analyze attached files (${attachedDocs.map((d) => d.name).join(", ")}) and synthesize enterprise Laxvish architecture.`,
-        attachedDocs: [...attachedDocs],
-        solution: matchedSolution,
-      });
-    }, 850);
+  const handleFollowUp = () => {
+    if (isGenerating) return;
+    if (!followUp.trim()) return;
+    const history: ConversationTurn[] = [
+      ...turns,
+      { role: "user", text: followUp.trim() },
+    ];
+    setTurns(history);
+    setFollowUp("");
+    void postConversation(history);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -208,8 +198,20 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
     }
   };
 
+  const handleFollowUpKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleFollowUp();
+    }
+  };
+
   const handleReset = () => {
-    setBlueprintResult(null);
+    requestSeqRef.current += 1;
+    setConversation(null);
+    setTurns([]);
+    setFollowUp("");
+    setConversationError(false);
+    setIsGenerating(false);
   };
 
   return (
@@ -227,7 +229,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
       />
 
       <AnimatePresence mode="wait">
-        {!blueprintResult ? (
+        {!conversation ? (
           /* ============================================================ */
           /* 1. MINIMAL AI SOLUTIONS OPERATIONAL SURFACE                  */
           /* ============================================================ */
@@ -376,10 +378,10 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             {/* Top Bar: Restrained Architectural Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 px-4 sm:px-6 py-2.5 border-b border-charcoal/10">
               <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
-                SYSTEM ARCHITECTURE DOSSIER
+                CONVERSATION RESPONSE
               </span>
               <span className="text-[10px] font-mono tracking-wider text-neonCyan uppercase">
-                LAXVISH BLUEPRINT · {blueprintResult.solution.timeToDeploy}
+                LAXVISH CONVERSATION · LIVE
               </span>
             </div>
 
@@ -389,10 +391,10 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                 <span>PROBLEM DIRECTIVE</span>
                 <span>STATUS: ANALYZED</span>
               </div>
-              <p className="leading-relaxed text-charcoal/90">{blueprintResult.directiveText}</p>
-              {blueprintResult.attachedDocs.length > 0 && (
+              <p className="leading-relaxed text-charcoal/90">{conversation.directiveText}</p>
+              {conversation.attachedDocs.length > 0 && (
                 <div className="pt-1 flex flex-wrap gap-2">
-                  {blueprintResult.attachedDocs.map((doc) => (
+                  {conversation.attachedDocs.map((doc) => (
                     <span
                       key={doc.name}
                       className="font-mono text-[10px] text-neonCyan"
@@ -404,63 +406,61 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
               )}
             </div>
 
-            {/* Architectural Pillars: Workers · Brain · Brakes (Clean Divided Grid) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-charcoal/10 border-b border-charcoal/10 text-xs">
-              {/* Workers */}
-              <div className="p-4 sm:p-6 space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
-                  01 // WORKERS
-                </span>
-                <p className="text-charcoal/85 leading-relaxed">
-                  {blueprintResult.solution.workers}
+            {/* Conversation Turns: genuine Laxvish replies, newest last */}
+            <div className="px-4 sm:px-6 py-4 space-y-4 border-b border-charcoal/10 text-xs">
+              <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
+                LAXVISH RESPONSE
+              </span>
+              {isGenerating && turns.every((t) => t.role === "user") && (
+                <p className="text-charcoal/85 leading-relaxed font-mono text-xs">
+                  Synthesizing...
                 </p>
-              </div>
-
-              {/* Brain */}
-              <div className="p-4 sm:p-6 space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
-                  02 // BRAIN
-                </span>
-                <p className="text-charcoal/85 leading-relaxed">
-                  {blueprintResult.solution.brain}
-                </p>
-              </div>
-
-              {/* Brakes */}
-              <div className="p-4 sm:p-6 space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
-                  03 // BRAKES
-                </span>
-                <p className="text-charcoal/85 leading-relaxed">
-                  {blueprintResult.solution.brakes}
-                </p>
-              </div>
+              )}
+              {turns
+                .filter((t) => t.role === "assistant")
+                .map((turn, idx) => (
+                  <p
+                    key={idx}
+                    className="text-charcoal/85 leading-relaxed whitespace-pre-line"
+                  >
+                    {turn.text}
+                  </p>
+                ))}
+              {conversationError && (
+                <div className="space-y-2">
+                  <p className="text-charcoal/85 leading-relaxed">
+                    {CONVERSATION_UNAVAILABLE_MESSAGE}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => void postConversation(turns)}
+                    className="text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer py-1"
+                  >
+                    Try again →
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Operational Impact & ROI */}
-            <div className="px-4 sm:px-6 py-4 space-y-3">
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
-                  QUANTIFIED OPERATIONAL IMPACT
-                </span>
-                <ul className="space-y-1 text-xs text-charcoal">
-                  {blueprintResult.solution.howItHelpsGrow.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <span className="text-neonCyan font-mono">·</span>
-                      <span className="leading-snug">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="pt-2 border-t border-charcoal/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-xs">
-                <span className="font-mono text-[10px] text-neonCyan uppercase tracking-wider">
-                  PROJECTED RETURN ON INVESTMENT:
-                </span>
-                <span className="font-medium text-charcoal">
-                  {blueprintResult.solution.estimatedRoi}
-                </span>
-              </div>
+            {/* Follow-up: continue the same conversation */}
+            <div className="px-4 sm:px-6 py-3 border-b border-charcoal/10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <textarea
+                rows={1}
+                value={followUp}
+                onChange={(e) => setFollowUp(e.target.value)}
+                onKeyDown={handleFollowUpKeyDown}
+                placeholder="Ask a follow-up..."
+                className="flex-1 resize-none bg-transparent font-sans text-xs sm:text-sm text-charcoal placeholder:text-neonCyan/40 focus:outline-none leading-relaxed"
+              />
+              <button
+                type="button"
+                onClick={handleFollowUp}
+                disabled={isGenerating || !followUp.trim()}
+                className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2 text-xs font-mono tracking-wider inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed w-full sm:w-auto text-center"
+              >
+                <span>Send</span>
+                <span>→</span>
+              </button>
             </div>
 
             {/* Footer Action Bar */}
@@ -479,7 +479,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                 rel="noopener noreferrer"
                 className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2.5 text-xs font-mono tracking-wider text-center"
               >
-                Book Working Session with this Blueprint →
+                Book Working Session →
               </a>
             </div>
           </motion.div>

@@ -13,9 +13,10 @@ const ROTATION_STAGES: NarrativeStage[] = [
   "synthesis",
 ];
 
-const ROTATION_INTERVAL_MS = 3000;
 const TRANSITION_MS = 550;
 const PARTIAL_FLUSH_MS = 150;
+const TYPEWRITER_TICK_MS = 28;
+const HOLD_DURATION_MS = 3000;
 
 function parseThoughtAndNarrative(raw: string): { thought: string; text: string } {
   if (!raw) return { thought: "", text: "" };
@@ -43,6 +44,13 @@ export function PersonalizedIntelligenceSection() {
   const [liveTexts, setLiveTexts] = useState<Partial<Record<NarrativeStage, string>>>({});
   const [liveThoughts, setLiveThoughts] = useState<Partial<Record<NarrativeStage, string>>>({});
   const [showInspector, setShowInspector] = useState<boolean>(false);
+  const [displayedLength, setDisplayedLength] = useState<number>(0);
+
+  const prefersReducedMotion = Boolean(
+    contextGraph.technical?.prefersReducedMotion ||
+      (typeof window !== "undefined" &&
+        window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches)
+  );
 
   const firedForSession = useRef<string>("");
   const abortRef = useRef<AbortController[]>([]);
@@ -154,14 +162,6 @@ export function PersonalizedIntelligenceSection() {
     });
   }, [sessionId]);
 
-  // Advance the active thought every 3 seconds.
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % ROTATION_STAGES.length);
-    }, ROTATION_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, []);
-
   const currentStage = ROTATION_STAGES[activeIndex];
 
   const currentText = useMemo(() => {
@@ -174,6 +174,60 @@ export function PersonalizedIntelligenceSection() {
     }
     return "Connecting to enterprise intelligence context...";
   }, [liveTexts, contextGraph.narratives, currentStage]);
+
+  // Reset typewriter on stage switch, or set full text when reduced motion is preferred.
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setDisplayedLength(currentText.length);
+    } else {
+      setDisplayedLength(0);
+    }
+  }, [activeIndex, prefersReducedMotion]);
+
+  // Incremental typewriter reveal toward currentText length at calm readable cadence
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setDisplayedLength(currentText.length);
+      return;
+    }
+
+    if (displayedLength >= currentText.length) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setDisplayedLength((prev) => {
+        if (prev >= currentText.length) {
+          return prev;
+        }
+        const remaining = currentText.length - prev;
+        const step = remaining > 160 ? 2 : 1;
+        return Math.min(prev + step, currentText.length);
+      });
+    }, TYPEWRITER_TICK_MS);
+
+    return () => clearTimeout(timer);
+  }, [currentText.length, displayedLength, prefersReducedMotion]);
+
+  // Completion-driven stage advance: hold completed text on screen before advancing
+  useEffect(() => {
+    // Stage NEVER advances while displayedLength < currentText.length
+    if (displayedLength < currentText.length || currentText.length === 0) {
+      return;
+    }
+
+    const holdTimer = setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % ROTATION_STAGES.length);
+    }, HOLD_DURATION_MS);
+
+    return () => clearTimeout(holdTimer);
+  }, [activeIndex, currentText.length, displayedLength]);
+
+  const displayedText = prefersReducedMotion
+    ? currentText
+    : currentText.slice(0, displayedLength);
+
+  const isTyping = !prefersReducedMotion && displayedLength < currentText.length;
 
   const currentThought = useMemo(() => {
     return (
@@ -199,7 +253,7 @@ export function PersonalizedIntelligenceSection() {
             <div className="flex items-center gap-3">
               <span className="inline-block w-1.5 h-1.5 bg-charcoal" />
               <span className="text-[11px] font-mono tracking-[0.2em] text-neonCyan uppercase">
-                {`MOMENT 0${activeIndex + 1} // ${currentStage.toUpperCase()}`}
+                {`MOMENT 0${activeIndex + 1} / 0${ROTATION_STAGES.length}`}
               </span>
             </div>
             <button
@@ -223,7 +277,13 @@ export function PersonalizedIntelligenceSection() {
                 transition={{ duration: TRANSITION_MS / 1000, ease: [0.4, 0, 0.2, 1] }}
                 className="text-[clamp(1.25rem,2.4vw,1.875rem)] font-normal leading-[1.5] tracking-[-0.01em] text-charcoal font-space-grotesk"
               >
-                {currentText}
+                {displayedText}
+                {isTyping && (
+                  <span
+                    aria-hidden="true"
+                    className="inline-block w-[2px] h-[0.9em] bg-charcoal ml-1.5 align-baseline animate-pulse"
+                  />
+                )}
               </motion.p>
             </AnimatePresence>
           </div>
@@ -240,7 +300,7 @@ export function PersonalizedIntelligenceSection() {
               >
                 <div className="bg-vaultAmber/40 border border-charcoal/15 p-5 sm:p-6 font-mono">
                   <div className="flex items-center justify-between text-[10px] tracking-[0.18em] text-neonCyan uppercase pb-3 border-b border-charcoal/10 mb-3">
-                    <span>REASONING TRACE // {currentStage.toUpperCase()}</span>
+                    <span>REASONING TRACE</span>
                     <span>CONFIDENCE: {(contextGraph.narratives[currentStage]?.confidence ?? 0.85) * 100}%</span>
                   </div>
                   <p className="text-xs sm:text-[13px] text-charcoal/90 leading-relaxed font-mono whitespace-pre-wrap">

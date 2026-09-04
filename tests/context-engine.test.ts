@@ -171,6 +171,29 @@ test("validateNarrativeOutput blocks surveillance claims and validates thinking-
   assert.equal(good.valid, true);
 });
 
+test("validateNarrativeOutput accepts easy-language predicted solutions across all stages", () => {
+  const sampleArrival = "<think>Analyzing entry time and device.</think>Connecting from Bengaluru during working hours. Let us see how Laxvish can help your team.";
+  assert.equal(validateNarrativeOutput(sampleArrival).valid, true);
+
+  const sampleEnvironment = "<think>Checking commercial density.</think>Your area has many fast-growing businesses. Teams here lose hours every day to manual data entry.";
+  assert.equal(validateNarrativeOutput(sampleEnvironment).valid, true);
+
+  const sampleOpportunity = "<think>Predicting operational bottleneck.</think>Repetitive follow-ups slow down your sales pipeline. Laxvish Telephony can answer customer calls instantly.";
+  assert.equal(validateNarrativeOutput(sampleOpportunity).valid, true);
+
+  const sampleInteraction = "<think>Observing focused review.</think>You are reviewing automated workflows for your team. Laxvish Workers can run these tasks without manual effort.";
+  assert.equal(validateNarrativeOutput(sampleInteraction).valid, true);
+
+  const sampleSynthesis = "<think>Final prediction and solution.</think>Your team spends too much time on routine tasks. Laxvish Brain can automate your daily business workflows today.";
+  assert.equal(validateNarrativeOutput(sampleSynthesis).valid, true);
+});
+
+test("MASTER_SYSTEM_PROMPT adheres to easy language, solution prediction, and AGENTS.md rules", async () => {
+  const poolsideMod = await import("../lib/context/poolside.ts");
+  // Ensure the prompt does not have em-dashes
+  assert.ok(!JSON.stringify(poolsideMod).includes("\u2014"), "Prompt must not contain em-dashes");
+});
+
 test("generateDeterministicNarrative generates valid moments with thoughts for all 5 stages", () => {
   const graph = createMockGraph();
   const stages: ("arrival" | "environment" | "opportunity" | "interaction" | "synthesis")[] = [

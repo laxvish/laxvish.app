@@ -57,6 +57,10 @@ next-env.d.ts
 # Agent-generated verification artifacts (screenshots, audits, DOM dumps)
 .screenshots/
 .artifacts/
+public/bs-test-*.png
+public/bs-test-verified-*.png
+public/browserstack-*.png
+public/browserstack-*.json
 
 # OS
 Thumbs.db
