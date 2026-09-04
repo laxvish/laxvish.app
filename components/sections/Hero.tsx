@@ -21,19 +21,22 @@ import {
 } from "@/lib/site-navigation";
 
 /**
- * Hero — Two-Phase Scroll Architecture with Post-Completion Hold.
+ * Hero — Two-Phase Responsive Scroll Architecture with Post-Completion Hold.
  *
- * Total Track Height: ~480vh
+ * Responsive Track Height:
+ * - Mobile: ~360vh (fluid touch scroll)
+ * - Tablet: ~420vh
+ * - Desktop: ~480vh
  *
- * PHASE 1 — Cinematic Transformation (0% -> 76% of track, ~365vh):
+ * PHASE 1 — Cinematic Transformation (0% -> 76% of track):
  * - animationProgress: 0.0 -> 1.0
- * - Hero copy dissolves upward.
- * - Monochrome Moon glides from right to horizontal center and scales up by 30% (1.00 -> 1.30).
+ * - Hero copy dissolves upward gracefully.
+ * - Monochrome Moon glides to horizontal center and scales up responsively.
  * - Internal disorganized chromatic dispersion swirls and develops into full iridescent rainbow spectrum.
- * - Minimal Gemini/ChatGPT prompt interface emerges directly beneath the Moon.
+ * - Minimal AI Solutions operational interface emerges directly beneath the Moon.
  * - By animationProgress = 1.0 (at section progress 0.76), transformation reaches 100%.
  *
- * PHASE 2 — Final State Hold (76% -> 100% of track, ~115vh):
+ * PHASE 2 — Final State Hold (76% -> 100% of track):
  * - animationProgress stays clamped at 1.0.
  * - Moon remains centered, at final scale, and fully colored.
  * - Moon's internal surface autonomously rotates 360 degrees around its own axis in place.
@@ -45,16 +48,29 @@ export function Hero() {
   const prefersReducedMotion = useReducedMotion();
   const motionEnabled = !prefersReducedMotion;
   const bookDemoUrl = getBookDemoUrl();
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [deviceTier, setDeviceTier] = useState<"mobile" | "tablet" | "desktop">("desktop");
+  const [isShortHeight, setIsShortHeight] = useState(false);
 
   useEffect(() => {
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
-    checkDesktop();
-    window.addEventListener("resize", checkDesktop);
-    return () => window.removeEventListener("resize", checkDesktop);
+    const checkViewport = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsShortHeight(height < 500);
+
+      if (width >= 1024) {
+        setDeviceTier("desktop");
+      } else if (width >= 768) {
+        setDeviceTier("tablet");
+      } else {
+        setDeviceTier("mobile");
+      }
+    };
+    checkViewport();
+    window.addEventListener("resize", checkViewport, { passive: true });
+    return () => window.removeEventListener("resize", checkViewport);
   }, []);
 
-  // 1. Normalized scroll progress across the ENTIRE 480vh track (0.0 -> 1.0)
+  // 1. Normalized scroll progress across the responsive track (0.0 -> 1.0)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -79,46 +95,56 @@ export function Hero() {
     : useTransform(scrollYProgress, () => 1.0);
 
   // ——— Hero Copy Transforms (Mapped strictly to animationProgress) ———
-  const rawHeroOpacity = useTransform(animationProgress, [0.06, 0.32], [1, 0]);
-  const rawHeroY = useTransform(animationProgress, [0.06, 0.32], [0, -32]);
+  const rawHeroOpacity = useTransform(animationProgress, [0.04, 0.30], [1, 0]);
+  const rawHeroY = useTransform(animationProgress, [0.04, 0.30], [0, -32]);
   const heroOpacity = motionEnabled ? rawHeroOpacity : 1;
   const heroY = motionEnabled ? rawHeroY : 0;
   const heroPointerEvents = useTransform(animationProgress, (v) =>
-    v > 0.32 ? "none" : "auto"
+    v > 0.30 ? "none" : "auto"
   );
 
   // ——— The Moon Trajectory & Scale Transforms (0.0 -> 1.0) ———
-  // Desktop: Glides from right-column (+26vw) to center (0vw). Mobile: Centered (0vw).
+  // Desktop: Glides from right-column (+26vw) to center (0vw).
+  // Tablet: Glides from right (+16vw) to center (0vw).
+  // Mobile: Centered (0vw).
+  const initialMoonShiftX =
+    deviceTier === "desktop" ? "26vw" : deviceTier === "tablet" ? "16vw" : "0vw";
+
   const rawMoonShiftX = useTransform(
     animationProgress,
-    [0.12, 0.85],
-    [isDesktop ? "26vw" : "0vw", "0vw"]
+    [0.10, 0.85],
+    [initialMoonShiftX, "0vw"]
   );
+
+  const initialMoonScale = deviceTier === "mobile" ? 0.80 : 1.0;
+  const finalMoonScale = deviceTier === "mobile" ? 1.10 : 1.30;
+
   const rawMoonScale = useTransform(
     animationProgress,
-    [0.12, 0.85],
-    [1.0, 1.30]
+    [0.10, 0.85],
+    [initialMoonScale, finalMoonScale]
   );
+
   const rawMoonShiftY = useTransform(
     animationProgress,
-    [0.12, 0.85],
-    [0, -12]
+    [0.10, 0.85],
+    [0, deviceTier === "mobile" ? -8 : -12]
   );
 
   const moonShiftX = motionEnabled ? rawMoonShiftX : "0vw";
   const moonShiftY = motionEnabled ? rawMoonShiftY : 0;
-  const moonScale = motionEnabled ? rawMoonScale : 1.0;
+  const moonScale = motionEnabled ? rawMoonScale : (deviceTier === "mobile" ? 1.0 : 1.2);
 
   // ——— Conversational Chatbox Emergence (0.0 -> 1.0) ———
-  const rawBoxOpacity = useTransform(animationProgress, [0.50, 0.88], [0, 1]);
-  const rawBoxY = useTransform(animationProgress, [0.50, 0.88], [32, 0]);
-  const rawBoxScale = useTransform(animationProgress, [0.50, 0.88], [0.97, 1.0]);
+  const rawBoxOpacity = useTransform(animationProgress, [0.48, 0.86], [0, 1]);
+  const rawBoxY = useTransform(animationProgress, [0.48, 0.86], [28, 0]);
+  const rawBoxScale = useTransform(animationProgress, [0.48, 0.86], [0.96, 1.0]);
 
   const boxOpacity = motionEnabled ? rawBoxOpacity : 1;
   const boxY = motionEnabled ? rawBoxY : 0;
   const boxScale = motionEnabled ? rawBoxScale : 1;
   const boxPointerEvents = useTransform(animationProgress, (v) =>
-    v > 0.55 ? "auto" : "none"
+    v > 0.52 ? "auto" : "none"
   );
 
   return (
@@ -126,21 +152,27 @@ export function Hero() {
       ref={containerRef}
       className="relative isolate border-b border-charcoal/10 bg-obsidian"
       style={{
-        minHeight: motionEnabled ? "480vh" : "auto",
+        minHeight: motionEnabled
+          ? deviceTier === "mobile"
+            ? "360vh"
+            : deviceTier === "tablet"
+            ? "420vh"
+            : "480vh"
+          : "auto",
       }}
     >
-      {/* Sticky Viewport Stage — Pinned during both Transformation & Hold Phases */}
+      {/* Sticky Viewport Stage: Pinned during both Transformation & Hold Phases */}
       <div
         className={
           motionEnabled
-            ? "sticky top-0 h-screen h-[100dvh] w-full overflow-hidden flex flex-col justify-center items-center"
-            : "relative w-full py-12 sm:py-20"
+            ? "sticky top-0 h-[100dvh] min-h-[100dvh] w-full overflow-hidden flex flex-col justify-center items-center"
+            : "relative w-full py-16 sm:py-24"
         }
       >
         {/* Immersive Intelligence Field Background */}
         <AIFabric />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-12 flex flex-col justify-center items-center">
+        <div className="relative z-10 mx-auto w-full max-w-[1440px] h-full px-5 sm:px-8 lg:px-12 flex items-center justify-center">
           
           {/* ============================================================ */}
           {/* LAYER 1: HERO COPY (Visible at Scroll 0, Dissolves on Scroll)*/}
@@ -151,43 +183,47 @@ export function Hero() {
               y: heroY,
               pointerEvents: motionEnabled ? heroPointerEvents : "auto",
             }}
-            className="w-full max-w-2xl lg:absolute lg:left-8 xl:left-16 lg:top-1/2 lg:-translate-y-1/2 z-10 will-change-transform pt-16 sm:pt-20 lg:pt-0"
+            className={`w-full max-w-2xl lg:absolute lg:left-8 xl:left-16 lg:top-1/2 lg:-translate-y-1/2 z-10 will-change-transform ${
+              isShortHeight
+                ? "pt-12 pb-2"
+                : "pt-16 sm:pt-20 lg:pt-0"
+            }`}
           >
             <FadeIn delay={0.1} yOffset={10}>
-              <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
-                An AI company — AI systems for Indian enterprise
+              <p className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+                An AI company · AI systems for Indian enterprise
               </p>
             </FadeIn>
 
-            <FadeIn delay={0.2} yOffset={20}>
-              <h1 className="mt-4 sm:mt-6 text-[clamp(2.05rem,4.5vw,3.6rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
+            <FadeIn delay={0.2} yOffset={14}>
+              <h1 className="mt-2.5 sm:mt-5 text-[clamp(1.75rem,4.5vw,3.5rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
                 We build AI systems that do the real work.
               </h1>
             </FadeIn>
 
-            <FadeIn delay={0.3} yOffset={20}>
-              <p className="mt-4 sm:mt-5 max-w-xl text-base sm:text-lg leading-relaxed tracking-wide text-charcoal/70">
+            <FadeIn delay={0.3} yOffset={14}>
+              <p className="mt-2.5 sm:mt-4 max-w-xl text-xs sm:text-base lg:text-lg leading-relaxed tracking-wide text-charcoal/70">
                 Workers execute. Brain coordinates. Brakes verify. Laxvish
                 engineers the systems, runs them on your rules, and hands you
-                finished work — you stay in control of every decision.
+                finished work: you stay in control of every decision.
               </p>
             </FadeIn>
 
-            <FadeIn delay={0.4} yOffset={20}>
-              <div className="mt-7 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5">
+            <FadeIn delay={0.4} yOffset={14}>
+              <div className="mt-4 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4">
                 <MagneticButton
                   as="a"
                   href={bookDemoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${BOOK_NOW_BUTTON_CLASS} w-full sm:w-auto text-center justify-center`}
+                  className={`${BOOK_NOW_BUTTON_CLASS} w-full sm:w-auto text-center justify-center py-2.5 sm:py-3.5 text-xs sm:text-sm`}
                 >
                   <span>Book a working session</span>
                 </MagneticButton>
                 <MagneticButton
                   as={Link}
                   href="/solutions"
-                  className={`${SECONDARY_HERO_CTA_CLASS} w-full sm:w-auto text-center justify-center`}
+                  className={`${SECONDARY_HERO_CTA_CLASS} w-full sm:w-auto text-center justify-center py-2.5 sm:py-3.5 text-xs sm:text-sm`}
                 >
                   See what we automate
                 </MagneticButton>
@@ -196,7 +232,7 @@ export function Hero() {
 
             {/* Provenance line */}
             <FadeIn delay={0.5} yOffset={10}>
-              <p className="mt-7 sm:mt-10 border-t border-charcoal/20 pt-4 text-[10px] sm:text-xs font-medium tracking-[0.18em] text-neonCyan uppercase">
+              <p className="mt-4 sm:mt-7 border-t border-charcoal/20 pt-2.5 sm:pt-4 text-[9px] sm:text-xs font-medium tracking-[0.16em] sm:tracking-[0.18em] text-neonCyan uppercase">
                 Made in India&ensp;·&ensp;DPDP-ready&ensp;·&ensp;You stay in
                 control
               </p>
@@ -206,7 +242,7 @@ export function Hero() {
           {/* ============================================================ */}
           {/* LAYER 2: CELESTIAL STAGE (Moon + Minimal Solution Chatbox)   */}
           {/* ============================================================ */}
-          <div className="w-full flex flex-col items-center justify-center z-20">
+          <div className="w-full flex flex-col items-center justify-center z-20 pointer-events-none absolute inset-0 pt-16 sm:pt-20 pb-4 px-4 sm:px-8">
             
             {/* ——— The Moon: Floats directly above the chatbox ——— */}
             <motion.div
@@ -215,7 +251,11 @@ export function Hero() {
                 y: motionEnabled ? moonShiftY : 0,
                 scale: motionEnabled ? moonScale : 1,
               }}
-              className="w-full max-w-[170px] sm:max-w-[210px] lg:max-w-[260px] mx-auto will-change-transform z-30"
+              className={`w-full mx-auto will-change-transform z-30 ${
+                isShortHeight
+                  ? "max-w-[95px] max-h-[110px]"
+                  : "max-w-[130px] xs:max-w-[160px] sm:max-w-[200px] lg:max-w-[250px]"
+              }`}
             >
               <TheMoon
                 progress={motionEnabled ? animationProgress : undefined}
@@ -231,7 +271,7 @@ export function Hero() {
                 scale: boxScale,
                 pointerEvents: motionEnabled ? boxPointerEvents : "auto",
               }}
-              className="w-full -mt-3 sm:-mt-5 lg:-mt-6 will-change-transform z-40"
+              className="w-full max-w-xl sm:max-w-2xl lg:max-w-3xl -mt-2 sm:-mt-4 lg:-mt-6 will-change-transform z-40 px-2 sm:px-0"
             >
               <ConversationalBox />
             </motion.div>

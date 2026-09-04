@@ -189,26 +189,29 @@ export function CareersApplicationPanel() {
     }
   };
 
+  const INPUT_CLASS =
+    "w-full rounded-[2px] border border-charcoal/20 bg-obsidian px-3.5 py-2.5 text-base text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1";
+
+  const LABEL_CLASS =
+    "mb-1.5 block text-xs font-mono font-medium tracking-wide uppercase text-charcoal";
+
   return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6 sm:py-16 lg:py-20">
-      <div className="rounded-none border border-charcoal/20 bg-vaultAmber/30 p-6 sm:p-8">
-        <h2 className="text-3xl font-bold text-neonCyan [font-family:var(--font-space-grotesk)] sm:text-4xl">
+    <section className="mx-auto w-full max-w-4xl px-5 py-14 sm:px-10 sm:py-16 lg:py-20">
+      <div className="border border-charcoal/20 bg-vaultAmber/40 p-6 sm:p-10 lg:p-12">
+        <p className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase mb-2 sm:mb-3">
+          Careers at Laxvish
+        </p>
+        <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
           Apply to build enterprise AI with us
         </h2>
-        <p className="mt-3 text-sm text-charcoal/80">
+        <p className="mt-3 text-sm sm:text-base leading-relaxed text-charcoal/70">
           Choose a track and share only the details we need to evaluate your application.
         </p>
-        <p className="mt-2 text-sm text-charcoal/80">
-          Fields marked with <span aria-hidden="true">*</span> are required.
-        </p>
 
-        <form className="mt-7 grid gap-4 sm:grid-cols-2" onSubmit={onSubmit} noValidate>
+        <form className="mt-7 sm:mt-9 grid gap-5 sm:grid-cols-2" onSubmit={onSubmit} noValidate>
           <div>
-            <label
-              htmlFor="career-name"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
-            >
-              Full name <span aria-hidden="true">*</span>
+            <label htmlFor="career-name" className={LABEL_CLASS}>
+              Full name *
             </label>
             <input
               id="career-name"
@@ -219,21 +222,18 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.name)}
               aria-describedby={errors.name ? "career-name-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
+              className={INPUT_CLASS}
             />
             {errors.name ? (
-              <p id="career-name-error" className="mt-1 text-sm font-medium text-charcoal">
+              <p id="career-name-error" className="mt-1 text-xs font-medium text-charcoal">
                 {errors.name}
               </p>
             ) : null}
           </div>
 
           <div>
-            <label
-              htmlFor="career-workEmail"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
-            >
-              Email <span aria-hidden="true">*</span>
+            <label htmlFor="career-workEmail" className={LABEL_CLASS}>
+              Email *
             </label>
             <input
               id="career-workEmail"
@@ -244,21 +244,18 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.workEmail)}
               aria-describedby={errors.workEmail ? "career-workEmail-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
+              className={INPUT_CLASS}
             />
             {errors.workEmail ? (
-              <p id="career-workEmail-error" className="mt-1 text-sm font-medium text-charcoal">
+              <p id="career-workEmail-error" className="mt-1 text-xs font-medium text-charcoal">
                 {errors.workEmail}
               </p>
             ) : null}
           </div>
 
           <div>
-            <label
-              htmlFor="career-phone"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
-            >
-              Phone <span aria-hidden="true">*</span>
+            <label htmlFor="career-phone" className={LABEL_CLASS}>
+              Phone *
             </label>
             <input
               id="career-phone"
@@ -269,21 +266,18 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.phone)}
               aria-describedby={errors.phone ? "career-phone-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
+              className={INPUT_CLASS}
             />
             {errors.phone ? (
-              <p id="career-phone-error" className="mt-1 text-sm font-medium text-charcoal">
+              <p id="career-phone-error" className="mt-1 text-xs font-medium text-charcoal">
                 {errors.phone}
               </p>
             ) : null}
           </div>
 
           <div>
-            <label
-              htmlFor="career-roleTrack"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
-            >
-              Role track <span aria-hidden="true">*</span>
+            <label htmlFor="career-roleTrack" className={LABEL_CLASS}>
+              Role track *
             </label>
             <select
               id="career-roleTrack"
@@ -292,24 +286,21 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.roleTrack)}
               aria-describedby={errors.roleTrack ? "career-roleTrack-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
+              className={INPUT_CLASS}
             >
               <option value="internship">Internship</option>
               <option value="full-time">Full-time job</option>
             </select>
             {errors.roleTrack ? (
-              <p id="career-roleTrack-error" className="mt-1 text-sm font-medium text-charcoal">
+              <p id="career-roleTrack-error" className="mt-1 text-xs font-medium text-charcoal">
                 {errors.roleTrack}
               </p>
             ) : null}
           </div>
 
           <div>
-            <label
-              htmlFor="career-portfolioUrl"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
-            >
-              Portfolio or LinkedIn URL <span aria-hidden="true">*</span>
+            <label htmlFor="career-portfolioUrl" className={LABEL_CLASS}>
+              Portfolio or LinkedIn URL *
             </label>
             <input
               id="career-portfolioUrl"
@@ -320,21 +311,18 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.portfolioUrl)}
               aria-describedby={errors.portfolioUrl ? "career-portfolioUrl-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
+              className={INPUT_CLASS}
             />
             {errors.portfolioUrl ? (
-              <p id="career-portfolioUrl-error" className="mt-1 text-sm font-medium text-charcoal">
+              <p id="career-portfolioUrl-error" className="mt-1 text-xs font-medium text-charcoal">
                 {errors.portfolioUrl}
               </p>
             ) : null}
           </div>
 
           <div>
-            <label
-              htmlFor="career-resumeUrl"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
-            >
-              Resume URL <span aria-hidden="true">*</span>
+            <label htmlFor="career-resumeUrl" className={LABEL_CLASS}>
+              Resume URL *
             </label>
             <input
               id="career-resumeUrl"
@@ -345,34 +333,31 @@ export function CareersApplicationPanel() {
               aria-required="true"
               aria-invalid={Boolean(errors.resumeUrl)}
               aria-describedby={errors.resumeUrl ? "career-resumeUrl-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
+              className={INPUT_CLASS}
             />
             {errors.resumeUrl ? (
-              <p id="career-resumeUrl-error" className="mt-1 text-sm font-medium text-charcoal">
+              <p id="career-resumeUrl-error" className="mt-1 text-xs font-medium text-charcoal">
                 {errors.resumeUrl}
               </p>
             ) : null}
           </div>
 
           <div className="sm:col-span-2">
-            <label
-              htmlFor="career-whyJoin"
-              className="mb-1.5 block text-sm font-medium text-charcoal"
-            >
-              Why do you want to join Laxvish? <span aria-hidden="true">*</span>
+            <label htmlFor="career-whyJoin" className={LABEL_CLASS}>
+              Why do you want to join Laxvish? *
             </label>
             <textarea
               id="career-whyJoin"
               value={formData.whyJoin}
               onChange={updateField("whyJoin")}
-              rows={5}
+              rows={4}
               aria-required="true"
               aria-invalid={Boolean(errors.whyJoin)}
               aria-describedby={errors.whyJoin ? "career-whyJoin-error" : undefined}
-              className="w-full rounded-lg border border-charcoal/30 bg-vaultAmber px-4 py-3 text-sm text-charcoal focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1"
+              className={INPUT_CLASS}
             />
             {errors.whyJoin ? (
-              <p id="career-whyJoin-error" className="mt-1 text-sm font-medium text-charcoal">
+              <p id="career-whyJoin-error" className="mt-1 text-xs font-medium text-charcoal">
                 {errors.whyJoin}
               </p>
             ) : null}
@@ -389,25 +374,30 @@ export function CareersApplicationPanel() {
             className="hidden"
           />
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="mt-2 inline-flex items-center justify-center bg-charcoal px-6 py-3 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 hover:bg-neonCyan disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 sm:w-fit"
-          >
-            {isSubmitting ? "Submitting..." : "Submit application"}
-          </button>
+          <div className="sm:col-span-2 mt-2">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex w-full sm:w-auto items-center justify-center bg-charcoal px-8 py-3.5 text-xs sm:text-sm font-medium tracking-wide text-obsidian transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 hover:bg-neonCyan disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+            >
+              {isSubmitting ? "Submitting..." : "Submit application"}
+            </button>
+          </div>
         </form>
 
-        <p className="mt-4 text-sm text-charcoal/80">
+        <p className="mt-5 text-xs text-charcoal/70">
           We review applications based on skills and role fit. Please avoid sharing sensitive personal data beyond what this form requests.
         </p>
 
         {feedback.status !== "idle" ? (
           <p
-            className={`mt-4 text-sm ${feedback.status === "success" ? "text-neonCyan" : "text-charcoal"}`}
+            className="mt-4 text-xs sm:text-sm font-medium tracking-wide text-charcoal"
             role="status"
             aria-live="polite"
           >
+            <span className="uppercase font-mono tracking-[0.2em] text-neonCyan">
+              {feedback.status === "success" ? "Received: " : "Not sent: "}
+            </span>
             {feedback.message}
             {feedback.referenceId ? ` Reference: ${feedback.referenceId}` : ""}
           </p>

@@ -30,26 +30,26 @@ const features: CallmeFeature[] = [
 ];
 
 /**
- * CallMe — split composition (copy + tactile acoustic image left, feature spec list right).
+ * CallMe: split composition (copy + tactile acoustic image left, feature spec list right).
  */
 export function CallmeSection() {
   return (
     <section className="relative z-10 border-y border-charcoal/10 bg-vaultAmber">
-      <div className="mx-auto grid w-full max-w-[1440px] gap-10 sm:gap-14 lg:grid-cols-2 lg:gap-16 px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
+      <div className="mx-auto grid w-full max-w-[1440px] gap-10 sm:gap-14 lg:grid-cols-2 lg:gap-16 px-5 py-14 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
         <div className="flex flex-col justify-between">
           <div>
             <FadeIn>
-              <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
-                CallMe — Enterprise AI Voice Agent
+              <p className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+                CallMe · Enterprise AI Voice Agent
               </p>
             </FadeIn>
             <FadeIn delay={0.1}>
-              <h2 className="mt-4 sm:mt-5 text-[clamp(1.85rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
+              <h2 className="mt-3 sm:mt-5 text-[clamp(1.75rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
                 Voice AI for enterprise conversations.
               </h2>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <p className="mt-4 sm:mt-5 max-w-lg text-base sm:text-lg leading-relaxed text-charcoal/70">
+              <p className="mt-3 sm:mt-5 max-w-lg text-sm sm:text-base lg:text-lg leading-relaxed text-charcoal/70">
                 Deploy an enterprise AI voice agent that handles calls with natural
                 conversation, compliance-grade controls, and seamless workflow
                 integration.
@@ -57,7 +57,7 @@ export function CallmeSection() {
             </FadeIn>
           </div>
 
-          <FadeIn delay={0.25} className="my-8 sm:my-10">
+          <FadeIn delay={0.25} className="my-6 sm:my-10">
             <div className="relative w-full max-w-full overflow-hidden border border-charcoal/20 bg-obsidian group">
               <Image
                 src="/images/editorial-voice-dialogue.png"
@@ -67,7 +67,7 @@ export function CallmeSection() {
                 sizes="(max-width: 768px) 100vw, 600px"
                 className="h-auto w-full max-w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               />
-              <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-3 sm:px-4 py-2 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.14em] sm:tracking-[0.18em] text-neonCyan">
+              <div className="flex items-center justify-between border-t border-charcoal/10 bg-obsidian/95 px-3 sm:px-4 py-2 text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.14em] sm:tracking-[0.18em] text-neonCyan">
                 <span className="truncate pr-2">FIG. 01 / REALTIME VOICE INTELLIGENCE</span>
                 <span className="shrink-0">RAW 16:9</span>
               </div>
@@ -79,7 +79,7 @@ export function CallmeSection() {
               <MagneticButton
                 as={Link}
                 href="/callme"
-                className={`${SECONDARY_HERO_CTA_CLASS} w-full sm:w-auto text-center justify-center`}
+                className={`${SECONDARY_HERO_CTA_CLASS} w-full sm:w-auto text-center justify-center py-3 text-xs sm:text-sm`}
               >
                 Explore CallMe
               </MagneticButton>
@@ -89,20 +89,20 @@ export function CallmeSection() {
 
         {/* Numbered spec list */}
         <FadeIn delay={0.2} className="flex flex-col justify-center">
-          <ul className="border-t border-charcoal">
+          <ul className="border-t border-charcoal/20">
             {features.map((feature, i) => (
               <li
                 key={feature.title}
-                className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-charcoal/20 py-6 sm:py-7"
+                className="grid grid-cols-[2rem_1fr] sm:grid-cols-[2.5rem_1fr] gap-x-3 sm:gap-x-4 border-b border-charcoal/20 py-5 sm:py-7"
               >
-                <span className="text-xs sm:text-sm font-medium tracking-[0.2em] text-neonCyan pt-0.5">
+                <span className="text-xs sm:text-sm font-mono font-medium tracking-[0.2em] text-neonCyan pt-0.5">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-normal tracking-tight text-charcoal">
+                  <h3 className="text-base sm:text-xl font-normal tracking-tight text-charcoal">
                     {feature.title}
                   </h3>
-                  <p className="mt-1.5 max-w-md text-base leading-relaxed text-charcoal/70">
+                  <p className="mt-1 max-w-md text-xs sm:text-base leading-relaxed text-charcoal/70">
                     {feature.description}
                   </p>
                 </div>

@@ -35,9 +35,9 @@ const actionLabels: Record<LeadCaptureAction, string> = {
 
 // Visible label styling: uppercase overline, per AGENTS.md §2.
 const LABEL_CLASS =
-  "mb-2 block text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.2em] text-neonCyan";
+  "mb-2 block text-[10px] sm:text-[11px] font-mono font-medium uppercase tracking-[0.2em] text-neonCyan";
 
-// Underline field with a crisp, colour-free focus indicator (WCAG 2.4.7).
+// Underline field with a crisp, colour-free focus indicator (WCAG 2.4.7) and 16px minimum text to prevent iOS zoom.
 const FIELD_CLASS =
   "border-b border-charcoal/40 bg-transparent px-2 py-2.5 text-base text-charcoal placeholder:text-neonCyan/70 focus-visible:border-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber";
 
@@ -118,26 +118,26 @@ export function ContactPanel() {
   return (
     <section
       id="contact"
-      className="mx-auto w-full max-w-4xl px-5 py-16 sm:px-10 sm:py-20 lg:py-28"
+      className="mx-auto w-full max-w-4xl px-5 py-14 sm:px-10 sm:py-20 lg:py-28"
     >
       <SystemPanel className="border border-charcoal bg-vaultAmber p-6 sm:p-10 lg:p-12">
-        <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase mb-3">
+        <p className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase mb-2 sm:mb-3">
           Direct engagement
         </p>
-        <h2 className="text-[clamp(1.85rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
+        <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
           Let’s talk about your work.
         </h2>
-        <p className="mt-3 sm:mt-4 text-base sm:text-lg leading-relaxed text-charcoal/70">
-          Tell us what you want to automate. We’ll show you what’s possible — honestly, in plain language.
+        <p className="mt-2 sm:mt-4 text-sm sm:text-base lg:text-lg leading-relaxed text-charcoal/70">
+          Tell us what you want to automate. We’ll show you what’s possible: honestly, in plain language.
         </p>
 
-        <div className="mt-8 sm:mt-10 grid gap-3 sm:grid-cols-2">
+        <div className="mt-6 sm:mt-10 grid gap-3 sm:grid-cols-2">
           <motion.button
             type="button"
             onClick={() => setAction("pilot")}
             whileHover={{ scale: 1.01, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
             whileTap={{ scale: 0.98, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className={`border px-5 py-3.5 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
+            className={`border px-5 py-3.5 text-left text-xs sm:text-sm font-medium tracking-wide transition-colors duration-300 cursor-pointer ${
               action === "pilot"
                 ? "border-charcoal bg-charcoal text-obsidian"
                 : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
@@ -150,7 +150,7 @@ export function ContactPanel() {
             onClick={() => setAction("blueprint")}
             whileHover={{ scale: 1.01, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
             whileTap={{ scale: 0.98, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-            className={`border px-5 py-3.5 text-left text-sm font-medium tracking-wide transition-colors duration-300 ${
+            className={`border px-5 py-3.5 text-left text-xs sm:text-sm font-medium tracking-wide transition-colors duration-300 cursor-pointer ${
               action === "blueprint"
                 ? "border-charcoal bg-charcoal text-obsidian"
                 : "border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal"
@@ -241,7 +241,7 @@ export function ContactPanel() {
               disabled={isSubmitting}
               whileHover={{ scale: 1.01, transition: { duration: ExecutionPhase.duration.micro, ease: ExecutionPhase.ease } }}
               whileTap={{ scale: 0.98, transition: { duration: ValidationPhase.duration.standard, ease: ValidationPhase.ease } }}
-              className="inline-flex w-full sm:w-auto items-center justify-center bg-charcoal px-8 py-3.5 text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber disabled:opacity-50 hover:bg-neonCyan"
+              className="inline-flex w-full sm:w-auto items-center justify-center bg-charcoal px-8 py-3.5 text-xs sm:text-sm font-medium tracking-wide text-obsidian transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-vaultAmber disabled:opacity-50 hover:bg-neonCyan cursor-pointer"
             >
               {isSubmitting ? "Capturing..." : actionLabels[action]}
             </motion.button>
@@ -253,10 +253,10 @@ export function ContactPanel() {
             id="lead-feedback"
             role="status"
             aria-live="polite"
-            className="mt-6 text-sm font-medium tracking-wide text-charcoal"
+            className="mt-6 text-xs sm:text-sm font-medium tracking-wide text-charcoal"
           >
-            <span className="uppercase tracking-[0.2em] text-neonCyan">
-              {feedback.status === "success" ? "Received — " : "Not sent — "}
+            <span className="uppercase font-mono tracking-[0.2em] text-neonCyan">
+              {feedback.status === "success" ? "Received: " : "Not sent: "}
             </span>
             {feedback.message}
             {feedback.referenceId ? ` Reference: ${feedback.referenceId}` : ""}

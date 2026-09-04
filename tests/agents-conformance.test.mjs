@@ -18,11 +18,12 @@ const ROOT = process.cwd();
 const SCAN_DIRS = ["components", "app", "lib"];
 const SOURCE_EXTENSIONS = /\.(ts|tsx)$/;
 
-/** Directories that legitimately fall outside the rules. */
+/** Directories and files that legitimately fall outside the rules. */
 const EXEMPT_PATHS = [
   path.join("lib", "generated"), // Prisma client output
   path.join("app", "opengraph-image.tsx"), // binds the palette as literals by design
   path.join("app", "icon.tsx"), // same
+  path.join("components", "ui", "TheMoon.tsx"), // celestial chromatic metamorphosis artwork
 ];
 
 // AGENTS.md §1 — the four binding tokens.

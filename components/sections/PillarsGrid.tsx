@@ -35,7 +35,7 @@ const pillars: Pillar[] = [
 ];
 
 /**
- * Pillars — "three layers" rendered as an engineering spec band.
+ * Pillars: "three layers" rendered as an engineering spec band.
  *
  * Numbered rows separated by hairlines (01 / 02 / 03) instead of three equal
  * cards: reads as machine documentation, keeps focal hierarchy, and avoids
@@ -45,21 +45,21 @@ export function PillarsGrid() {
   return (
     <section
       id="pillars"
-      className="relative z-10 mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28"
+      className="relative z-10 mx-auto w-full max-w-[1440px] px-5 py-14 sm:px-10 sm:py-20 lg:px-16 lg:py-28"
     >
       <div className="max-w-3xl">
         <FadeIn>
-          <p className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
+          <p className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
             The system architecture
           </p>
         </FadeIn>
         <FadeIn delay={0.1}>
-          <h2 className="mt-4 sm:mt-5 text-[clamp(1.85rem,4vw,3.25rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
+          <h2 className="mt-3 sm:mt-5 text-[clamp(1.75rem,4vw,3.25rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
             Three layers. One AI orchestration system.
           </h2>
         </FadeIn>
         <FadeIn delay={0.2}>
-          <p className="mt-4 sm:mt-5 max-w-xl text-base sm:text-lg leading-relaxed tracking-wide text-charcoal/70">
+          <p className="mt-3 sm:mt-5 max-w-xl text-sm sm:text-base lg:text-lg leading-relaxed tracking-wide text-charcoal/70">
             Workers execute. Brain coordinates. Brakes verify. Three foundational
             layers that make enterprise AI easier to deploy, govern, and scale
             with confidence.
@@ -67,26 +67,26 @@ export function PillarsGrid() {
         </FadeIn>
       </div>
 
-      <FadeInStagger className="mt-12 sm:mt-16">
-        <ul className="border-t border-charcoal">
+      <FadeInStagger className="mt-10 sm:mt-16">
+        <ul className="border-t border-charcoal/20">
           {pillars.map((pillar) => (
             <li key={pillar.index} className="border-b border-charcoal/20">
               <FadeIn>
                 <Link
                   href={pillar.href}
-                  className="group grid grid-cols-[2.5rem_1fr] items-start gap-x-4 gap-y-2 py-7 sm:grid-cols-[3.5rem_1fr] sm:py-8 lg:grid-cols-[4.5rem_minmax(0,16rem)_1fr_auto] lg:items-start lg:gap-x-10 transition-colors duration-300 hover:bg-vaultAmber/40"
+                  className="group grid grid-cols-[2.5rem_1fr] items-start gap-x-3 sm:gap-x-4 gap-y-2 py-6 sm:py-8 lg:grid-cols-[4.5rem_minmax(0,16rem)_1fr_auto] lg:items-start lg:gap-x-10 transition-colors duration-200 hover:bg-vaultAmber/40 px-2 -mx-2 sm:px-3 sm:-mx-3"
                 >
-                  <span className="text-xs sm:text-sm font-medium tracking-[0.2em] text-neonCyan pt-1">
+                  <span className="text-xs sm:text-sm font-mono font-medium tracking-[0.2em] text-neonCyan pt-1">
                     {pillar.index}
                   </span>
-                  <h3 className="text-2xl sm:text-3xl font-normal tracking-tight text-charcoal lg:text-4xl">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-normal tracking-tight text-charcoal">
                     {pillar.title}
                   </h3>
-                  <p className="col-span-2 sm:col-span-1 max-w-xl text-base leading-relaxed text-charcoal/70 mt-1 sm:mt-0">
+                  <p className="col-span-2 sm:col-span-1 max-w-xl text-sm sm:text-base leading-relaxed text-charcoal/70 mt-1 sm:mt-0">
                     {pillar.description}
                   </p>
-                  <span className="col-span-2 sm:col-span-1 pt-2 sm:pt-0 text-sm font-medium tracking-wide text-charcoal underline decoration-charcoal/20 underline-offset-4 transition-colors duration-300 group-hover:decoration-charcoal lg:text-right">
-                    Learn more
+                  <span className="col-span-2 sm:col-span-1 pt-1.5 sm:pt-0 text-xs sm:text-sm font-medium tracking-wide text-charcoal underline decoration-charcoal/20 underline-offset-4 transition-colors duration-200 group-hover:decoration-charcoal lg:text-right">
+                    Learn more →
                   </span>
                 </Link>
               </FadeIn>

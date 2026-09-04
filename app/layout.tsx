@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
@@ -17,6 +17,15 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
+
+// Viewport configuration supporting safe areas, iOS Dynamic Island, and device pixel density
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#FAFAFA",
+};
 
 // 1. Merge your ROOT_METADATA with applicationName to explicitly state the brand name
 export const metadata: Metadata = {

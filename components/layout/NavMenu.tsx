@@ -8,22 +8,14 @@ interface NavMenuProps {
   className?: string;
 }
 
-const getLinkClassName = (isActive: boolean): string =>
-  [
-    "rounded-full px-3 py-1.5 text-sm transition-colors duration-200",
-    isActive
-      ? "bg-charcoal/10 text-neonCyan"
-      : "text-charcoal/75 hover:text-neonCyan",
-  ].join(" ");
-
 export function NavMenu({
   links,
   pathname,
   onNavigate,
-  className,
+  className = "",
 }: NavMenuProps) {
   return (
-    <nav className={className}>
+    <nav className={className} aria-label="Main Navigation">
       {links.map((item) => {
         const isActive = pathname === item.href;
 
@@ -31,7 +23,11 @@ export function NavMenu({
           <Link
             key={item.href}
             href={item.href}
-            className={getLinkClassName(isActive)}
+            className={`text-sm tracking-wide transition-colors duration-200 py-1 px-1.5 ${
+              isActive
+                ? "text-charcoal font-semibold border-b border-charcoal"
+                : "text-charcoal/70 hover:text-charcoal"
+            }`}
             onClick={onNavigate}
             aria-current={isActive ? "page" : undefined}
           >

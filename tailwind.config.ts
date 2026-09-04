@@ -7,6 +7,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: "400px", // wide phones between sm (640px) and compact phones (320px)
+      },
       colors: {
         obsidian: "#FAFAFA", // ultra-minimal base (off-white)
         neonCyan: "#666666", // muted secondary text/elements

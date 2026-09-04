@@ -1,16 +1,60 @@
 @config "../tailwind.config.ts";
 @import "tailwindcss";
 
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   @apply bg-obsidian text-charcoal antialiased;
   font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100dvh;
 }
 
-/* Display headline typography — Space Grotesk (AGENTS.md §2).
+/* Display headline typography: Space Grotesk (AGENTS.md §2).
    Applied once so every live h1/h2/h3 renders the display face; body stays Inter. */
 h1,
 h2,
 h3,
 .font-display {
   font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
+}
+
+/* Prevent iOS Safari 16px auto-zoom while maintaining crisp minimalist layout */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+@media (min-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: inherit;
+  }
+}
+
+/* Utility to support safe-area insets */
+.pt-safe {
+  padding-top: max(1rem, var(--safe-area-top));
+}
+.pb-safe {
+  padding-bottom: max(1rem, var(--safe-area-bottom));
+}
+.pl-safe {
+  padding-left: max(1rem, var(--safe-area-left));
+}
+.pr-safe {
+  padding-right: max(1rem, var(--safe-area-right));
 }

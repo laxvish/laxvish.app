@@ -9,7 +9,7 @@ import { getUseCasesByCategory } from "@/lib/use-cases";
 export const metadata: Metadata = buildPageMetadata({
   title: "AI Automations for Every Part of Your Business",
   description:
-    "Laxvish builds AI workers that take over the repetitive work in your business — sales, support, operations, finance, IT, and more. Built for Indian enterprises. DPDP-ready.",
+    "Laxvish builds AI workers that take over the repetitive work in your business: sales, support, operations, finance, IT, and more. Built for Indian enterprises. DPDP-ready.",
   path: "/solutions",
   keywords: [
     "ai automation for business",
@@ -51,28 +51,28 @@ export default function SolutionsPage() {
         internalLinks={content.internalLinks}
       />
 
-      {/* All capabilities — grouped by category */}
-      <section className="relative z-10 mx-auto w-full max-w-[1440px] border-t border-charcoal/10 px-6 py-24 sm:px-12 lg:px-16 lg:py-32">
-        <h2 className="max-w-3xl text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.05] tracking-tight text-charcoal">
+      {/* All capabilities: grouped by category */}
+      <section className="relative z-10 mx-auto w-full max-w-[1440px] border-t border-charcoal/10 px-5 py-14 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
+        <h2 className="max-w-3xl text-[clamp(1.75rem,4vw,3rem)] font-normal leading-[1.08] tracking-tight text-charcoal">
           All of what we automate
         </h2>
-        <div className="mt-16 space-y-20">
+        <div className="mt-10 sm:mt-16 space-y-12 sm:space-y-16">
           {Object.entries(grouped).map(([category, useCases]) => (
             <div key={category}>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neonCyan">
+              <p className="text-[10px] sm:text-xs font-mono font-semibold uppercase tracking-[0.2em] text-neonCyan">
                 {category}
               </p>
-              <ul className="mt-8 border-t border-charcoal/20">
+              <ul className="mt-4 sm:mt-6 border-t border-charcoal/20">
                 {useCases.map((uc) => (
                   <li
                     key={uc.slug}
-                    className="border-b border-charcoal/20 py-5 sm:py-6 transition-colors hover:bg-vaultAmber/50"
+                    className="border-b border-charcoal/20 py-4 sm:py-6 transition-colors hover:bg-vaultAmber/50"
                   >
                     <Link
                       href={`/solutions/${uc.slug}`}
-                      className="group flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-6"
+                      className="group flex flex-col sm:flex-row sm:items-baseline justify-between gap-1.5 sm:gap-6"
                     >
-                      <span className="text-xl sm:text-2xl font-normal tracking-tight text-charcoal transition-colors duration-300 group-hover:text-neonCyan">
+                      <span className="text-lg sm:text-2xl font-normal tracking-tight text-charcoal transition-colors duration-200 group-hover:text-neonCyan">
                         {uc.title}
                       </span>
                       <span className="max-w-md text-left sm:text-right text-xs sm:text-sm leading-relaxed text-charcoal/70">

@@ -240,7 +240,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             className="rounded-[2px] border border-charcoal/15 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-visible transition-colors focus-within:border-charcoal/35"
           >
             {/* LEVEL 1: TOP LABEL : Restrained 10px mono, wide tracking */}
-            <div className="flex items-center justify-between px-5 sm:px-6 py-2.5 border-b border-charcoal/10">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-b border-charcoal/10">
               <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
                 AI SOLUTIONS
               </span>
@@ -250,7 +250,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             </div>
 
             {/* LEVEL 2: INPUT : Primary Element with Generous Whitespace */}
-            <div className="px-5 sm:px-6 pt-5 pb-3">
+            <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-3">
               <textarea
                 ref={textareaRef}
                 rows={3}
@@ -263,12 +263,12 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             </div>
 
             {/* LEVEL 3: ATTACHMENT SECTION : Clean '+' dropdown button for Images, Files, Sheets */}
-            <div className="border-t border-charcoal/10 px-5 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+            <div className="border-t border-charcoal/10 px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
               <div className="relative inline-block" ref={dropdownRef}>
                 <button
                   type="button"
                   onClick={() => setIsDropdownOpen((prev) => !prev)}
-                  className="inline-flex items-center gap-1.5 text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer py-0.5"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer py-1"
                   title="Attach images, documents, or spreadsheets"
                   aria-expanded={isDropdownOpen}
                 >
@@ -284,7 +284,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 4 }}
                       transition={{ duration: 0.12 }}
-                      className="absolute left-0 bottom-full mb-2 w-56 rounded-[2px] border border-charcoal/15 bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] py-1 z-50 overflow-hidden"
+                      className="absolute left-0 bottom-full mb-2 w-52 sm:w-56 max-w-[calc(100vw-32px)] rounded-[2px] border border-charcoal/15 bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] py-1 z-50 overflow-hidden"
                     >
                       <div className="px-3 py-1.5 border-b border-charcoal/10 text-[9px] font-mono tracking-[0.16em] text-neonCyan/70 uppercase">
                         SELECT ATTACHMENT
@@ -309,7 +309,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
 
               {/* Display Attached Files (Images, Docs, Sheets) */}
               {attachedDocs.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   {attachedDocs.map((doc) => (
                     <div
                       key={doc.name}
@@ -318,7 +318,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                       <span className="text-neonCyan text-[10px] font-semibold">
                         [{doc.tag}]
                       </span>
-                      <span className="truncate max-w-[160px] sm:max-w-[240px]">
+                      <span className="truncate max-w-[110px] xs:max-w-[150px] sm:max-w-[240px]">
                         {doc.name}
                       </span>
                       <span className="text-[10px] text-neonCyan/70">
@@ -339,8 +339,8 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             </div>
 
             {/* LEVEL 4: FOOTER & CTA : Subtle system footer + Sharp rectangular CTA */}
-            <div className="border-t border-charcoal/10 px-5 sm:px-6 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-              <div className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
+            <div className="border-t border-charcoal/10 px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div className="text-[9px] sm:text-[10px] font-mono tracking-[0.16em] sm:tracking-[0.2em] text-neonCyan uppercase">
                 LAXVISH THREAD · WORKERS · BRAIN · BRAKES · DPDP-READY
               </div>
 
@@ -348,7 +348,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                 type="button"
                 onClick={handleSynthesize}
                 disabled={isGenerating || (!directive.trim() && attachedDocs.length === 0)}
-                className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2 text-xs font-mono tracking-wider inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2.5 text-xs font-mono tracking-wider inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed w-full sm:w-auto text-center"
               >
                 {isGenerating ? (
                   <span>Synthesizing...</span>
@@ -374,7 +374,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             className="rounded-[2px] border border-charcoal/15 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden"
           >
             {/* Top Bar: Restrained Architectural Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-5 sm:px-6 py-2.5 border-b border-charcoal/10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 px-4 sm:px-6 py-2.5 border-b border-charcoal/10">
               <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
                 SYSTEM ARCHITECTURE DOSSIER
               </span>
@@ -384,7 +384,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             </div>
 
             {/* Problem Directive Summary */}
-            <div className="px-5 sm:px-6 py-3.5 border-b border-charcoal/10 text-xs text-charcoal space-y-1">
+            <div className="px-4 sm:px-6 py-3.5 border-b border-charcoal/10 text-xs text-charcoal space-y-1">
               <div className="flex items-center justify-between font-mono text-[10px] text-neonCyan uppercase tracking-wider">
                 <span>PROBLEM DIRECTIVE</span>
                 <span>STATUS: ANALYZED</span>
@@ -407,7 +407,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             {/* Architectural Pillars: Workers · Brain · Brakes (Clean Divided Grid) */}
             <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-charcoal/10 border-b border-charcoal/10 text-xs">
               {/* Workers */}
-              <div className="p-5 sm:p-6 space-y-2">
+              <div className="p-4 sm:p-6 space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
                   01 // WORKERS
                 </span>
@@ -417,7 +417,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
               </div>
 
               {/* Brain */}
-              <div className="p-5 sm:p-6 space-y-2">
+              <div className="p-4 sm:p-6 space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
                   02 // BRAIN
                 </span>
@@ -427,7 +427,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
               </div>
 
               {/* Brakes */}
-              <div className="p-5 sm:p-6 space-y-2">
+              <div className="p-4 sm:p-6 space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
                   03 // BRAKES
                 </span>
@@ -438,7 +438,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             </div>
 
             {/* Operational Impact & ROI */}
-            <div className="px-5 sm:px-6 py-4 space-y-3">
+            <div className="px-4 sm:px-6 py-4 space-y-3">
               <div className="space-y-1.5">
                 <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
                   QUANTIFIED OPERATIONAL IMPACT
@@ -464,11 +464,11 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             </div>
 
             {/* Footer Action Bar */}
-            <div className="border-t border-charcoal/10 px-5 sm:px-6 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="border-t border-charcoal/10 px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={handleReset}
-                className="text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-left"
+                className="text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-left py-1"
               >
                 ← Edit details
               </button>
@@ -477,7 +477,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                 href={bookDemoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2 text-xs font-mono tracking-wider text-center"
+                className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2.5 text-xs font-mono tracking-wider text-center"
               >
                 Book Working Session with this Blueprint →
               </a>
