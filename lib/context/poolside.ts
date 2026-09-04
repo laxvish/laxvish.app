@@ -13,7 +13,7 @@ function getPoolsideClient(): OpenAI | null {
     poolsideClient = new OpenAI({
       apiKey: POOLSIDE_API_KEY,
       baseURL: POOLSIDE_BASE_URL,
-      timeout: 3000, // 3s strict timeout for real-time responsiveness
+      timeout: 10000, // 10s timeout for native thinking model generation
     });
   }
   return poolsideClient;
@@ -29,7 +29,9 @@ CORE PRINCIPLES:
 1. OBSERVATION IS NOT INFERENCE. Treat raw observations as evidence. Treat hypotheses as hypotheses. Never present an inference as confirmed fact.
 2. DO NOT INVENT ACCESS. The website has NO access to browser history, Google search history, other tabs, WhatsApp, Instagram, Gmail, Android notifications, phone calls, or private files. Never claim or imply such access.
 3. USE CONFIDENCE. Justify every personalized statement by the evidence and confidence supplied.
-4. LOCATION IS ENVIRONMENT, NOT IDENTITY. A nearby hospital or university does not mean the person is a doctor or student. Describe environmental patterns and work density.
+4. LOCATION IS ENVIRONMENT, NOT IDENTITY.
+   - If a specific city IS provided in context (e.g. "Mumbai", "Chennai", "Delhi", "Bengaluru"), ground the observation in that specific city's commercial and industrial corridors.
+   - If city is NOT provided or is undefined/null/empty, DO NOT guess, assume, or name any specific city. Refer to the Indian enterprise ecosystem, business density, or commercial corridors generally. Never fabricate a city name.
 5. DO NOT DIAGNOSE. Never make medical, psychiatric, or sensitive personal judgments.
 6. VOICE & STYLE: Concise, industrial, calm, intelligent, crisp, confident without pretending certainty. One strong idea per text. Maximum 2 sentences. No generic marketing fluff.
 7. NATURAL TRANSITION: The final synthesis must lead directly to a concrete Laxvish AI solution (Workers, Brain, Brakes, Telephony).
@@ -41,12 +43,7 @@ NARRATIVE STAGES:
 - interaction: Reflecting on-site exploration and topics investigated on Laxvish.
 - synthesis: Combining all accumulated evidence into a definitive observation and AI solution transition.
 
-THINKING & OUTPUT PROTOCOL:
-1. First, think step-by-step about the context signals inside <think>...</think> tags. In your thinking:
-   - Identify active signals: local hour, weekend status, location density, device class, behavior topics, and active hypothesis.
-   - Formulate the logical rationale for the requested narrative stage.
-   - Verify that tone is industrial and contains NO forbidden surveillance or diagnostic claims.
-2. Immediately following </think>, output ONLY the final 1-2 sentence narrative statement. Do not add conversational prefixes, markdown quotes, or JSON brackets outside the think tags.`;
+OUTPUT RULE: Output ONLY the final 1-2 sentence narrative statement. No conversational prefixes, markdown quotes, or JSON brackets.`;
 
 /**
  * Extracts reasoning thinking block and clean editorial text from raw model output.
@@ -196,7 +193,9 @@ export function validateNarrativeOutput(rawText: string): { valid: boolean; reas
 }
 
 /**
- * Streams narrative tokens using Poolside Laguna-xs-2.1 with automatic fallback
+ * Streams narrative tokens using Poolside Laguna-xs-2.1 with automatic fallback.
+ * Native reasoning chunks (reasoning_content) are captured inside <think>...</think>,
+ * followed by the final editorial narrative (content).
  */
 export async function* streamNarrativeFromPoolside(
   graph: LaxvishContextGraph,
@@ -249,18 +248,46 @@ export async function* streamNarrativeFromPoolside(
         },
       ],
       temperature: 0.3,
-      max_tokens: 400,
+      max_tokens: 800,
       stream: true,
     });
 
+    let inThinking = false;
     let fullText = "";
 
     for await (const chunk of response) {
-      const content = chunk.choices?.[0]?.delta?.content;
+      const delta = chunk.choices?.[0]?.delta as
+        | { content?: string | null; reasoning_content?: string | null }
+        | undefined;
+
+      const reasoning = delta?.reasoning_content;
+      const content = delta?.content;
+
+      if (reasoning) {
+        if (!inThinking) {
+          inThinking = true;
+          fullText += "<think>";
+          yield "<think>";
+        }
+        fullText += reasoning;
+        yield reasoning;
+      }
+
       if (content) {
+        if (inThinking) {
+          inThinking = false;
+          fullText += "</think>";
+          yield "</think>";
+        }
         fullText += content;
         yield content;
       }
+    }
+
+    if (inThinking) {
+      inThinking = false;
+      fullText += "</think>";
+      yield "</think>";
     }
 
     const validation = validateNarrativeOutput(fullText);
