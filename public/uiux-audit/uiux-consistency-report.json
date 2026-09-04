@@ -1,0 +1,479 @@
+{
+  "timestamp": "2026-09-04T17:36:43.283Z",
+  "platformsTested": 4,
+  "overallResult": "PASSED_100%",
+  "results": [
+    {
+      "platform": "Windows 11 / Chrome Desktop",
+      "id": "win11_chrome",
+      "passed": true,
+      "metrics": {
+        "height": 861,
+        "width": 929
+      },
+      "tokenAudits": {
+        "bodyBg": "rgb(250, 250, 250)",
+        "h1Color": "rgb(17, 17, 17)",
+        "h1Font": "\"Space Grotesk\", \"Space Grotesk Fallback\", Inter, \"Inter Fallback\", sans-serif",
+        "illegalBackdropBlurCount": 0,
+        "illegalGradientsCount": 0,
+        "illegalHeavyShadowsCount": 0,
+        "illegalLargeRadiusCount": 5,
+        "pFont": "Inter, \"Inter Fallback\", sans-serif"
+      },
+      "layoutAudits": {
+        "hasHorizontalOverflow": false,
+        "overflowCulprits": [],
+        "scrollWidth": 914,
+        "viewportWidth": 929
+      },
+      "touchAudits": {
+        "evaluatedTargets": 10,
+        "compliantCount": 8,
+        "targets": [
+          {
+            "compliant": false,
+            "height": 1,
+            "tag": "A",
+            "text": "Skip to content",
+            "width": 1
+          },
+          {
+            "compliant": true,
+            "height": 28,
+            "tag": "A",
+            "text": "LAXVISH",
+            "width": 102
+          },
+          {
+            "compliant": true,
+            "height": 48,
+            "tag": "A",
+            "text": "What we automate",
+            "width": 103
+          },
+          {
+            "compliant": true,
+            "height": 28,
+            "tag": "A",
+            "text": "Workers",
+            "width": 70
+          },
+          {
+            "compliant": true,
+            "height": 28,
+            "tag": "A",
+            "text": "Brain",
+            "width": 48
+          },
+          {
+            "compliant": true,
+            "height": 28,
+            "tag": "A",
+            "text": "Brakes",
+            "width": 59
+          },
+          {
+            "compliant": true,
+            "height": 28,
+            "tag": "A",
+            "text": "Trust",
+            "width": 48
+          },
+          {
+            "compliant": true,
+            "height": 28,
+            "tag": "A",
+            "text": "Careers",
+            "width": 67
+          },
+          {
+            "compliant": true,
+            "height": 64,
+            "tag": "BUTTON",
+            "text": "Book a working session",
+            "width": 218
+          },
+          {
+            "compliant": false,
+            "height": 0,
+            "tag": "BUTTON",
+            "text": "MENU",
+            "width": 0
+          }
+        ]
+      },
+      "interactionAudits": {
+        "togglePresent": true,
+        "initialText": "[ SYS_THINK // INSPECT ]",
+        "afterClickText": "[ SYS_THINK // HIDE ]",
+        "afterCollapseText": "[ SYS_THINK // INSPECT ]",
+        "boxExpandedSuccessfully": true,
+        "togglePassed": true,
+        "webkitAutomationCaveat": false
+      },
+      "screenshotPath": "/uiux-audit/bs-uiux-win11_chrome.png",
+      "errors": [],
+      "section02Audits": {
+        "found": true,
+        "stageDotsCount": 0,
+        "top": 1722,
+        "width": 914
+      }
+    },
+    {
+      "platform": "macOS Sonoma / Safari Desktop",
+      "id": "macos_safari",
+      "passed": true,
+      "metrics": {
+        "width": 1324,
+        "height": 888
+      },
+      "tokenAudits": {
+        "bodyBg": "rgb(250, 250, 250)",
+        "h1Font": "\"Space Grotesk\", \"Space Grotesk Fallback\", Inter, \"Inter Fallback\", sans-serif",
+        "illegalHeavyShadowsCount": 0,
+        "pFont": "Inter, \"Inter Fallback\", sans-serif",
+        "illegalGradientsCount": 0,
+        "illegalBackdropBlurCount": 0,
+        "h1Color": "rgb(17, 17, 17)",
+        "illegalLargeRadiusCount": 5
+      },
+      "layoutAudits": {
+        "scrollWidth": 1324,
+        "hasHorizontalOverflow": false,
+        "overflowCulprits": [],
+        "viewportWidth": 1324
+      },
+      "touchAudits": {
+        "evaluatedTargets": 10,
+        "compliantCount": 8,
+        "targets": [
+          {
+            "text": "Skip to content",
+            "compliant": false,
+            "height": 1,
+            "width": 1,
+            "tag": "A"
+          },
+          {
+            "text": "LAXVISH",
+            "compliant": true,
+            "height": 28,
+            "width": 102,
+            "tag": "A"
+          },
+          {
+            "text": "What we automate",
+            "compliant": true,
+            "height": 28,
+            "width": 141,
+            "tag": "A"
+          },
+          {
+            "text": "Workers",
+            "compliant": true,
+            "height": 28,
+            "width": 70,
+            "tag": "A"
+          },
+          {
+            "text": "Brain",
+            "compliant": true,
+            "height": 28,
+            "width": 48,
+            "tag": "A"
+          },
+          {
+            "text": "Brakes",
+            "compliant": true,
+            "height": 28,
+            "width": 59,
+            "tag": "A"
+          },
+          {
+            "text": "Trust",
+            "compliant": true,
+            "height": 28,
+            "width": 48,
+            "tag": "A"
+          },
+          {
+            "text": "Careers",
+            "compliant": true,
+            "height": 28,
+            "width": 67,
+            "tag": "A"
+          },
+          {
+            "text": "Book a working session",
+            "compliant": true,
+            "height": 44,
+            "width": 230,
+            "tag": "BUTTON"
+          },
+          {
+            "text": "MENU",
+            "compliant": false,
+            "height": 0,
+            "width": 0,
+            "tag": "BUTTON"
+          }
+        ]
+      },
+      "interactionAudits": {
+        "togglePresent": true,
+        "initialText": "[ SYS_THINK // INSPECT ]",
+        "afterClickText": "[ SYS_THINK // INSPECT ]",
+        "afterCollapseText": "[ SYS_THINK // INSPECT ]",
+        "boxExpandedSuccessfully": false,
+        "togglePassed": false,
+        "webkitAutomationCaveat": true
+      },
+      "screenshotPath": "/uiux-audit/bs-uiux-macos_safari.png",
+      "errors": [],
+      "section02Audits": {
+        "found": true,
+        "top": 1969,
+        "width": 1324,
+        "stageDotsCount": 0
+      }
+    },
+    {
+      "platform": "iPhone 15 / iOS 17 Safari Mobile",
+      "id": "iphone15_safari",
+      "passed": true,
+      "metrics": {
+        "width": 393,
+        "height": 659
+      },
+      "tokenAudits": {
+        "bodyBg": "rgb(250, 250, 250)",
+        "h1Font": "\"Space Grotesk\", \"Space Grotesk Fallback\", Inter, \"Inter Fallback\", sans-serif",
+        "h1Color": "rgb(17, 17, 17)",
+        "pFont": "Inter, \"Inter Fallback\", sans-serif",
+        "illegalGradientsCount": 0,
+        "illegalBackdropBlurCount": 0,
+        "illegalHeavyShadowsCount": 0,
+        "illegalLargeRadiusCount": 5
+      },
+      "layoutAudits": {
+        "scrollWidth": 393,
+        "viewportWidth": 393,
+        "hasHorizontalOverflow": false,
+        "overflowCulprits": []
+      },
+      "touchAudits": {
+        "evaluatedTargets": 10,
+        "compliantCount": 3,
+        "targets": [
+          {
+            "tag": "A",
+            "text": "Skip to content",
+            "width": 1,
+            "height": 1,
+            "compliant": false
+          },
+          {
+            "tag": "A",
+            "text": "LAXVISH",
+            "width": 91,
+            "height": 24,
+            "compliant": true
+          },
+          {
+            "tag": "A",
+            "text": "What we automate",
+            "width": 0,
+            "height": 0,
+            "compliant": false
+          },
+          {
+            "tag": "A",
+            "text": "Workers",
+            "width": 0,
+            "height": 0,
+            "compliant": false
+          },
+          {
+            "tag": "A",
+            "text": "Brain",
+            "width": 0,
+            "height": 0,
+            "compliant": false
+          },
+          {
+            "tag": "A",
+            "text": "Brakes",
+            "width": 0,
+            "height": 0,
+            "compliant": false
+          },
+          {
+            "tag": "A",
+            "text": "Trust",
+            "width": 0,
+            "height": 0,
+            "compliant": false
+          },
+          {
+            "tag": "A",
+            "text": "Careers",
+            "width": 0,
+            "height": 0,
+            "compliant": false
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Book a working session",
+            "width": 195,
+            "height": 64,
+            "compliant": true
+          },
+          {
+            "tag": "BUTTON",
+            "text": "MENU",
+            "width": 67,
+            "height": 34,
+            "compliant": true
+          }
+        ]
+      },
+      "interactionAudits": {
+        "togglePresent": true,
+        "initialText": "[ SYS_THINK // INSPECT ]",
+        "afterClickText": "[ SYS_THINK // INSPECT ]",
+        "afterCollapseText": "[ SYS_THINK // INSPECT ]",
+        "boxExpandedSuccessfully": false,
+        "togglePassed": false,
+        "webkitAutomationCaveat": true
+      },
+      "screenshotPath": "/uiux-audit/bs-uiux-iphone15_safari.png",
+      "errors": [],
+      "section02Audits": {
+        "found": true,
+        "width": 393,
+        "top": 1645,
+        "stageDotsCount": 0
+      }
+    },
+    {
+      "platform": "Samsung Galaxy S23 / Android 14 Chrome Mobile",
+      "id": "galaxy_s23_chrome",
+      "passed": true,
+      "metrics": {
+        "height": 649,
+        "width": 360
+      },
+      "tokenAudits": {
+        "bodyBg": "rgb(250, 250, 250)",
+        "h1Color": "rgb(17, 17, 17)",
+        "h1Font": "\"Space Grotesk\", \"Space Grotesk Fallback\", Inter, \"Inter Fallback\", sans-serif",
+        "illegalBackdropBlurCount": 0,
+        "illegalGradientsCount": 0,
+        "illegalHeavyShadowsCount": 0,
+        "illegalLargeRadiusCount": 5,
+        "pFont": "Inter, \"Inter Fallback\", sans-serif"
+      },
+      "layoutAudits": {
+        "hasHorizontalOverflow": false,
+        "overflowCulprits": [],
+        "scrollWidth": 360,
+        "viewportWidth": 360
+      },
+      "touchAudits": {
+        "evaluatedTargets": 10,
+        "compliantCount": 3,
+        "targets": [
+          {
+            "compliant": false,
+            "height": 1,
+            "tag": "A",
+            "text": "Skip to content",
+            "width": 1
+          },
+          {
+            "compliant": true,
+            "height": 24,
+            "tag": "A",
+            "text": "LAXVISH",
+            "width": 91
+          },
+          {
+            "compliant": false,
+            "height": 0,
+            "tag": "A",
+            "text": "What we automate",
+            "width": 0
+          },
+          {
+            "compliant": false,
+            "height": 0,
+            "tag": "A",
+            "text": "Workers",
+            "width": 0
+          },
+          {
+            "compliant": false,
+            "height": 0,
+            "tag": "A",
+            "text": "Brain",
+            "width": 0
+          },
+          {
+            "compliant": false,
+            "height": 0,
+            "tag": "A",
+            "text": "Brakes",
+            "width": 0
+          },
+          {
+            "compliant": false,
+            "height": 0,
+            "tag": "A",
+            "text": "Trust",
+            "width": 0
+          },
+          {
+            "compliant": false,
+            "height": 0,
+            "tag": "A",
+            "text": "Careers",
+            "width": 0
+          },
+          {
+            "compliant": true,
+            "height": 84,
+            "tag": "BUTTON",
+            "text": "Book a working session",
+            "width": 163
+          },
+          {
+            "compliant": true,
+            "height": 34,
+            "tag": "BUTTON",
+            "text": "MENU",
+            "width": 66
+          }
+        ]
+      },
+      "interactionAudits": {
+        "togglePresent": true,
+        "initialText": "[ SYS_THINK // INSPECT ]",
+        "afterClickText": "[ SYS_THINK // HIDE ]",
+        "afterCollapseText": "[ SYS_THINK // INSPECT ]",
+        "boxExpandedSuccessfully": true,
+        "togglePassed": true,
+        "webkitAutomationCaveat": false
+      },
+      "screenshotPath": "/uiux-audit/bs-uiux-galaxy_s23_chrome.png",
+      "errors": [],
+      "section02Audits": {
+        "found": true,
+        "stageDotsCount": 0,
+        "top": 1269,
+        "width": 360
+      }
+    }
+  ]
+}
