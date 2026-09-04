@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
+import { useState, useRef, useEffect, ChangeEvent, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getBookDemoUrl } from "@/lib/site-navigation";
 
@@ -13,178 +13,150 @@ interface SolutionBlueprint {
   timeToDeploy: string;
 }
 
-interface OperationalPreset {
-  id: string;
-  label: string;
-  domainName: string;
-  companyName: string;
-  directive: string;
-  sampleDocName?: string;
-  sampleDocSize?: string;
-  solution: SolutionBlueprint;
-}
-
-const DOMAIN_PRESETS: OperationalPreset[] = [
-  {
-    id: "logistics",
-    label: "Logistics & Fleet",
-    domainName: "Freight Operations",
-    companyName: "FreightX Fleet (500+ Trucks)",
-    directive:
-      "Our logistics operations team spends 5+ hours daily manually matching handwritten Proof of Deliveries (PODs) and GST E-Way bills with SAP transport receipts, causing delayed shipper settlement and dispute penalties.",
-    sampleDocName: "eway_bills_batch_08.pdf",
-    sampleDocSize: "2.4 MB",
-    solution: {
-      workers:
-        "POD Vision Extraction Worker (auto-parses multi-page handwritten and scanned receipts, weighbridge slips, and toll logs).",
-      brain:
-        "Logistics Dispatch Mesh (reconciles trip logs against toll telemetry and pushes verified line-items directly into SAP/Tally).",
-      brakes:
-        "Consignee Tax & Weight Interlock (blocks invoice issuance if billed weight deviates from weighbridge telemetry).",
-      howItHelpsGrow: [
-        "Reconciliation cycle compressed from 7 days down to 45 minutes.",
-        "Zero invoice rejections from enterprise shippers (Tata, Reliance, ITC).",
-        "Saves 40+ hours per week of manual data entry per regional hub.",
-      ],
-      estimatedRoi: "₹24L annual operational savings + 3x faster shipper settlement",
-      timeToDeploy: "14-day production deployment",
-    },
-  },
-  {
-    id: "ap_invoices",
-    label: "Vendor AP / GST",
-    domainName: "Finance & Accounts Payable",
-    companyName: "Kavya Retail (Multi-Brand D2C)",
-    directive:
-      "We process 1,500+ vendor tax invoices monthly. 12% have GST-2B tax mismatches or missing PO line-item matches, causing blocked Input Tax Credits (ITC) and supplier payment delays.",
-    sampleDocName: "q3_vendor_invoices_gst2b.xlsx",
-    sampleDocSize: "1.2 MB",
-    solution: {
-      workers:
-        "3-Way AP Match Worker (cross-references purchase orders, goods receipts, and vendor tax invoices in real time).",
-      brain:
-        "Vendor Settlement Coordinator (triggers automated clarification requests on WhatsApp for detected discrepancies).",
-      brakes:
-        "ITC Lockout Brake (freezes payment disbursement on unverified GSTINs to eliminate tax compliance penalties).",
-      howItHelpsGrow: [
-        "Unlocks 100% of eligible Input Tax Credit (ITC) before monthly return deadlines.",
-        "Reduces invoice processing cost by 78% while maintaining audit-grade ledgers.",
-        "Automated resolution of vendor line-item disputes without phone tag.",
-      ],
-      estimatedRoi: "₹18L preserved tax credit + 4.2x faster supplier payouts",
-      timeToDeploy: "10-day pilot deployment",
-    },
-  },
-  {
-    id: "healthcare",
-    label: "Clinical & Diagnostics",
-    domainName: "Laboratory Operations",
-    companyName: "Apex Diagnostics (24 Centers)",
-    directive:
-      "Lab technicians spend hours manually entering diagnostic reports and cross-checking abnormal test parameter ranges, risking delay in critical doctor alerts.",
-    sampleDocName: "diagnostic_pathology_sops.pdf",
-    sampleDocSize: "3.1 MB",
-    solution: {
-      workers:
-        "Clinical Analyzer Extraction Worker (digitizes analyzer telemetry and normalizes multi-center reference ranges).",
-      brain:
-        "Critical Alert Router (dispatches abnormal test values to attending physicians on priority channels within seconds).",
-      brakes:
-        "Zero-Hallucination Medical Policy Brake (enforces strict deterministic schema constraints on diagnostic records).",
-      howItHelpsGrow: [
-        "Sub-second alert dispatch for panic/critical medical test thresholds.",
-        "DPDP and HIPAA-ready encrypted data handling with zero local leakage.",
-        "Frees lab specialists to handle 2.5x more daily diagnostic sample throughput.",
-      ],
-      estimatedRoi: "Zero reporting SLA breaches + 60% reduction in lab clerical load",
-      timeToDeploy: "21-day HIPAA-compliant setup",
-    },
-  },
-  {
-    id: "voice_telephony",
-    label: "Telephony & Voice",
-    domainName: "Customer Support & Lending",
-    companyName: "FinEase NBFC (Micro-Loans)",
-    directive:
-      "Our call center is overwhelmed with 10,000+ monthly calls in Hindi and English for loan application status, repayment schedules, and KYC verification.",
-    sampleDocName: "telephony_kyc_logs.csv",
-    sampleDocSize: "820 KB",
-    solution: {
-      workers:
-        "CallMe Realtime Voice AI Worker (handles bilingual Hindi/English conversations with sub-280ms latency).",
-      brain:
-        "Omnichannel Intent Dispatcher (resolves Tier-1 inquiries instantly, updates CRM, and schedules callbacks).",
-      brakes:
-        "RBI Fair Practices Compliance Brake (enforces strict conversational guardrails and verifies call recordings).",
-      howItHelpsGrow: [
-        "Eliminates borrower wait times from 6 minutes down to 0 seconds (24/7 instant pick-up).",
-        "Resolves 68% of routine loan and KYC inquiries without human agent intervention.",
-        "Lowers per-call support cost by 82% while boosting borrower satisfaction scores.",
-      ],
-      estimatedRoi: "₹32L annual support cost reduction + 99.4% SLA adherence",
-      timeToDeploy: "7-day voice agent rollout",
-    },
-  },
-];
-
 interface AttachedDoc {
   name: string;
   size: string;
+  tag: "IMG" | "DOC" | "SHEET";
 }
+
+const ATTACHMENT_OPTIONS = [
+  {
+    id: "images",
+    label: "Images",
+    ext: "PNG, JPG, WEBP",
+    accept: ".png,.jpg,.jpeg,.webp,image/*",
+  },
+  {
+    id: "docs",
+    label: "Documents",
+    ext: "PDF, DOCX, TXT",
+    accept: ".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain",
+  },
+  {
+    id: "sheets",
+    label: "Sheets",
+    ext: "XLSX, CSV",
+    accept: ".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv",
+  },
+];
+
+const DEFAULT_BLUEPRINTS: Record<string, SolutionBlueprint> = {
+  logistics: {
+    workers:
+      "POD Vision Extraction Worker (auto-parses multi-page handwritten and scanned receipts, weighbridge slips, and toll logs).",
+    brain:
+      "Logistics Dispatch Mesh (reconciles trip logs against toll telemetry and pushes verified line-items directly into SAP/Tally).",
+    brakes:
+      "Consignee Tax & Weight Interlock (blocks invoice issuance if billed weight deviates from weighbridge telemetry).",
+    howItHelpsGrow: [
+      "Reconciliation cycle compressed from 7 days down to 45 minutes.",
+      "Zero invoice rejections from enterprise shippers (Tata, Reliance, ITC).",
+      "Saves 40+ hours per week of manual data entry per regional hub.",
+    ],
+    estimatedRoi: "₹24L annual operational savings + 3x faster shipper settlement",
+    timeToDeploy: "14-day production deployment",
+  },
+  finance: {
+    workers:
+      "3-Way AP Match Worker (cross-references purchase orders, goods receipts, and vendor tax invoices in real time).",
+    brain:
+      "Vendor Settlement Coordinator (triggers automated clarification requests on WhatsApp for detected discrepancies).",
+    brakes:
+      "ITC Lockout Brake (freezes payment disbursement on unverified GSTINs to eliminate tax compliance penalties).",
+    howItHelpsGrow: [
+      "Unlocks 100% of eligible Input Tax Credit (ITC) before monthly return deadlines.",
+      "Reduces invoice processing cost by 78% while maintaining audit-grade ledgers.",
+      "Automated resolution of vendor line-item disputes without phone tag.",
+    ],
+    estimatedRoi: "₹18L preserved tax credit + 4.2x faster supplier payouts",
+    timeToDeploy: "10-day pilot deployment",
+  },
+  general: {
+    workers:
+      "Autonomous Enterprise Task Workers (extract unstructured data, execute high-volume multi-system transactions).",
+    brain:
+      "Unified Process Mesh (coordinates real-time state across databases, ERPs, CRMs, and messaging channels).",
+    brakes:
+      "Policy & Deterministic Safety Brakes (enforces strict schema contracts, DPDP compliance, and financial authorization limits).",
+    howItHelpsGrow: [
+      "Up to 80% reduction in end-to-end process latency and operational overhead.",
+      "Zero data entry errors across connected operational systems.",
+      "Frees human teams to focus on revenue-generating exceptions and relationships.",
+    ],
+    estimatedRoi: "75% to 80% operational cost compression + instant SLA delivery",
+    timeToDeploy: "14-day turnkey enterprise setup",
+  },
+};
 
 export function ConversationalBox({ className = "" }: { className?: string }) {
   const [directive, setDirective] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [attachedDocs, setAttachedDocs] = useState<AttachedDoc[]>([]);
-  const [activePreset, setActivePreset] = useState<OperationalPreset | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [fileAcceptType, setFileAcceptType] = useState(
+    ".pdf,.xlsx,.csv,.docx,.txt,.png,.jpg,.jpeg,.webp"
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [blueprintResult, setBlueprintResult] = useState<{
     directiveText: string;
-    companyName: string;
-    domainName: string;
     attachedDocs: AttachedDoc[];
     solution: SolutionBlueprint;
   } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const bookDemoUrl = getBookDemoUrl();
 
-  const handleSelectPreset = (preset: OperationalPreset) => {
-    if (activePreset?.id === preset.id) {
-      // Toggle off if already selected
-      setActivePreset(null);
-      setDirective("");
-      setCompanyName("");
-      setAttachedDocs([]);
-      return;
-    }
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    setActivePreset(preset);
-    setDirective(preset.directive);
-    setCompanyName(preset.companyName);
-    if (preset.sampleDocName && preset.sampleDocSize) {
-      setAttachedDocs([
-        { name: preset.sampleDocName, size: preset.sampleDocSize },
-      ]);
-    } else {
-      setAttachedDocs([]);
-    }
+  const getFileTag = (fileName: string): "IMG" | "DOC" | "SHEET" => {
+    const ext = fileName.split(".").pop()?.toLowerCase() || "";
+    if (["png", "jpg", "jpeg", "webp", "gif", "svg"].includes(ext)) return "IMG";
+    if (["xlsx", "xls", "csv"].includes(ext)) return "SHEET";
+    return "DOC";
+  };
+
+  const handleOpenAttachMenu = (acceptType: string) => {
+    setFileAcceptType(acceptType);
+    setIsDropdownOpen(false);
+    setTimeout(() => {
+      if (fileInputRef.current) {
+        fileInputRef.current.accept = acceptType;
+        fileInputRef.current.click();
+      }
+    }, 50);
   };
 
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-      const newDoc: AttachedDoc = {
-        name: file.name,
-        size: `${sizeMb} MB`,
-      };
+      const newFiles: AttachedDoc[] = Array.from(e.target.files).map((file) => {
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+        return {
+          name: file.name,
+          size: `${sizeMb} MB`,
+          tag: getFileTag(file.name),
+        };
+      });
+
       setAttachedDocs((prev) => [
-        ...prev.filter((d) => d.name !== file.name),
-        newDoc,
+        ...prev.filter((d) => !newFiles.some((nf) => nf.name === d.name)),
+        ...newFiles,
       ]);
     }
+    // Reset file input value so re-uploading same file works
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const removeDoc = (name: string) => {
@@ -199,22 +171,32 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
     setTimeout(() => {
       setIsGenerating(false);
 
-      const matched =
-        activePreset ||
-        DOMAIN_PRESETS.find((p) =>
-          directive.toLowerCase().includes(p.id) ||
-          directive.toLowerCase().includes(p.label.toLowerCase())
-        ) ||
-        DOMAIN_PRESETS[0];
+      const lower = directive.toLowerCase();
+      let matchedSolution = DEFAULT_BLUEPRINTS.general;
+      if (
+        lower.includes("logistics") ||
+        lower.includes("pod") ||
+        lower.includes("fleet") ||
+        lower.includes("truck") ||
+        lower.includes("freight")
+      ) {
+        matchedSolution = DEFAULT_BLUEPRINTS.logistics;
+      } else if (
+        lower.includes("invoice") ||
+        lower.includes("gst") ||
+        lower.includes("vendor") ||
+        lower.includes("ap") ||
+        lower.includes("tax")
+      ) {
+        matchedSolution = DEFAULT_BLUEPRINTS.finance;
+      }
 
       setBlueprintResult({
         directiveText:
           directive.trim() ||
-          `Analyze attached workflow documents (${attachedDocs.map((d) => d.name).join(", ")}) and construct enterprise Laxvish architecture.`,
-        companyName: companyName.trim() || matched.companyName,
-        domainName: matched.domainName,
+          `Analyze attached files (${attachedDocs.map((d) => d.name).join(", ")}) and synthesize enterprise Laxvish architecture.`,
         attachedDocs: [...attachedDocs],
-        solution: matched.solution,
+        solution: matchedSolution,
       });
     }, 850);
   };
@@ -234,19 +216,20 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
     <div
       className={`relative w-full max-w-3xl mx-auto transition-all duration-300 ${className}`}
     >
+      {/* Hidden File Input */}
       <input
         ref={fileInputRef}
         type="file"
         multiple
+        accept={fileAcceptType}
         onChange={handleFileUpload}
         className="hidden"
-        accept=".pdf,.xlsx,.csv,.docx,.txt"
       />
 
       <AnimatePresence mode="wait">
         {!blueprintResult ? (
           /* ============================================================ */
-          /* 1. MINIMAL OPERATIONAL DIRECTIVE SURFACE                     */
+          /* 1. MINIMAL AI SOLUTIONS OPERATIONAL SURFACE                  */
           /* ============================================================ */
           <motion.div
             key="operational-interface"
@@ -254,19 +237,19 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="rounded-[2px] border border-charcoal/15 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden transition-colors focus-within:border-charcoal/35"
+            className="rounded-[2px] border border-charcoal/15 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-visible transition-colors focus-within:border-charcoal/35"
           >
-            {/* LEVEL 1: TOP LABEL : Restrained, small uppercase, wide letter-spacing */}
+            {/* LEVEL 1: TOP LABEL : Restrained 10px mono, wide tracking */}
             <div className="flex items-center justify-between px-5 sm:px-6 py-2.5 border-b border-charcoal/10">
               <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
-                OPERATIONAL DIRECTIVE
+                AI SOLUTIONS
               </span>
               <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan/70 uppercase">
                 LAXVISH / 01
               </span>
             </div>
 
-            {/* LEVEL 2: INPUT : The Primary Element with Generous Whitespace */}
+            {/* LEVEL 2: INPUT : Primary Element with Generous Whitespace */}
             <div className="px-5 sm:px-6 pt-5 pb-3">
               <textarea
                 ref={textareaRef}
@@ -274,20 +257,68 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                 value={directive}
                 onChange={(e) => setDirective(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Specify an enterprise workflow, manual bottleneck, or integration target..."
+                placeholder="Share your problem details. We help business run faster and Save money and time by upto 80 percent..."
                 className="w-full resize-none bg-transparent font-sans text-sm sm:text-base text-charcoal placeholder:text-neonCyan/40 focus:outline-none leading-relaxed"
               />
+            </div>
 
-              {/* Minimal Document Metadata Row (if present) */}
+            {/* LEVEL 3: ATTACHMENT SECTION : Clean '+' dropdown button for Images, Files, Sheets */}
+            <div className="border-t border-charcoal/10 px-5 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+              <div className="relative inline-block" ref={dropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer py-0.5"
+                  title="Attach images, documents, or spreadsheets"
+                  aria-expanded={isDropdownOpen}
+                >
+                  <span className="font-mono text-sm leading-none font-semibold">+</span>
+                  <span>Attach</span>
+                </button>
+
+                {/* Dropdown Menu for Images, Files, Sheets */}
+                <AnimatePresence>
+                  {isDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      transition={{ duration: 0.12 }}
+                      className="absolute left-0 bottom-full mb-2 w-56 rounded-[2px] border border-charcoal/15 bg-white shadow-[0_6px_20px_rgba(0,0,0,0.08)] py-1 z-50 overflow-hidden"
+                    >
+                      <div className="px-3 py-1.5 border-b border-charcoal/10 text-[9px] font-mono tracking-[0.16em] text-neonCyan/70 uppercase">
+                        SELECT ATTACHMENT
+                      </div>
+                      {ATTACHMENT_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => handleOpenAttachMenu(opt.accept)}
+                          className="w-full text-left px-3 py-2 text-xs font-mono text-charcoal hover:bg-vaultAmber/60 flex items-center justify-between transition-colors cursor-pointer"
+                        >
+                          <span className="font-medium">{opt.label}</span>
+                          <span className="text-[10px] text-neonCyan/80 font-normal">
+                            {opt.ext}
+                          </span>
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Display Attached Files (Images, Docs, Sheets) */}
               {attachedDocs.length > 0 && (
-                <div className="pt-2 flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2">
                   {attachedDocs.map((doc) => (
                     <div
                       key={doc.name}
-                      className="inline-flex items-center gap-1.5 text-xs font-mono text-charcoal/80"
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-charcoal/85 bg-vaultAmber/40 px-2 py-0.5 rounded-[2px] border border-charcoal/10"
                     >
-                      <span className="text-neonCyan/70 text-[10px]">[DOC]</span>
-                      <span className="truncate max-w-[220px] sm:max-w-[320px]">
+                      <span className="text-neonCyan text-[10px] font-semibold">
+                        [{doc.tag}]
+                      </span>
+                      <span className="truncate max-w-[160px] sm:max-w-[240px]">
                         {doc.name}
                       </span>
                       <span className="text-[10px] text-neonCyan/70">
@@ -296,7 +327,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                       <button
                         type="button"
                         onClick={() => removeDoc(doc.name)}
-                        className="text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-xs leading-none"
+                        className="text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-xs leading-none ml-0.5"
                         aria-label={`Remove ${doc.name}`}
                       >
                         ×
@@ -307,49 +338,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
               )}
             </div>
 
-            {/* LEVEL 3: CONTEXT & ATTACHMENT CONTROLS : Minimal, quiet metadata controls */}
-            <div className="border-t border-charcoal/10 px-5 sm:px-6 py-2.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
-              {/* Left: Quiet Attachment Text Control */}
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-left"
-                title="Attach sample workflow documents, spreadsheets, or SOPs"
-              >
-                <span className="font-mono text-xs">+</span>
-                <span>Attach workflow document</span>
-              </button>
-
-              {/* Right: Subtle Context Metadata */}
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-                <span className="text-[10px] font-mono tracking-wider text-neonCyan/60 uppercase mr-1">
-                  CONTEXT
-                </span>
-                {DOMAIN_PRESETS.map((preset, index) => {
-                  const isSelected = activePreset?.id === preset.id;
-                  return (
-                    <div key={preset.id} className="inline-flex items-center">
-                      <button
-                        type="button"
-                        onClick={() => handleSelectPreset(preset)}
-                        className={`transition-colors cursor-pointer ${
-                          isSelected
-                            ? "text-charcoal font-medium underline underline-offset-4 decoration-charcoal/40"
-                            : "text-neonCyan hover:text-charcoal"
-                        }`}
-                      >
-                        {preset.label}
-                      </button>
-                      {index < DOMAIN_PRESETS.length - 1 && (
-                        <span className="text-neonCyan/40 mx-1.5 select-none">·</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* LEVEL 4: FOOTER & CTA : Very quiet footer metadata + Single quiet rectangular action */}
+            {/* LEVEL 4: FOOTER & CTA : Subtle system footer + Sharp rectangular CTA */}
             <div className="border-t border-charcoal/10 px-5 sm:px-6 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
                 LAXVISH THREAD · WORKERS · BRAIN · BRAKES · DPDP-READY
@@ -390,15 +379,15 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                 SYSTEM ARCHITECTURE DOSSIER
               </span>
               <span className="text-[10px] font-mono tracking-wider text-neonCyan uppercase">
-                {blueprintResult.companyName} · {blueprintResult.solution.timeToDeploy}
+                LAXVISH BLUEPRINT · {blueprintResult.solution.timeToDeploy}
               </span>
             </div>
 
             {/* Problem Directive Summary */}
             <div className="px-5 sm:px-6 py-3.5 border-b border-charcoal/10 text-xs text-charcoal space-y-1">
               <div className="flex items-center justify-between font-mono text-[10px] text-neonCyan uppercase tracking-wider">
-                <span>DIRECTIVE</span>
-                <span>DOMAIN: {blueprintResult.domainName}</span>
+                <span>PROBLEM DIRECTIVE</span>
+                <span>STATUS: ANALYZED</span>
               </div>
               <p className="leading-relaxed text-charcoal/90">{blueprintResult.directiveText}</p>
               {blueprintResult.attachedDocs.length > 0 && (
@@ -408,7 +397,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                       key={doc.name}
                       className="font-mono text-[10px] text-neonCyan"
                     >
-                      [DOC: {doc.name}]
+                      [{doc.tag}: {doc.name}]
                     </span>
                   ))}
                 </div>
@@ -481,7 +470,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
                 onClick={handleReset}
                 className="text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-left"
               >
-                ← Edit directive
+                ← Edit details
               </button>
 
               <a
