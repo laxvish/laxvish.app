@@ -38,29 +38,29 @@ PAGES = [
     "/solutions/sales-automation",
 ]
 
-async def check_viewport_pages(browser, vp):
-    name, w, h = vp
-    results = []
-    context = await browser.new_context(
-        viewport={"width": w, "height": h},
-        is_mobile=(w < 768),
-    )
-    page = await context.new_page()
-    for path in PAGES:
+sem = asyncio.Semaphore(8)
+
+async def check_single_page(browser, name, w, h, path):
+    async with sem:
+        context = await browser.new_context(
+            viewport={"width": w, "height": h},
+            is_mobile=(w < 768),
+        )
+        page = await context.new_page()
         try:
-            await page.goto(f"http://localhost:3060{path}", wait_until="domcontentloaded")
-            await asyncio.sleep(0.05)
+            await page.goto(f"http://localhost:3060{path}", wait_until="domcontentloaded", timeout=15000)
+            await asyncio.sleep(0.02)
             overflow = await page.evaluate("() => document.documentElement.scrollWidth > window.innerWidth")
             if overflow:
                 scrollW, innerW = await page.evaluate("() => [document.documentElement.scrollWidth, window.innerWidth]")
                 msg = f"OVERFLOW on {name} ({w}x{h}) at {path}: scrollWidth={scrollW} > innerWidth={innerW}"
-                results.append((False, msg))
+                return (False, msg)
             else:
-                results.append((True, f"OK on {name} at {path}"))
+                return (True, f"OK on {name} at {path}")
         except Exception as e:
-            results.append((False, f"Error on {name} at {path}: {e}"))
-    await context.close()
-    return results
+            return (False, f"Error on {name} at {path}: {e}")
+        finally:
+            await context.close()
 
 async def run_suite():
     passed_tests = 0
@@ -78,16 +78,19 @@ async def run_suite():
         print("1. ZERO HORIZONTAL OVERFLOW ACROSS ALL 20 VIEWPORTS & PAGES")
         print("========================================================")
 
-        tasks = [check_viewport_pages(browser, vp) for vp in ALL_VIEWPORTS]
-        vp_results = await asyncio.gather(*tasks)
-        for sublist in vp_results:
-            for passed, msg in sublist:
-                total_tests += 1
-                if passed:
-                    passed_tests += 1
-                else:
-                    failures.append(msg)
-                    print(f"  ❌ {msg}")
+        all_tasks = [
+            check_single_page(browser, name, w, h, path)
+            for name, w, h in ALL_VIEWPORTS
+            for path in PAGES
+        ]
+        results = await asyncio.gather(*all_tasks)
+        for passed, msg in results:
+            total_tests += 1
+            if passed:
+                passed_tests += 1
+            else:
+                failures.append(msg)
+                print(f"  ❌ {msg}")
 
         print(f"Overflow tests complete: {passed_tests}/{total_tests} passed.")
 

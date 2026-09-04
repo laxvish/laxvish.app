@@ -1,47 +1,40 @@
 import asyncio
 from playwright.async_api import async_playwright
 
-async def find_overflow():
+async def find_overflow_elements():
     async with async_playwright() as p:
         browser = await p.chromium.launch(
             executable_path="/usr/bin/google-chrome",
             headless=True,
-            args=["--no-sandbox", "--disable-setuid-sandbox"]
+            args=["--no-sandbox"]
         )
-        context = await browser.new_context(
-            viewport={"width": 390, "height": 844},
-            is_mobile=True,
-            device_scale_factor=2,
-        )
-        page = await context.new_page()
-        await page.goto("http://localhost:3060/workers", wait_until="networkidle")
-        await asyncio.sleep(1.0)
-        
-        elements = await page.evaluate('''() => {
-            const results = [];
-            const docWidth = document.documentElement.clientWidth;
+        page = await browser.new_page(viewport={"width": 1440, "height": 900})
+        await page.goto("http://localhost:3060/", wait_until="networkidle")
+
+        overflowing = await page.evaluate('''() => {
+            const elements = [];
+            const docW = window.innerWidth;
             document.querySelectorAll('*').forEach(el => {
                 const rect = el.getBoundingClientRect();
-                if (rect.right > docWidth + 1 || el.offsetWidth > docWidth + 1 || el.scrollWidth > docWidth + 1) {
-                    results.push({
-                        tagName: el.tagName,
-                        className: (el.className && typeof el.className === 'string') ? el.className.substring(0, 80) : '',
-                        offsetWidth: el.offsetWidth,
-                        scrollWidth: el.scrollWidth,
-                        right: rect.right,
+                if (rect.right > docW + 1 || rect.left < -1) {
+                    elements.push({
+                        tag: el.tagName,
+                        className: el.className,
                         id: el.id,
-                        innerText: (el.innerText || '').substring(0, 40)
+                        right: rect.right,
+                        left: rect.left,
+                        width: rect.width
                     });
                 }
             });
-            return results;
+            return elements;
         }''')
-        
-        print(f"Found {len(elements)} overflowing elements:")
-        for idx, el in enumerate(elements[:15]):
-            print(f"[{idx+1}] <{el['tagName']}> id='{el['id']}' class='{el['className']}' offsetWidth={el['offsetWidth']} scrollWidth={el['scrollWidth']} right={el['right']} text='{el['innerText']}'")
-            
+
+        print(f"Found {len(overflowing)} overflowing elements on 1440x900:")
+        for el in overflowing[:10]:
+            print(f"  - <{el['tag']} id='{el['id']}' class='{el['className'][:80]}...'> right={el['right']}, left={el['left']}, w={el['width']}")
+
         await browser.close()
 
 if __name__ == "__main__":
-    asyncio.run(find_overflow())
+    asyncio.run(find_overflow_elements())

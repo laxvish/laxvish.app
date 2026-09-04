@@ -1,5 +1,5 @@
 import { getPrismaClient } from "@/lib/prisma";
-import type { LaxvishContextGraph, LaxvishEvent, NarrativeMoment } from "./types.ts";
+import type { LaxvishContextGraph, LaxvishEvent, NarrativeMoment, NarrativeStage } from "./types.ts";
 import crypto from "crypto";
 
 declare global {
@@ -178,5 +178,36 @@ export async function persistNarrativeMoment(
     });
   } catch (error) {
     console.error("[Narrative DB Persistence Error (Non-blocking)]", error);
+  }
+}
+
+/**
+ * Dedup cache lookup: returns previously generated narrative text for a
+ * (session, stage) pair so repeat requests cost zero LLM tokens.
+ * Checks hot memory first, then the persisted narrativeGeneration table.
+ * Never throws — any failure returns null and the caller regenerates.
+ */
+export async function findCachedNarrative(
+  sessionId: string,
+  stage: NarrativeStage
+): Promise<string | null> {
+  // 1. Hot memory path
+  const graph = sessionStore.get(sessionId);
+  const memMoment = graph?.narratives[stage];
+  if (memMoment && !memMoment.isFallback && memMoment.text) {
+    return memMoment.text;
+  }
+
+  // 2. Persisted path (non-fatal on DB absence or error)
+  const prisma = getPrismaClient();
+  if (!prisma) return null;
+  try {
+    const row = await prisma.narrativeGeneration.findFirst({
+      where: { sessionId, stage, isFallback: false },
+      orderBy: { createdAt: "desc" },
+    });
+    return row?.narrativeText ?? null;
+  } catch {
+    return null;
   }
 }

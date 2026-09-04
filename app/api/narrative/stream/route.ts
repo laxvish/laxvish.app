@@ -1,12 +1,52 @@
 import { NextRequest } from "next/server";
 import { streamNarrativeFromPoolside } from "@/lib/context/poolside";
-import { getSessionFromMemory, persistNarrativeMoment } from "@/lib/context/session-store";
-import { NarrativeStage } from "@/lib/context/types";
+import {
+  findCachedNarrative,
+  getSessionFromMemory,
+  persistNarrativeMoment,
+} from "@/lib/context/session-store";
+import { getRateLimitStore, getRequesterKey } from "@/lib/rate-limit";
+import type { NarrativeStage } from "@/lib/context/types";
 
 export const runtime = "nodejs";
 
+const NARRATIVE_RATE_LIMIT = 20;
+const RATE_LIMIT_WINDOW_SECONDS = 60;
+
+function tooManyRequests(retryAfterSeconds: number): Response {
+  return new Response(
+    JSON.stringify({ ok: false, message: "Too many narrative requests. Please retry shortly." }),
+    {
+      status: 429,
+      headers: {
+        "content-type": "application/json",
+        "retry-after": String(Math.max(1, retryAfterSeconds)),
+      },
+    }
+  );
+}
+
+function chunkText(text: string, size = 24): string[] {
+  const chunks: string[] = [];
+  for (let i = 0; i < text.length; i += size) {
+    chunks.push(text.slice(i, i + size));
+  }
+  return chunks;
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const store = getRateLimitStore();
+    const { key: requesterKey, identified } = getRequesterKey(request.headers);
+    const decision = await store.hit(
+      `narrative:${requesterKey}`,
+      identified ? NARRATIVE_RATE_LIMIT : NARRATIVE_RATE_LIMIT * 3,
+      RATE_LIMIT_WINDOW_SECONDS
+    );
+    if (!decision.allowed) {
+      return tooManyRequests(decision.retryAfterSeconds);
+    }
+
     const body = await request.json().catch(() => ({}));
     const sessionId = body.sessionId || request.cookies.get("laxvish_session_id")?.value;
     const stage: NarrativeStage = body.stage || "arrival";
@@ -34,7 +74,6 @@ export async function POST(request: NextRequest) {
         let fullText = "";
 
         try {
-          // Send initial metadata event
           controller.enqueue(
             encoder.encode(
               `event: meta\ndata: ${JSON.stringify({
@@ -46,15 +85,27 @@ export async function POST(request: NextRequest) {
             )
           );
 
-          // Stream narrative tokens from Poolside Laguna-xs-2.1
-          for await (const token of streamNarrativeFromPoolside(graph, stage)) {
-            fullText += token;
-            controller.enqueue(
-              encoder.encode(`event: token\ndata: ${JSON.stringify({ token })}\n\n`)
-            );
+          // Dedup cache: repeat (session, stage) views are served from
+          // memory/Postgres at zero LLM cost, streamed in chunks so the
+          // client UX is identical to a live generation.
+          const cached = await findCachedNarrative(sessionId, stage);
+
+          if (cached) {
+            fullText = cached;
+            for (const chunk of chunkText(cached)) {
+              controller.enqueue(
+                encoder.encode(`event: token\ndata: ${JSON.stringify({ token: chunk })}\n\n`)
+              );
+            }
+          } else {
+            for await (const token of streamNarrativeFromPoolside(graph, stage)) {
+              fullText += token;
+              controller.enqueue(
+                encoder.encode(`event: token\ndata: ${JSON.stringify({ token })}\n\n`)
+              );
+            }
           }
 
-          // Update session memory
           const moment = {
             stage,
             text: fullText,
@@ -69,13 +120,15 @@ export async function POST(request: NextRequest) {
           graph.narratives[stage] = moment;
           graph.activeStage = stage;
 
-          // Save narrative generation record
-          const latencyMs = Date.now() - startTime;
-          await persistNarrativeMoment(sessionId, moment, "poolside/laguna-xs-2.1", latencyMs);
+          // Only record fresh generations — cached replays must not create
+          // duplicate narrativeGeneration rows.
+          if (!cached) {
+            const latencyMs = Date.now() - startTime;
+            await persistNarrativeMoment(sessionId, moment, "poolside/laguna-xs-2.1", latencyMs);
+          }
 
-          // Send final completion event
           controller.enqueue(
-            encoder.encode(`event: done\ndata: ${JSON.stringify({ stage, fullText, latencyMs })}\n\n`)
+            encoder.encode(`event: done\ndata: ${JSON.stringify({ stage, fullText, latencyMs: Date.now() - startTime })}\n\n`)
           );
         } catch (err) {
           console.error("[SSE Stream Generation Error]", err);
