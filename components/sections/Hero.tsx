@@ -50,7 +50,7 @@ export function Hero() {
     const checkViewport = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      setIsShortHeight(height < 500);
+      setIsShortHeight(height < 680);
 
       if (width >= 1024) {
         setDeviceTier("desktop");
@@ -187,7 +187,7 @@ export function Hero() {
   // ——— The Moon Trajectory & Scale Transforms (0.0 -> 1.0) ———
   // Desktop: Glides from right-column (+26vw) to center (0vw).
   // Tablet: Glides from right (+16vw) to center (0vw).
-  // Mobile: Centered (0vw).
+  // Mobile: Positioned above hero text (-28vh) at scale 0.70, glides down to center (-1vh).
   const initialMoonShiftX =
     deviceTier === "desktop" ? "26vw" : deviceTier === "tablet" ? "16vw" : "0vw";
 
@@ -197,7 +197,8 @@ export function Hero() {
     [initialMoonShiftX, "0vw"]
   );
 
-  const initialMoonScale = deviceTier === "mobile" ? 0.80 : 1.0;
+  const initialMoonScale =
+    deviceTier === "mobile" ? (isShortHeight ? 0.60 : 0.70) : 1.0;
   const finalMoonScale = deviceTier === "mobile" ? 1.10 : 1.30;
 
   const rawMoonScale = useTransform(
@@ -206,15 +207,26 @@ export function Hero() {
     [initialMoonScale, finalMoonScale]
   );
 
+  const initialMoonShiftY = deviceTier === "mobile" ? "-15vh" : "0vh";
+  const finalMoonShiftY = deviceTier === "mobile" ? "-1vh" : "-1.5vh";
+
   const rawMoonShiftY = useTransform(
     animationProgress,
     [0.10, 0.85],
-    [0, deviceTier === "mobile" ? -8 : -12]
+    [initialMoonShiftY, finalMoonShiftY]
   );
 
   const moonShiftX = motionEnabled ? rawMoonShiftX : "0vw";
-  const moonShiftY = motionEnabled ? rawMoonShiftY : 0;
-  const moonScale = motionEnabled ? rawMoonScale : (deviceTier === "mobile" ? 1.0 : 1.2);
+  const moonShiftY = motionEnabled
+    ? rawMoonShiftY
+    : deviceTier === "mobile"
+    ? "-1vh"
+    : "-1.5vh";
+  const moonScale = motionEnabled
+    ? rawMoonScale
+    : deviceTier === "mobile"
+    ? 1.0
+    : 1.2;
 
   // ——— Conversational Chatbox Emergence (0.0 -> 1.0) ———
   const rawBoxOpacity = useTransform(animationProgress, [0.48, 0.86], [0, 1]);
@@ -327,6 +339,7 @@ export function Hero() {
             
             {/* ——— The Moon: Floats directly above the chatbox ——— */}
             <motion.div
+              data-testid="hero-moon"
               style={{
                 x: motionEnabled ? moonShiftX : 0,
                 y: motionEnabled ? moonShiftY : 0,

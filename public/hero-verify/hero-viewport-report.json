@@ -1,0 +1,240 @@
+[
+  {
+    "viewport": {
+      "name": "Mobile 320px (iPhone SE 1st)",
+      "width": 320,
+      "height": 568,
+      "mobile": true
+    },
+    "metrics": {
+      "eyebrow": null,
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 182,
+        "height": 114,
+        "left": 0,
+        "right": 320,
+        "top": 68,
+        "width": 320
+      },
+      "hasCollision": false,
+      "moon": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "window": {
+        "innerHeight": 568,
+        "innerWidth": 320
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 375px (iPhone SE 2nd/3rd)",
+      "width": 375,
+      "height": 667,
+      "mobile": true
+    },
+    "metrics": {
+      "eyebrow": null,
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 150,
+        "height": 82,
+        "left": 0,
+        "right": 375,
+        "top": 68,
+        "width": 375
+      },
+      "hasCollision": false,
+      "moon": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "window": {
+        "innerHeight": 667,
+        "innerWidth": 375
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 390px (iPhone 14/15)",
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    },
+    "metrics": {
+      "eyebrow": null,
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 150,
+        "height": 82,
+        "left": 0,
+        "right": 390,
+        "top": 68,
+        "width": 390
+      },
+      "hasCollision": false,
+      "moon": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "window": {
+        "innerHeight": 844,
+        "innerWidth": 390
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 430px (iPhone 15 Pro Max)",
+      "width": 430,
+      "height": 932,
+      "mobile": true
+    },
+    "metrics": {
+      "eyebrow": null,
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 150,
+        "height": 82,
+        "left": 0,
+        "right": 430,
+        "top": 68,
+        "width": 430
+      },
+      "hasCollision": false,
+      "moon": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "window": {
+        "innerHeight": 932,
+        "innerWidth": 430
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Tablet 768px (iPad Mini)",
+      "width": 768,
+      "height": 1024,
+      "mobile": false
+    },
+    "metrics": {
+      "eyebrow": null,
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 170,
+        "height": 82,
+        "left": 124,
+        "right": 644,
+        "top": 88,
+        "width": 520
+      },
+      "hasCollision": false,
+      "moon": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "window": {
+        "innerHeight": 1024,
+        "innerWidth": 768
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Desktop 1280px (Standard Laptop)",
+      "width": 1280,
+      "height": 800,
+      "mobile": false
+    },
+    "metrics": {
+      "eyebrow": null,
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 210,
+        "height": 82,
+        "left": 380,
+        "right": 900,
+        "top": 128,
+        "width": 520
+      },
+      "hasCollision": false,
+      "moon": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "window": {
+        "innerHeight": 800,
+        "innerWidth": 1280
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Desktop 1920px (FHD Monitor)",
+      "width": 1920,
+      "height": 1080,
+      "mobile": false
+    },
+    "metrics": {
+      "eyebrow": null,
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 224,
+        "height": 82,
+        "left": 700,
+        "right": 1220,
+        "top": 142,
+        "width": 520
+      },
+      "hasCollision": false,
+      "moon": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "window": {
+        "innerHeight": 1080,
+        "innerWidth": 1920
+      }
+    },
+    "passed": true
+  }
+]

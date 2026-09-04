@@ -1,0 +1,611 @@
+[
+  {
+    "viewport": {
+      "name": "Mobile 320px (iPhone SE 1st)",
+      "width": 320,
+      "height": 568
+    },
+    "data": {
+      "clearances": {
+        "horizontalToH1Px": -251,
+        "verticalToEyebrowPx": 12
+      },
+      "collisions": {
+        "cta": false,
+        "description": false,
+        "eyebrow": false,
+        "h1": false,
+        "hasCollision": false,
+        "provenance": false
+      },
+      "elements": {
+        "cta": {
+          "bottom": 287,
+          "found": true,
+          "height": 40,
+          "left": 20,
+          "name": "HeroCTA",
+          "right": 465,
+          "text": "Book a working session",
+          "top": 247,
+          "width": 445
+        },
+        "eyebrow": {
+          "bottom": 92,
+          "found": true,
+          "height": 15,
+          "left": 20,
+          "name": "Eyebrow",
+          "right": 465,
+          "text": "AN AI COMPANY · AI SYSTEMS FOR INDIAN EN",
+          "top": 77,
+          "width": 445
+        },
+        "h1": {
+          "bottom": 163,
+          "found": true,
+          "height": 60,
+          "left": 20,
+          "name": "H1",
+          "right": 465,
+          "text": "We build AI systems that do the real wor",
+          "top": 102,
+          "width": 445
+        },
+        "moon": {
+          "bottom": 65,
+          "found": true,
+          "height": 65,
+          "left": 214,
+          "name": "Moon",
+          "right": 271,
+          "text": "",
+          "top": 0,
+          "width": 57
+        },
+        "pDesc": {
+          "bottom": 231,
+          "found": true,
+          "height": 59,
+          "left": 20,
+          "name": "Description",
+          "right": 465,
+          "text": "Workers execute. Brain coordinates. Brak",
+          "top": 173,
+          "width": 445
+        },
+        "provenance": {
+          "found": false,
+          "name": "Provenance"
+        }
+      },
+      "viewport": {
+        "innerHeight": 417,
+        "innerWidth": 500
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 375px (iPhone SE 2nd/3rd)",
+      "width": 375,
+      "height": 667
+    },
+    "data": {
+      "clearances": {
+        "horizontalToH1Px": -251,
+        "verticalToEyebrowPx": 28
+      },
+      "collisions": {
+        "cta": false,
+        "description": false,
+        "eyebrow": false,
+        "h1": false,
+        "hasCollision": false,
+        "provenance": false
+      },
+      "elements": {
+        "cta": {
+          "bottom": 337,
+          "found": true,
+          "height": 40,
+          "left": 20,
+          "name": "HeroCTA",
+          "right": 465,
+          "text": "Book a working session",
+          "top": 297,
+          "width": 445
+        },
+        "eyebrow": {
+          "bottom": 142,
+          "found": true,
+          "height": 15,
+          "left": 20,
+          "name": "Eyebrow",
+          "right": 465,
+          "text": "AN AI COMPANY · AI SYSTEMS FOR INDIAN EN",
+          "top": 127,
+          "width": 445
+        },
+        "h1": {
+          "bottom": 212,
+          "found": true,
+          "height": 60,
+          "left": 20,
+          "name": "H1",
+          "right": 465,
+          "text": "We build AI systems that do the real wor",
+          "top": 152,
+          "width": 445
+        },
+        "moon": {
+          "bottom": 99,
+          "found": true,
+          "height": 65,
+          "left": 214,
+          "name": "Moon",
+          "right": 271,
+          "text": "",
+          "top": 34,
+          "width": 57
+        },
+        "pDesc": {
+          "bottom": 281,
+          "found": true,
+          "height": 59,
+          "left": 20,
+          "name": "Description",
+          "right": 465,
+          "text": "Workers execute. Brain coordinates. Brak",
+          "top": 222,
+          "width": 445
+        },
+        "provenance": {
+          "found": false,
+          "name": "Provenance"
+        }
+      },
+      "viewport": {
+        "innerHeight": 516,
+        "innerWidth": 500
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 390px (iPhone 14/15)",
+      "width": 390,
+      "height": 844
+    },
+    "data": {
+      "clearances": {
+        "horizontalToH1Px": -278,
+        "verticalToEyebrowPx": 34
+      },
+      "collisions": {
+        "cta": false,
+        "description": false,
+        "eyebrow": false,
+        "h1": false,
+        "hasCollision": false,
+        "provenance": false
+      },
+      "elements": {
+        "cta": {
+          "bottom": 437,
+          "found": true,
+          "height": 40,
+          "left": 20,
+          "name": "HeroCTA",
+          "right": 465,
+          "text": "Book a working session",
+          "top": 397,
+          "width": 445
+        },
+        "eyebrow": {
+          "bottom": 242,
+          "found": true,
+          "height": 15,
+          "left": 20,
+          "name": "Eyebrow",
+          "right": 465,
+          "text": "AN AI COMPANY · AI SYSTEMS FOR INDIAN EN",
+          "top": 227,
+          "width": 445
+        },
+        "h1": {
+          "bottom": 313,
+          "found": true,
+          "height": 60,
+          "left": 20,
+          "name": "H1",
+          "right": 465,
+          "text": "We build AI systems that do the real wor",
+          "top": 252,
+          "width": 445
+        },
+        "moon": {
+          "bottom": 193,
+          "found": true,
+          "height": 128,
+          "left": 187,
+          "name": "Moon",
+          "right": 299,
+          "text": "",
+          "top": 65,
+          "width": 112
+        },
+        "pDesc": {
+          "bottom": 381,
+          "found": true,
+          "height": 59,
+          "left": 20,
+          "name": "Description",
+          "right": 465,
+          "text": "Workers execute. Brain coordinates. Brak",
+          "top": 323,
+          "width": 445
+        },
+        "provenance": {
+          "found": false,
+          "name": "Provenance"
+        }
+      },
+      "viewport": {
+        "innerHeight": 693,
+        "innerWidth": 500
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 430px (iPhone 15 Pro Max)",
+      "width": 430,
+      "height": 932
+    },
+    "data": {
+      "clearances": {
+        "horizontalToH1Px": -278,
+        "verticalToEyebrowPx": 47
+      },
+      "collisions": {
+        "cta": false,
+        "description": false,
+        "eyebrow": false,
+        "h1": false,
+        "hasCollision": false,
+        "provenance": false
+      },
+      "elements": {
+        "cta": {
+          "bottom": 481,
+          "found": true,
+          "height": 40,
+          "left": 20,
+          "name": "HeroCTA",
+          "right": 465,
+          "text": "Book a working session",
+          "top": 441,
+          "width": 445
+        },
+        "eyebrow": {
+          "bottom": 286,
+          "found": true,
+          "height": 15,
+          "left": 20,
+          "name": "Eyebrow",
+          "right": 465,
+          "text": "AN AI COMPANY · AI SYSTEMS FOR INDIAN EN",
+          "top": 271,
+          "width": 445
+        },
+        "h1": {
+          "bottom": 357,
+          "found": true,
+          "height": 60,
+          "left": 20,
+          "name": "H1",
+          "right": 465,
+          "text": "We build AI systems that do the real wor",
+          "top": 296,
+          "width": 445
+        },
+        "moon": {
+          "bottom": 224,
+          "found": true,
+          "height": 128,
+          "left": 187,
+          "name": "Moon",
+          "right": 299,
+          "text": "",
+          "top": 96,
+          "width": 112
+        },
+        "pDesc": {
+          "bottom": 425,
+          "found": true,
+          "height": 59,
+          "left": 20,
+          "name": "Description",
+          "right": 465,
+          "text": "Workers execute. Brain coordinates. Brak",
+          "top": 367,
+          "width": 445
+        },
+        "provenance": {
+          "found": false,
+          "name": "Provenance"
+        }
+      },
+      "viewport": {
+        "innerHeight": 781,
+        "innerWidth": 500
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Tablet 768px (iPad Mini)",
+      "width": 768,
+      "height": 1024
+    },
+    "data": {
+      "clearances": {
+        "horizontalToH1Px": -406,
+        "verticalToEyebrowPx": 37
+      },
+      "collisions": {
+        "cta": false,
+        "description": false,
+        "eyebrow": false,
+        "h1": false,
+        "hasCollision": false,
+        "provenance": false
+      },
+      "elements": {
+        "cta": {
+          "bottom": 567,
+          "found": true,
+          "height": 48,
+          "left": 33,
+          "name": "HeroCTA",
+          "right": 262,
+          "text": "Book a working session",
+          "top": 519,
+          "width": 230
+        },
+        "eyebrow": {
+          "bottom": 340,
+          "found": true,
+          "height": 16,
+          "left": 33,
+          "name": "Eyebrow",
+          "right": 705,
+          "text": "AN AI COMPANY · AI SYSTEMS FOR INDIAN EN",
+          "top": 324,
+          "width": 672
+        },
+        "h1": {
+          "bottom": 396,
+          "found": true,
+          "height": 37,
+          "left": 33,
+          "name": "H1",
+          "right": 705,
+          "text": "We build AI systems that do the real wor",
+          "top": 360,
+          "width": 672
+        },
+        "moon": {
+          "bottom": 287,
+          "found": true,
+          "height": 160,
+          "left": 299,
+          "name": "Moon",
+          "right": 439,
+          "text": "",
+          "top": 127,
+          "width": 140
+        },
+        "pDesc": {
+          "bottom": 490,
+          "found": true,
+          "height": 78,
+          "left": 33,
+          "name": "Description",
+          "right": 609,
+          "text": "Workers execute. Brain coordinates. Brak",
+          "top": 412,
+          "width": 576
+        },
+        "provenance": {
+          "found": false,
+          "name": "Provenance"
+        }
+      },
+      "viewport": {
+        "innerHeight": 873,
+        "innerWidth": 752
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Desktop 1280px (Standard Laptop)",
+      "width": 1280,
+      "height": 800
+    },
+    "data": {
+      "clearances": {
+        "horizontalToH1Px": 202,
+        "verticalToEyebrowPx": -147
+      },
+      "collisions": {
+        "cta": false,
+        "description": false,
+        "eyebrow": false,
+        "h1": false,
+        "hasCollision": false,
+        "provenance": false
+      },
+      "elements": {
+        "cta": {
+          "bottom": 482,
+          "found": true,
+          "height": 48,
+          "left": 32,
+          "name": "HeroCTA",
+          "right": 262,
+          "text": "Book a working session",
+          "top": 434,
+          "width": 230
+        },
+        "eyebrow": {
+          "bottom": 161,
+          "found": true,
+          "height": 16,
+          "left": 32,
+          "name": "Eyebrow",
+          "right": 704,
+          "text": "AN AI COMPANY · AI SYSTEMS FOR INDIAN EN",
+          "top": 145,
+          "width": 672
+        },
+        "h1": {
+          "bottom": 302,
+          "found": true,
+          "height": 121,
+          "left": 32,
+          "name": "H1",
+          "right": 704,
+          "text": "We build AI systems that do the real wor",
+          "top": 181,
+          "width": 672
+        },
+        "moon": {
+          "bottom": 292,
+          "found": true,
+          "height": 109,
+          "left": 906,
+          "name": "Moon",
+          "right": 1001,
+          "text": "",
+          "top": 183,
+          "width": 95
+        },
+        "pDesc": {
+          "bottom": 405,
+          "found": true,
+          "height": 88,
+          "left": 32,
+          "name": "Description",
+          "right": 608,
+          "text": "Workers execute. Brain coordinates. Brak",
+          "top": 318,
+          "width": 576
+        },
+        "provenance": {
+          "found": false,
+          "name": "Provenance"
+        }
+      },
+      "viewport": {
+        "innerHeight": 649,
+        "innerWidth": 1264
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Desktop 1920px (FHD Monitor)",
+      "width": 1920,
+      "height": 1080
+    },
+    "data": {
+      "clearances": {
+        "horizontalToH1Px": 354,
+        "verticalToEyebrowPx": -255
+      },
+      "collisions": {
+        "cta": false,
+        "description": false,
+        "eyebrow": false,
+        "h1": false,
+        "hasCollision": false,
+        "provenance": false
+      },
+      "elements": {
+        "cta": {
+          "bottom": 602,
+          "found": true,
+          "height": 48,
+          "left": 289,
+          "name": "HeroCTA",
+          "right": 518,
+          "text": "Book a working session",
+          "top": 554,
+          "width": 230
+        },
+        "eyebrow": {
+          "bottom": 281,
+          "found": true,
+          "height": 16,
+          "left": 289,
+          "name": "Eyebrow",
+          "right": 961,
+          "text": "AN AI COMPANY · AI SYSTEMS FOR INDIAN EN",
+          "top": 265,
+          "width": 672
+        },
+        "h1": {
+          "bottom": 422,
+          "found": true,
+          "height": 121,
+          "left": 289,
+          "name": "H1",
+          "right": 961,
+          "text": "We build AI systems that do the real wor",
+          "top": 301,
+          "width": 672
+        },
+        "moon": {
+          "bottom": 520,
+          "found": true,
+          "height": 286,
+          "left": 1315,
+          "name": "Moon",
+          "right": 1565,
+          "text": "",
+          "top": 235,
+          "width": 250
+        },
+        "pDesc": {
+          "bottom": 525,
+          "found": true,
+          "height": 88,
+          "left": 289,
+          "name": "Description",
+          "right": 865,
+          "text": "Workers execute. Brain coordinates. Brak",
+          "top": 438,
+          "width": 576
+        },
+        "provenance": {
+          "found": false,
+          "name": "Provenance"
+        }
+      },
+      "viewport": {
+        "innerHeight": 929,
+        "innerWidth": 1904
+      }
+    },
+    "passed": true
+  }
+]

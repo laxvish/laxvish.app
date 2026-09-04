@@ -1,0 +1,303 @@
+[
+  {
+    "viewport": {
+      "name": "Mobile 320px (iPhone SE 1st)",
+      "width": 320,
+      "height": 568
+    },
+    "metrics": {
+      "eyebrow": {
+        "bottom": 202,
+        "height": 48,
+        "left": 0,
+        "right": 485,
+        "top": 154,
+        "width": 485
+      },
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 150,
+        "height": 82,
+        "left": 0,
+        "right": 485,
+        "top": 68,
+        "width": 485
+      },
+      "hasCollision": false,
+      "moon": null,
+      "moonFound": false,
+      "moonTag": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "svgCount": 0,
+      "window": {
+        "innerHeight": 417,
+        "innerWidth": 500
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 375px (iPhone SE 2nd/3rd)",
+      "width": 375,
+      "height": 667
+    },
+    "metrics": {
+      "eyebrow": {
+        "bottom": 202,
+        "height": 48,
+        "left": 0,
+        "right": 500,
+        "top": 154,
+        "width": 500
+      },
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 150,
+        "height": 82,
+        "left": 0,
+        "right": 500,
+        "top": 68,
+        "width": 500
+      },
+      "hasCollision": false,
+      "moon": null,
+      "moonFound": false,
+      "moonTag": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "svgCount": 0,
+      "window": {
+        "innerHeight": 516,
+        "innerWidth": 500
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 390px (iPhone 14/15)",
+      "width": 390,
+      "height": 844
+    },
+    "metrics": {
+      "eyebrow": {
+        "bottom": 202,
+        "height": 48,
+        "left": 0,
+        "right": 500,
+        "top": 154,
+        "width": 500
+      },
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 150,
+        "height": 82,
+        "left": 0,
+        "right": 500,
+        "top": 68,
+        "width": 500
+      },
+      "hasCollision": false,
+      "moon": null,
+      "moonFound": false,
+      "moonTag": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "svgCount": 0,
+      "window": {
+        "innerHeight": 693,
+        "innerWidth": 500
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Mobile 430px (iPhone 15 Pro Max)",
+      "width": 430,
+      "height": 932
+    },
+    "metrics": {
+      "eyebrow": {
+        "bottom": 202,
+        "height": 48,
+        "left": 0,
+        "right": 500,
+        "top": 154,
+        "width": 500
+      },
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 150,
+        "height": 82,
+        "left": 0,
+        "right": 500,
+        "top": 68,
+        "width": 500
+      },
+      "hasCollision": false,
+      "moon": null,
+      "moonFound": false,
+      "moonTag": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "svgCount": 0,
+      "window": {
+        "innerHeight": 781,
+        "innerWidth": 500
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Tablet 768px (iPad Mini)",
+      "width": 768,
+      "height": 1024
+    },
+    "metrics": {
+      "eyebrow": {
+        "bottom": 222,
+        "height": 48,
+        "left": 116,
+        "right": 636,
+        "top": 174,
+        "width": 520
+      },
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 170,
+        "height": 82,
+        "left": 116,
+        "right": 636,
+        "top": 88,
+        "width": 520
+      },
+      "hasCollision": false,
+      "moon": null,
+      "moonFound": false,
+      "moonTag": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "svgCount": 0,
+      "window": {
+        "innerHeight": 873,
+        "innerWidth": 752
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Desktop 1280px (Standard Laptop)",
+      "width": 1280,
+      "height": 800
+    },
+    "metrics": {
+      "eyebrow": {
+        "bottom": 254,
+        "height": 48,
+        "left": 372,
+        "right": 892,
+        "top": 206,
+        "width": 520
+      },
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 202,
+        "height": 82,
+        "left": 372,
+        "right": 892,
+        "top": 120,
+        "width": 520
+      },
+      "hasCollision": false,
+      "moon": null,
+      "moonFound": false,
+      "moonTag": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "svgCount": 0,
+      "window": {
+        "innerHeight": 649,
+        "innerWidth": 1264
+      }
+    },
+    "passed": true
+  },
+  {
+    "viewport": {
+      "name": "Desktop 1920px (FHD Monitor)",
+      "width": 1920,
+      "height": 1080
+    },
+    "metrics": {
+      "eyebrow": {
+        "bottom": 268,
+        "height": 48,
+        "left": 692,
+        "right": 1212,
+        "top": 220,
+        "width": 520
+      },
+      "gapBetweenMoonAndEyebrow": null,
+      "gapBetweenMoonAndH1": null,
+      "h1": {
+        "bottom": 216,
+        "height": 82,
+        "left": 692,
+        "right": 1212,
+        "top": 134,
+        "width": 520
+      },
+      "hasCollision": false,
+      "moon": null,
+      "moonFound": false,
+      "moonTag": null,
+      "overlapsCta": false,
+      "overlapsDesc": false,
+      "overlapsEyebrow": false,
+      "overlapsH1": false,
+      "pDesc": null,
+      "primaryCta": null,
+      "svgCount": 0,
+      "window": {
+        "innerHeight": 929,
+        "innerWidth": 1904
+      }
+    },
+    "passed": true
+  }
+]
