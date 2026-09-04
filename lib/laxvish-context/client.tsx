@@ -128,46 +128,70 @@ export function LaxvishContextProvider({ children }: { children: ReactNode }) {
     isStreamingRef.current = isStreaming;
   }, [isStreaming]);
 
-  // 1. Silent Background Geolocation Request
+  // 1. Silent Background Geolocation Request with Permissions Policy Guard
   const requestPreciseLocation = useCallback(() => {
     if (typeof window === "undefined" || !navigator.geolocation) return;
 
-    setIsLocationCalibrating(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        setIsLocationCalibrating(false);
-        const { latitude, longitude, accuracy } = pos.coords;
+    const performLocationFetch = () => {
+      try {
+        setIsLocationCalibrating(true);
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            setIsLocationCalibrating(false);
+            const { latitude, longitude, accuracy } = pos.coords;
 
-        if (sessionIdRef.current) {
-          try {
-            const res = await fetch("/api/context/location", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                sessionId: sessionIdRef.current,
-                coordinates: { latitude, longitude, accuracy },
-              }),
-            });
-            const data = await res.json();
-            if (data.ok && data.data.environment) {
-              setContextGraph((prev) => ({
-                ...prev,
-                environment: data.data.environment,
-                hypotheses: data.data.activeHypothesis ? [data.data.activeHypothesis, ...prev.hypotheses.slice(1)] : prev.hypotheses,
-              }));
+            if (sessionIdRef.current) {
+              try {
+                const res = await fetch("/api/context/location", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    sessionId: sessionIdRef.current,
+                    coordinates: { latitude, longitude, accuracy },
+                  }),
+                });
+                const data = await res.json();
+                if (data.ok && data.data.environment) {
+                  setContextGraph((prev) => ({
+                    ...prev,
+                    environment: data.data.environment,
+                    hypotheses: data.data.activeHypothesis ? [data.data.activeHypothesis, ...prev.hypotheses.slice(1)] : prev.hypotheses,
+                  }));
+                }
+              } catch (err) {
+                console.error("[Silent Location Sync Error]", err);
+              }
             }
-          } catch (err) {
-            console.error("[Silent Location Sync Error]", err);
-          }
-        }
-      },
-      (err) => {
-        // Silent failure - do not show invasive warnings
-        void err;
+          },
+          () => {
+            setIsLocationCalibrating(false);
+          },
+          { timeout: 8000, enableHighAccuracy: true, maximumAge: 60000 }
+        );
+      } catch {
         setIsLocationCalibrating(false);
-      },
-      { timeout: 8000, enableHighAccuracy: true, maximumAge: 60000 }
-    );
+      }
+    };
+
+    try {
+      if (typeof navigator.permissions?.query === "function") {
+        navigator.permissions
+          .query({ name: "geolocation" as PermissionName })
+          .then((status) => {
+            if (status.state === "denied") {
+              return;
+            }
+            performLocationFetch();
+          })
+          .catch(() => {
+            performLocationFetch();
+          });
+      } else {
+        performLocationFetch();
+      }
+    } catch {
+      // Permission API unavailable
+    }
   }, []);
 
   // 2. Stream Narrative Stage from Server SSE

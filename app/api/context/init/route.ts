@@ -4,7 +4,7 @@ import { scoreProblemHypotheses } from "@/lib/context/ontology";
 import { generateDeterministicNarrative } from "@/lib/context/poolside";
 import { getSessionFromMemory, persistContextSession } from "@/lib/context/session-store";
 import { getRateLimitStore, getRequesterKey } from "@/lib/rate-limit";
-import { LaxvishContextGraph } from "@/lib/context/types";
+import type { LaxvishContextGraph, NarrativeStage } from "@/lib/context/types.ts";
 
 export const runtime = "nodejs";
 
@@ -126,9 +126,11 @@ export async function POST(request: NextRequest) {
       activeStage: "arrival",
     };
 
-    // Prefetch arrival narrative
-    const arrivalMoment = generateDeterministicNarrative(initialGraph, "arrival");
-    initialGraph.narratives.arrival = arrivalMoment;
+    // Pre-populate baseline narratives for all 5 stages so client never shows placeholders
+    const STAGES: NarrativeStage[] = ["arrival", "environment", "opportunity", "interaction", "synthesis"];
+    for (const stg of STAGES) {
+      initialGraph.narratives[stg] = generateDeterministicNarrative(initialGraph, stg);
+    }
 
     // Persist session — immediate on init so the session row exists before
     // any narrative generation references it.

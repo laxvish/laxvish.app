@@ -172,7 +172,7 @@ export function PersonalizedIntelligenceSection() {
     if (fromGraph) {
       return parseThoughtAndNarrative(fromGraph).text || fromGraph;
     }
-    return "—";
+    return "Connecting to enterprise intelligence context...";
   }, [liveTexts, contextGraph.narratives, currentStage]);
 
   const currentThought = useMemo(() => {
@@ -195,7 +195,7 @@ export function PersonalizedIntelligenceSection() {
       <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
         <div className="border border-charcoal/20 bg-obsidian min-h-[60vh] sm:min-h-[72vh] p-8 sm:p-16 lg:p-24 flex flex-col justify-between">
           {/* Top metadata & Discrete Thinking Inspector Toggle */}
-          <div className="flex items-center justify-between w-full pb-8 border-b border-charcoal/10">
+          <div className="flex items-center justify-between w-full pb-8 border-b border-charcoal/10 relative z-10">
             <div className="flex items-center gap-3">
               <span className="inline-block w-1.5 h-1.5 bg-charcoal" />
               <span className="text-[11px] font-mono tracking-[0.2em] text-neonCyan uppercase">
@@ -206,7 +206,7 @@ export function PersonalizedIntelligenceSection() {
               type="button"
               onClick={() => setShowInspector((prev) => !prev)}
               aria-expanded={showInspector}
-              className="text-[11px] font-mono tracking-[0.15em] text-neonCyan hover:text-charcoal border border-charcoal/20 px-2.5 py-1 bg-obsidian hover:bg-vaultAmber transition-colors uppercase cursor-pointer"
+              className="text-[11px] font-mono tracking-[0.15em] text-neonCyan hover:text-charcoal border border-charcoal/20 px-2.5 py-1 bg-obsidian hover:bg-vaultAmber transition-colors uppercase cursor-pointer select-none touch-manipulation"
             >
               {`[ SYS_THINK // ${showInspector ? "HIDE" : "INSPECT"} ]`}
             </button>
