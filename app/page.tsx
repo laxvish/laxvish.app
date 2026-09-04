@@ -4,6 +4,7 @@ import { ContactPanel } from "@/components/sections/ContactPanel";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
+import { PersonalizedIntelligenceSection } from "@/components/sections/PersonalizedIntelligenceSection";
 import { PillarsGrid } from "@/components/sections/PillarsGrid";
 import { ProofBand } from "@/components/sections/ProofBand";
 import { buildPageMetadata } from "@/lib/seo";
@@ -27,6 +28,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <PersonalizedIntelligenceSection />
       <PillarsGrid />
       <ProofBand />
       <CallmeSection />

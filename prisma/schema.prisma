@@ -37,3 +37,87 @@ model Lead {
   @@index([createdAt])
   @@index([status])
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Personalized Landing Intelligence & Context Graph Models
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ContextSession {
+  id                 String                    @id @default(cuid())
+  anonymousVisitorId String                    @db.VarChar(128)
+  ipHash             String?                   @db.Char(64) // SHA-256 for dedup, no raw IP
+  isReturning        Boolean                   @default(false)
+  
+  // Normalized Models stored as structured JSON
+  technicalJson      String                    @default("{}") @db.Text
+  temporalJson       String                    @default("{}") @db.Text
+  environmentJson    String                    @default("{}") @db.Text
+  behaviorJson       String                    @default("{}") @db.Text
+  directJson         String                    @default("{}") @db.Text
+  
+  // Relations
+  events             SessionEvent[]
+  hypotheses         ProblemHypothesisRecord[]
+  narratives         NarrativeGeneration[]
+  
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  @@index([anonymousVisitorId])
+  @@index([ipHash])
+  @@index([createdAt])
+}
+
+model SessionEvent {
+  id        String         @id @default(cuid())
+  sessionId String
+  session   ContextSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  type      String         @db.VarChar(64) // section_dwell, scroll_milestone, cta_click, etc.
+  section   String?        @db.VarChar(128)
+  value     String?        @db.Text
+  metadata  String         @default("{}") @db.Text
+  
+  timestamp DateTime       @default(now())
+
+  @@index([sessionId, type])
+  @@index([timestamp])
+}
+
+model ProblemHypothesisRecord {
+  id                    String         @id @default(cuid())
+  sessionId             String
+  session               ContextSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  problemKey            String         @db.VarChar(128)
+  confidence            Float          @default(0.0)
+  supportingEvidence    String         @db.Text // JSON Array of strings
+  contradictingEvidence String?        @db.Text
+  status                String         @default("hypothesis") // hypothesis | confirmed
+  
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@index([sessionId, confidence])
+}
+
+model NarrativeGeneration {
+  id            String         @id @default(cuid())
+  sessionId     String
+  session       ContextSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  stage         String         @db.VarChar(32) // arrival, environment, opportunity, interaction, synthesis
+  modelTier     String         @db.VarChar(64) // deterministic, fast_classifier, deep_reasoning
+  promptVersion String         @db.VarChar(32)
+  
+  narrativeText String         @db.Text
+  confidence    Float          @default(0.0)
+  evidenceJson  String         @db.Text // JSON Array
+  isFallback    Boolean        @default(false)
+  latencyMs     Int            @default(0)
+  
+  createdAt     DateTime       @default(now())
+
+  @@index([sessionId, stage])
+}
+

@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { NoiseOverlay } from "@/components/layout/NoiseOverlay";
 import { GlobalAIFabric } from "@/components/layout/GlobalAIFabric";
 import { PageTransitionProvider } from "@/components/layout/PageTransitionProvider";
+import { LaxvishContextProvider } from "@/lib/laxvish-context/client";
 import { ROOT_METADATA, getSiteUrl } from "@/lib/seo";
 
 const spaceGrotesk = Space_Grotesk({
@@ -94,9 +95,11 @@ export default function RootLayout({
         </a>
         <Navbar />
         <main id="main-content" className="relative z-10 flex min-h-screen flex-col">
-          <PageTransitionProvider>
-            {children}
-          </PageTransitionProvider>
+          <LaxvishContextProvider>
+            <PageTransitionProvider>
+              {children}
+            </PageTransitionProvider>
+          </LaxvishContextProvider>
         </main>
         <Footer />
       </body>
