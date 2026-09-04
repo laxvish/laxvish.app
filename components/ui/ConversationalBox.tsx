@@ -36,7 +36,7 @@ const DOMAIN_PRESETS: OperationalPreset[] = [
     sampleDocSize: "2.4 MB",
     solution: {
       workers:
-        "POD Vision Extraction Worker (auto-parses multi-page handwritten/scanned receipts, weighbridge slips, and toll logs).",
+        "POD Vision Extraction Worker (auto-parses multi-page handwritten and scanned receipts, weighbridge slips, and toll logs).",
       brain:
         "Logistics Dispatch Mesh (reconciles trip logs against toll telemetry and pushes verified line-items directly into SAP/Tally).",
       brakes:
@@ -52,7 +52,7 @@ const DOMAIN_PRESETS: OperationalPreset[] = [
   },
   {
     id: "ap_invoices",
-    label: "Vendor AP & GST",
+    label: "Vendor AP / GST",
     domainName: "Finance & Accounts Payable",
     companyName: "Kavya Retail (Multi-Brand D2C)",
     directive:
@@ -93,7 +93,7 @@ const DOMAIN_PRESETS: OperationalPreset[] = [
         "Zero-Hallucination Medical Policy Brake (enforces strict deterministic schema constraints on diagnostic records).",
       howItHelpsGrow: [
         "Sub-second alert dispatch for panic/critical medical test thresholds.",
-        "DPDP & HIPAA-ready encrypted data handling with zero local leakage.",
+        "DPDP and HIPAA-ready encrypted data handling with zero local leakage.",
         "Frees lab specialists to handle 2.5x more daily diagnostic sample throughput.",
       ],
       estimatedRoi: "Zero reporting SLA breaches + 60% reduction in lab clerical load",
@@ -151,6 +151,15 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
   const bookDemoUrl = getBookDemoUrl();
 
   const handleSelectPreset = (preset: OperationalPreset) => {
+    if (activePreset?.id === preset.id) {
+      // Toggle off if already selected
+      setActivePreset(null);
+      setDirective("");
+      setCompanyName("");
+      setAttachedDocs([]);
+      return;
+    }
+
     setActivePreset(preset);
     setDirective(preset.directive);
     setCompanyName(preset.companyName);
@@ -207,7 +216,7 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
         attachedDocs: [...attachedDocs],
         solution: matched.solution,
       });
-    }, 1000);
+    }, 850);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -219,9 +228,6 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
 
   const handleReset = () => {
     setBlueprintResult(null);
-    setDirective("");
-    setAttachedDocs([]);
-    setActivePreset(null);
   };
 
   return (
@@ -240,58 +246,60 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
       <AnimatePresence mode="wait">
         {!blueprintResult ? (
           /* ============================================================ */
-          /* 1. OPERATIONAL INTELLIGENCE COMMAND SURFACE                   */
+          /* 1. MINIMAL OPERATIONAL DIRECTIVE SURFACE                     */
           /* ============================================================ */
           <motion.div
             key="operational-interface"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22 }}
-            className="rounded-xl border border-charcoal/20 bg-white shadow-[0_12px_36px_-12px_rgba(0,0,0,0.06)] overflow-hidden transition-all focus-within:border-charcoal/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="rounded-[2px] border border-charcoal/15 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden transition-colors focus-within:border-charcoal/35"
           >
-            {/* LEVEL 1A: System Directive Header Bar */}
-            <div className="flex items-center justify-between border-b border-charcoal/10 px-4 py-2 bg-vaultAmber/30">
-              <span className="text-[10px] font-mono font-medium tracking-[0.2em] text-neonCyan uppercase">
+            {/* LEVEL 1: TOP LABEL : Restrained, small uppercase, wide letter-spacing */}
+            <div className="flex items-center justify-between px-5 sm:px-6 py-2.5 border-b border-charcoal/10">
+              <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
                 OPERATIONAL DIRECTIVE
               </span>
-              <span className="text-[10px] font-mono text-neonCyan tracking-wider">
-                SYS-INTERFACE // LAXVISH-OS
+              <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan/70 uppercase">
+                LAXVISH / 01
               </span>
             </div>
 
-            {/* LEVEL 1B: Primary Command Textarea */}
-            <div className="p-4 space-y-3">
+            {/* LEVEL 2: INPUT : The Primary Element with Generous Whitespace */}
+            <div className="px-5 sm:px-6 pt-5 pb-3">
               <textarea
                 ref={textareaRef}
                 rows={3}
                 value={directive}
                 onChange={(e) => setDirective(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Specify an enterprise operational workflow, manual bottleneck, or integration target (e.g. logistics POD matching, vendor AP invoices, pathology reporting)..."
-                className="w-full resize-none bg-transparent text-sm sm:text-base text-charcoal placeholder:text-charcoal/40 focus:outline-none leading-relaxed font-normal"
+                placeholder="Specify an enterprise workflow, manual bottleneck, or integration target..."
+                className="w-full resize-none bg-transparent font-sans text-sm sm:text-base text-charcoal placeholder:text-neonCyan/40 focus:outline-none leading-relaxed"
               />
 
-              {/* Attached Documents Row (if present) */}
+              {/* Minimal Document Metadata Row (if present) */}
               {attachedDocs.length > 0 && (
-                <div className="flex flex-wrap gap-2 pt-1">
+                <div className="pt-2 flex flex-wrap items-center gap-3">
                   {attachedDocs.map((doc) => (
                     <div
                       key={doc.name}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-charcoal/15 bg-vaultAmber/50 px-2.5 py-1 text-xs text-charcoal font-mono"
+                      className="inline-flex items-center gap-1.5 text-xs font-mono text-charcoal/80"
                     >
-                      <span className="text-neonCyan">⌕</span>
-                      <span className="truncate max-w-[180px] sm:max-w-[280px]">
+                      <span className="text-neonCyan/70 text-[10px]">[DOC]</span>
+                      <span className="truncate max-w-[220px] sm:max-w-[320px]">
                         {doc.name}
                       </span>
-                      <span className="text-[10px] text-neonCyan">({doc.size})</span>
+                      <span className="text-[10px] text-neonCyan/70">
+                        ({doc.size})
+                      </span>
                       <button
                         type="button"
                         onClick={() => removeDoc(doc.name)}
-                        className="ml-1 text-charcoal/40 hover:text-charcoal transition-colors cursor-pointer"
+                        className="text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-xs leading-none"
                         aria-label={`Remove ${doc.name}`}
                       >
-                        ✕
+                        ×
                       </button>
                     </div>
                   ))}
@@ -299,83 +307,66 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
               )}
             </div>
 
-            {/* LEVEL 2: Supporting Actions (Attach Document + Operational Domain Context) */}
-            <div className="border-t border-charcoal/10 px-4 py-2.5 bg-obsidian/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              {/* Left utility: Attach document */}
+            {/* LEVEL 3: CONTEXT & ATTACHMENT CONTROLS : Minimal, quiet metadata controls */}
+            <div className="border-t border-charcoal/10 px-5 sm:px-6 py-2.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+              {/* Left: Quiet Attachment Text Control */}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-charcoal/80 hover:text-charcoal transition-colors cursor-pointer py-1"
+                className="inline-flex items-center gap-1.5 text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-left"
                 title="Attach sample workflow documents, spreadsheets, or SOPs"
               >
-                <span className="font-mono text-neonCyan">+</span>
+                <span className="font-mono text-xs">+</span>
                 <span>Attach workflow document</span>
               </button>
 
-              {/* Right segmented domain selector */}
-              <div className="flex items-center gap-1 overflow-x-auto no-scrollbar w-full sm:w-auto">
-                <span className="text-[10px] font-mono text-neonCyan uppercase mr-1 shrink-0">
-                  CONTEXT:
+              {/* Right: Subtle Context Metadata */}
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                <span className="text-[10px] font-mono tracking-wider text-neonCyan/60 uppercase mr-1">
+                  CONTEXT
                 </span>
-                {DOMAIN_PRESETS.map((preset) => {
+                {DOMAIN_PRESETS.map((preset, index) => {
                   const isSelected = activePreset?.id === preset.id;
                   return (
-                    <button
-                      key={preset.id}
-                      type="button"
-                      onClick={() => handleSelectPreset(preset)}
-                      className={`shrink-0 text-xs px-2.5 py-1 rounded-md transition-all font-medium ${
-                        isSelected
-                          ? "bg-charcoal text-obsidian shadow-2xs"
-                          : "text-charcoal/70 hover:text-charcoal hover:bg-vaultAmber/70"
-                      }`}
-                    >
-                      {preset.label}
-                    </button>
+                    <div key={preset.id} className="inline-flex items-center">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectPreset(preset)}
+                        className={`transition-colors cursor-pointer ${
+                          isSelected
+                            ? "text-charcoal font-medium underline underline-offset-4 decoration-charcoal/40"
+                            : "text-neonCyan hover:text-charcoal"
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                      {index < DOMAIN_PRESETS.length - 1 && (
+                        <span className="text-neonCyan/40 mx-1.5 select-none">·</span>
+                      )}
+                    </div>
                   );
                 })}
               </div>
             </div>
 
-            {/* LEVEL 3 & 4: Technical Telemetry Line + Primary Synthesis Action */}
-            <div className="border-t border-charcoal/10 px-4 py-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-vaultAmber/20">
+            {/* LEVEL 4: FOOTER & CTA : Very quiet footer metadata + Single quiet rectangular action */}
+            <div className="border-t border-charcoal/10 px-5 sm:px-6 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
-                LAXVISH THREAD // WORKERS · BRAIN · BRAKES · DPDP-READY
+                LAXVISH THREAD · WORKERS · BRAIN · BRAKES · DPDP-READY
               </div>
 
               <button
                 type="button"
                 onClick={handleSynthesize}
                 disabled={isGenerating || (!directive.trim() && attachedDocs.length === 0)}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-charcoal px-5 py-2 text-xs font-medium text-obsidian shadow-2xs transition-colors hover:bg-neonCyan disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+                className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2 text-xs font-mono tracking-wider inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 {isGenerating ? (
-                  <>
-                    <svg
-                      className="animate-spin h-3.5 w-3.5 text-obsidian"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    <span>Synthesizing System...</span>
-                  </>
+                  <span>Synthesizing...</span>
                 ) : (
                   <>
                     <span>Synthesize Architecture</span>
-                    <span className="font-mono text-xs">→</span>
+                    <span>→</span>
                   </>
                 )}
               </button>
@@ -383,135 +374,123 @@ export function ConversationalBox({ className = "" }: { className?: string }) {
           </motion.div>
         ) : (
           /* ============================================================ */
-          /* 2. SYNTHESIZED OPERATIONAL ARCHITECTURE DOSSIER               */
+          /* 2. SYNTHESIZED SYSTEM ARCHITECTURE DOSSIER                   */
           /* ============================================================ */
           <motion.div
             key="architecture-dossier"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22 }}
-            className="rounded-xl border border-charcoal/20 bg-white shadow-[0_12px_36px_-12px_rgba(0,0,0,0.06)] overflow-hidden space-y-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="rounded-[2px] border border-charcoal/15 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden"
           >
-            {/* Header Telemetry Bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-charcoal/10 px-4 py-3 bg-vaultAmber/30">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-charcoal opacity-40"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-charcoal"></span>
-                </span>
-                <span className="text-[10px] sm:text-xs font-mono font-medium tracking-[0.16em] text-neonCyan uppercase">
-                  LAXVISH ARCHITECTURE BLUEPRINT // {blueprintResult.companyName}
-                </span>
-              </div>
-              <span className="rounded bg-vaultAmber px-2.5 py-0.5 font-mono text-[10px] font-semibold text-charcoal border border-charcoal/10">
-                DEPLOYMENT SLA: {blueprintResult.solution.timeToDeploy}
+            {/* Top Bar: Restrained Architectural Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-5 sm:px-6 py-2.5 border-b border-charcoal/10">
+              <span className="text-[10px] font-mono tracking-[0.2em] text-neonCyan uppercase">
+                SYSTEM ARCHITECTURE DOSSIER
+              </span>
+              <span className="text-[10px] font-mono tracking-wider text-neonCyan uppercase">
+                {blueprintResult.companyName} · {blueprintResult.solution.timeToDeploy}
               </span>
             </div>
 
-            {/* Directive Summary */}
-            <div className="px-4 py-3 border-b border-charcoal/10 bg-obsidian/40 text-xs text-charcoal space-y-1">
-              <div className="flex items-center justify-between font-mono text-[10px] text-neonCyan uppercase">
-                <span>INPUT DIRECTIVE:</span>
+            {/* Problem Directive Summary */}
+            <div className="px-5 sm:px-6 py-3.5 border-b border-charcoal/10 text-xs text-charcoal space-y-1">
+              <div className="flex items-center justify-between font-mono text-[10px] text-neonCyan uppercase tracking-wider">
+                <span>DIRECTIVE</span>
                 <span>DOMAIN: {blueprintResult.domainName}</span>
               </div>
               <p className="leading-relaxed text-charcoal/90">{blueprintResult.directiveText}</p>
               {blueprintResult.attachedDocs.length > 0 && (
-                <div className="pt-1 flex flex-wrap gap-1.5">
+                <div className="pt-1 flex flex-wrap gap-2">
                   {blueprintResult.attachedDocs.map((doc) => (
                     <span
                       key={doc.name}
-                      className="inline-flex items-center gap-1 rounded bg-vaultAmber/80 px-2 py-0.5 font-mono text-[10px] text-charcoal"
+                      className="font-mono text-[10px] text-neonCyan"
                     >
-                      ⌕ {doc.name}
+                      [DOC: {doc.name}]
                     </span>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Section 1: Three-Pillar System Architecture */}
-            <div className="p-4 space-y-3">
-              <span className="text-[11px] font-mono uppercase tracking-[0.16em] text-neonCyan font-semibold block">
-                ENGINEERING ARCHITECTURE SPECIFICATION
-              </span>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                {/* Workers */}
-                <div className="rounded-lg border border-charcoal/15 bg-obsidian p-3 space-y-1.5">
-                  <span className="text-[10px] font-mono uppercase text-neonCyan font-semibold tracking-wider block">
-                    01 // WORKERS
-                  </span>
-                  <p className="text-charcoal/85 leading-snug">
-                    {blueprintResult.solution.workers}
-                  </p>
-                </div>
-
-                {/* Brain */}
-                <div className="rounded-lg border border-charcoal/15 bg-obsidian p-3 space-y-1.5">
-                  <span className="text-[10px] font-mono uppercase text-neonCyan font-semibold tracking-wider block">
-                    02 // BRAIN
-                  </span>
-                  <p className="text-charcoal/85 leading-snug">
-                    {blueprintResult.solution.brain}
-                  </p>
-                </div>
-
-                {/* Brakes */}
-                <div className="rounded-lg border border-charcoal/15 bg-obsidian p-3 space-y-1.5">
-                  <span className="text-[10px] font-mono uppercase text-neonCyan font-semibold tracking-wider block">
-                    03 // BRAKES
-                  </span>
-                  <p className="text-charcoal/85 leading-snug">
-                    {blueprintResult.solution.brakes}
-                  </p>
-                </div>
+            {/* Architectural Pillars: Workers · Brain · Brakes (Clean Divided Grid) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-charcoal/10 border-b border-charcoal/10 text-xs">
+              {/* Workers */}
+              <div className="p-5 sm:p-6 space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
+                  01 // WORKERS
+                </span>
+                <p className="text-charcoal/85 leading-relaxed">
+                  {blueprintResult.solution.workers}
+                </p>
               </div>
 
-              {/* Section 2: Quantified Operational Impact */}
-              <div className="pt-2 space-y-1.5">
-                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-semibold block">
-                  QUANTIFIED OPERATIONAL IMPACT:
+              {/* Brain */}
+              <div className="p-5 sm:p-6 space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
+                  02 // BRAIN
+                </span>
+                <p className="text-charcoal/85 leading-relaxed">
+                  {blueprintResult.solution.brain}
+                </p>
+              </div>
+
+              {/* Brakes */}
+              <div className="p-5 sm:p-6 space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
+                  03 // BRAKES
+                </span>
+                <p className="text-charcoal/85 leading-relaxed">
+                  {blueprintResult.solution.brakes}
+                </p>
+              </div>
+            </div>
+
+            {/* Operational Impact & ROI */}
+            <div className="px-5 sm:px-6 py-4 space-y-3">
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-neonCyan font-medium block">
+                  QUANTIFIED OPERATIONAL IMPACT
                 </span>
                 <ul className="space-y-1 text-xs text-charcoal">
                   {blueprintResult.solution.howItHelpsGrow.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2">
-                      <span className="text-charcoal font-mono font-bold mt-0.5">―</span>
+                      <span className="text-neonCyan font-mono">·</span>
                       <span className="leading-snug">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* ROI Highlight */}
               <div className="pt-2 border-t border-charcoal/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-xs">
-                <span className="font-mono text-[10px] text-neonCyan uppercase">
-                  PROJECTED BUSINESS ROI:
+                <span className="font-mono text-[10px] text-neonCyan uppercase tracking-wider">
+                  PROJECTED RETURN ON INVESTMENT:
                 </span>
-                <span className="font-semibold text-charcoal">
+                <span className="font-medium text-charcoal">
                   {blueprintResult.solution.estimatedRoi}
                 </span>
               </div>
             </div>
 
-            {/* Action Footer Bar */}
-            <div className="border-t border-charcoal/10 px-4 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-vaultAmber/20">
+            {/* Footer Action Bar */}
+            <div className="border-t border-charcoal/10 px-5 sm:px-6 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={handleReset}
-                className="inline-flex items-center justify-center gap-1 text-xs font-medium text-charcoal underline hover:text-neonCyan transition-colors py-1 cursor-pointer"
+                className="text-xs font-mono text-neonCyan hover:text-charcoal transition-colors cursor-pointer text-left"
               >
-                <span>← Modify operational directive</span>
+                ← Edit directive
               </button>
 
               <a
                 href={bookDemoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-charcoal px-5 py-2 text-xs font-medium text-obsidian shadow-2xs transition-colors hover:bg-neonCyan text-center"
+                className="rounded-[2px] bg-charcoal text-obsidian hover:bg-neonCyan transition-colors px-4 py-2 text-xs font-mono tracking-wider text-center"
               >
-                <span>Book Working Session with this Blueprint</span>
-                <span className="font-mono text-xs">→</span>
+                Book Working Session with this Blueprint →
               </a>
             </div>
           </motion.div>
