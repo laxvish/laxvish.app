@@ -6,8 +6,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLaxvishContext } from "@/lib/laxvish-context/client";
 import type { AIPrediction, PredictedSolutionOpportunity } from "@/lib/context/types";
 
+const TYPEWRITER_TICK_MS = 22;
 const PREDICTION_HOLD_MS = 2000;
-const FADE_DURATION_SEC = 0.35;
+const FADE_DURATION_SEC = 0.25;
 
 const FALLBACK_PREDICTIONS: AIPrediction[] = [
   {
@@ -30,6 +31,7 @@ const FALLBACK_PREDICTIONS: AIPrediction[] = [
 export function PersonalizedIntelligenceSection() {
   const { predictedSolutions, contextGraph } = useLaxvishContext();
   const [activePredictionIndex, setActivePredictionIndex] = useState<number>(0);
+  const [displayedLength, setDisplayedLength] = useState<number>(0);
 
   const prefersReducedMotion = Boolean(
     contextGraph?.technical?.prefersReducedMotion ||
@@ -53,24 +55,50 @@ export function PersonalizedIntelligenceSection() {
     return FALLBACK_PREDICTIONS;
   }, [predictedSolutions]);
 
-  // Sequential progression: Each thought is visible for exactly 2 seconds, then transitions. Stops after the last prediction.
+  const currentPrediction = predictions[activePredictionIndex] || predictions[0];
+  const fullText = currentPrediction.text;
+
+  // 1. Reset or initialize displayed length when active prediction changes
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setDisplayedLength(fullText.length);
+    } else {
+      setDisplayedLength(0);
+    }
+  }, [activePredictionIndex, fullText.length, prefersReducedMotion]);
+
+  // 2. Letter-by-letter typewriter reveal
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setDisplayedLength(fullText.length);
+      return;
+    }
+
+    if (displayedLength >= fullText.length) {
+      return;
+    }
+
+    const typingTimer = window.setTimeout(() => {
+      setDisplayedLength((prev) => Math.min(prev + 1, fullText.length));
+    }, TYPEWRITER_TICK_MS);
+
+    return () => window.clearTimeout(typingTimer);
+  }, [displayedLength, fullText.length, prefersReducedMotion]);
+
+  // 3. Closed-loop transition: Once full text is typed, hold for 2 seconds, then transition to next in loop (1->2->3->4->5->1...)
   useEffect(() => {
     if (predictions.length <= 1) return;
-    if (activePredictionIndex >= predictions.length - 1) return;
+    if (displayedLength < fullText.length) return;
 
-    const timer = window.setTimeout(() => {
-      setActivePredictionIndex((current: number) => {
-        if (current >= predictions.length - 1) {
-          return current;
-        }
-        return current + 1;
-      });
+    const holdTimer = window.setTimeout(() => {
+      setActivePredictionIndex((current: number) => (current + 1) % predictions.length);
     }, PREDICTION_HOLD_MS);
 
-    return () => window.clearTimeout(timer);
-  }, [activePredictionIndex, predictions.length]);
+    return () => window.clearTimeout(holdTimer);
+  }, [displayedLength, fullText.length, predictions.length]);
 
-  const currentPrediction = predictions[activePredictionIndex] || predictions[0];
+  const displayedText = prefersReducedMotion ? fullText : fullText.slice(0, displayedLength);
+  const isTyping = !prefersReducedMotion && displayedLength < fullText.length;
 
   return (
     <section
@@ -86,14 +114,14 @@ export function PersonalizedIntelligenceSection() {
           </p>
         </div>
 
-        {/* Single Active Thought with Subtle Sequential Fade */}
+        {/* Single Active Thought with One-Letter-at-a-Time Typewriter Reveal */}
         <div className="py-14 sm:py-20 lg:py-28 min-h-[220px] sm:min-h-[260px] flex items-center">
           <AnimatePresence mode="wait">
             <motion.div
               key={activePredictionIndex}
-              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 6 }}
+              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
+              exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -4 }}
               transition={{
                 duration: prefersReducedMotion ? 0 : FADE_DURATION_SEC,
                 ease: [0.25, 0.1, 0.25, 1],
@@ -101,7 +129,13 @@ export function PersonalizedIntelligenceSection() {
               className="w-full"
             >
               <p className="text-xl sm:text-2xl lg:text-[1.85rem] font-normal leading-[1.65] tracking-[-0.01em] text-charcoal font-space-grotesk">
-                {currentPrediction.text}
+                {displayedText}
+                {isTyping && (
+                  <span
+                    aria-hidden="true"
+                    className="inline-block w-[2px] h-[0.9em] bg-charcoal ml-1 align-baseline animate-pulse"
+                  />
+                )}
               </p>
             </motion.div>
           </AnimatePresence>

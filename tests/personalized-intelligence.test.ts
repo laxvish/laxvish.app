@@ -40,7 +40,7 @@ test("PersonalizedIntelligenceSection: Strict anti-dashboard and anti-leak guara
   assert.ok(!content.includes("01 / 05"), "UI must not render 01 / 05 indicators");
 });
 
-test("PersonalizedIntelligenceSection: Renders exactly ONE prediction at a time with 2000ms timing", () => {
+test("PersonalizedIntelligenceSection: One-letter-at-a-time typewriter and closed-loop transition", () => {
   const content = fs.readFileSync(COMPONENT_PATH, "utf-8");
 
   // 1. Understated section introduction
@@ -50,30 +50,25 @@ test("PersonalizedIntelligenceSection: Renders exactly ONE prediction at a time 
     "Header must state understated intro: We’ve been thinking about what AI could do for you"
   );
 
-  // 2. Holds each prediction for 2000ms
+  // 2. One letter at a time typewriter reveal
+  assert.match(
+    content,
+    /TYPEWRITER_TICK_MS|displayedLength/i,
+    "Must implement one-letter-at-a-time typewriter reveal logic"
+  );
+
+  // 3. Holds each complete prediction for 2000ms
   assert.match(
     content,
     /PREDICTION_HOLD_MS\s*=\s*2000|2000/i,
     "Must hold each prediction for 2000ms before transitioning"
   );
 
-  // 3. State machine maintains activePredictionIndex and renders currentPrediction
+  // 4. Closed loop transition: (current + 1) % predictions.length
   assert.match(
     content,
-    /activePredictionIndex/i,
-    "Must track activePredictionIndex in state"
-  );
-  assert.match(
-    content,
-    /currentPrediction/i,
-    "Must render single currentPrediction at any given moment"
-  );
-
-  // 4. Subtle fade transition
-  assert.match(
-    content,
-    /AnimatePresence/i,
-    "Must use AnimatePresence for smooth fade transitions"
+    /\(current\s*\+\s*1\)\s*%\s*predictions\.length/,
+    "Must implement closed-loop progression (1 -> 2 -> 3 -> 4 -> 5 -> 1)"
   );
 
   // 5. Palette tokens
@@ -105,7 +100,7 @@ test("TypeScript types: AIPrediction and AIPredictionsResponse conform to contra
   assert.equal(response.predictions[0].text, prediction.text);
 });
 
-test("Sequential state machine progresses 1->2->3->4->5 and stops after #5 without looping", () => {
+test("Sequential state machine progresses in a closed loop (1->2->3->4->5->1)", () => {
   const predictions: AIPrediction[] = [
     { text: "Thought 1" },
     { text: "Thought 2" },
@@ -116,26 +111,23 @@ test("Sequential state machine progresses 1->2->3->4->5 and stops after #5 witho
 
   let activeIndex = 0;
 
-  const advance = (current: number) => {
-    if (current >= predictions.length - 1) {
-      return current; // Stop, do not loop
-    }
-    return current + 1;
+  const advanceInClosedLoop = (current: number) => {
+    return (current + 1) % predictions.length;
   };
 
-  // 0 -> 1 -> 2 -> 3 -> 4
-  activeIndex = advance(activeIndex);
+  // 0 -> 1 -> 2 -> 3 -> 4 -> 0
+  activeIndex = advanceInClosedLoop(activeIndex);
   assert.equal(activeIndex, 1);
-  activeIndex = advance(activeIndex);
+  activeIndex = advanceInClosedLoop(activeIndex);
   assert.equal(activeIndex, 2);
-  activeIndex = advance(activeIndex);
+  activeIndex = advanceInClosedLoop(activeIndex);
   assert.equal(activeIndex, 3);
-  activeIndex = advance(activeIndex);
+  activeIndex = advanceInClosedLoop(activeIndex);
   assert.equal(activeIndex, 4);
 
-  // After 4 (which is #5), advancing must stop at 4
-  activeIndex = advance(activeIndex);
-  assert.equal(activeIndex, 4, "Must stop at prediction #5 without looping back to 0");
+  // After 4 (Thought 5), advances back to 0 (Thought 1) - Closed Loop!
+  activeIndex = advanceInClosedLoop(activeIndex);
+  assert.equal(activeIndex, 0, "Must loop back to prediction #1 after #5 in a closed loop");
 });
 
 test("SOLUTION_OPPORTUNITY_REGISTRY contains 15+ rich multi-industry AI opportunities with conversational thoughts", () => {
