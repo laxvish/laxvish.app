@@ -77,27 +77,25 @@ export function sanitizeModelOutput(raw: string): string {
     .trim();
 }
 
-const SOLUTION_SYNTHESIS_SYSTEM_PROMPT = `You are the Laxvish AI Solution Synthesizer.
+const SOLUTION_SYNTHESIS_SYSTEM_PROMPT = `You are thinking out loud on behalf of Laxvish, an AI operating system for Indian enterprises.
 
-Laxvish is an AI operating system for Indian enterprises. Your job is to take the visitor's top 5 ranked AI opportunities and ensure their descriptions are crisp, highly relevant, and easy to read.
+Your job is to produce a sequence of 5 natural, thoughtful, human editorial thoughts describing what Laxvish could build for this specific visitor.
 
-CORE RULES:
-1. Use simple everyday language at a Class 6 to 8 reading level.
-2. An Indian founder or COO must understand each opportunity in 3 seconds.
-3. Keep sentences short (maximum 15 words per sentence). Maximum 2 sentences per description.
-4. No marketing fluff (never use "transform", "revolutionize", "unlock", "game-changing", or "seamlessly").
-5. Output ONLY a valid JSON object matching this schema:
+CORE WRITING PRINCIPLES:
+1. HUMAN & CONVERSATIONAL: Write like an intelligent, thoughtful technologist exploring real possibilities ("I think we could help you scale...", "And if education is part of your world...", "We could also take the documentation overhead...", "You may also have opportunities on the front line...", "The bigger opportunity may be connecting all of this together...").
+2. CONCRETE & PRACTICAL: Describe actual systems we can build (autonomous workflows across ERPs, clinical documentation background agents, voice triage for sales pipelines, unified company memory).
+3. CALM & CONFIDENT: No SaaS marketing buzzwords (never use "transform", "revolutionize", "unlock", "game-changing", "cutting-edge", or "seamlessly").
+4. NO DASHBOARD LABELS: No bullet points, scores, category headers, or technical telemetry.
+5. STRICT JSON FORMAT:
 {
-  "solutions": [
+  "predictions": [
     {
       "id": "solution_id_matching_input",
-      "headline": "Punchy 3-6 word feature headline",
-      "description": "1-2 sentence crisp description of what Laxvish builds for this organization.",
-      "rationale": "Short customer-facing sentence on why this is valuable (e.g. Based on your industry focus and regional ecosystem)."
+      "text": "1-2 sentence thoughtful, conversational paragraph about what we can build for them."
     }
   ]
 }
-6. NEVER include <think>, reasoning, or system traces in the JSON values.`;
+6. NEVER include <think>, <analysis>, <reasoning>, or chain-of-thought in output.`;
 
 /**
  * Refines the 5 predicted solutions with the LLM when available,
@@ -122,8 +120,7 @@ export async function refinePredictedSolutionsWithLLM(
       id: s.id,
       title: s.title,
       category: s.category,
-      currentHeadline: s.headline,
-      currentDescription: s.description,
+      currentText: s.text || s.description,
     })),
   };
 
@@ -134,7 +131,7 @@ export async function refinePredictedSolutionsWithLLM(
         { role: "system", content: SOLUTION_SYNTHESIS_SYSTEM_PROMPT },
         {
           role: "user",
-          content: `Refine these 5 predicted AI opportunities: ${JSON.stringify(promptPayload)}`,
+          content: `Refine these 5 predicted AI opportunities into conversational human thoughts: ${JSON.stringify(promptPayload)}`,
         },
       ],
       temperature: 0.2,
@@ -145,26 +142,28 @@ export async function refinePredictedSolutionsWithLLM(
     const cleanJson = sanitizeModelOutput(rawContent);
     const parsed = JSON.parse(cleanJson);
 
-    if (parsed && Array.isArray(parsed.solutions) && parsed.solutions.length > 0) {
-      const refinedMap = new Map<string, { headline?: string; description?: string; rationale?: string }>();
-      for (const item of parsed.solutions) {
+    const items = Array.isArray(parsed?.predictions)
+      ? parsed.predictions
+      : Array.isArray(parsed?.solutions)
+      ? parsed.solutions
+      : [];
+
+    if (items.length > 0) {
+      const refinedMap = new Map<string, string>();
+      for (const item of items) {
         if (item.id) {
-          refinedMap.set(item.id, {
-            headline: sanitizeModelOutput(item.headline || ""),
-            description: sanitizeModelOutput(item.description || ""),
-            rationale: sanitizeModelOutput(item.rationale || ""),
-          });
+          const cleanText = sanitizeModelOutput(item.text || item.description || "");
+          if (cleanText) refinedMap.set(item.id, cleanText);
         }
       }
 
       return baseSolutions.map((base) => {
-        const match = refinedMap.get(base.id);
-        if (match && match.description && match.description.length >= 15) {
+        const matchText = refinedMap.get(base.id);
+        if (matchText && matchText.length >= 20) {
           return {
             ...base,
-            headline: match.headline || base.headline,
-            description: match.description,
-            rationale: match.rationale || base.rationale,
+            text: matchText,
+            description: matchText,
           };
         }
         return base;

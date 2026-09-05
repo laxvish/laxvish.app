@@ -20,36 +20,30 @@ const COMPONENT_PATH = path.resolve(
   "components/sections/PersonalizedIntelligenceSection.tsx"
 );
 
-test("PersonalizedIntelligenceSection: Strict anti-leak guarantee (No <think>, SYS_THINK, or raw telemetry)", () => {
+test("PersonalizedIntelligenceSection: Strict anti-dashboard and anti-leak guarantee", () => {
   const content = fs.readFileSync(COMPONENT_PATH, "utf-8");
 
-  // 1. Must NEVER display SYS_THINK or raw reasoning traces in UI
-  assert.ok(
-    !content.includes("SYS_THINK"),
-    "UI must not render SYS_THINK"
-  );
-  assert.ok(
-    !content.includes("REASONING TRACE"),
-    "UI must not render REASONING TRACE"
-  );
-  assert.ok(
-    !content.includes("<think>"),
-    "UI must not contain <think> tags"
-  );
-  assert.ok(
-    !content.includes("dangerouslySetInnerHTML"),
-    "UI must not use dangerouslySetInnerHTML"
-  );
+  // 1. Must NEVER display SYS_THINK, INSPECT, or raw reasoning traces in UI
+  assert.ok(!content.includes("SYS_THINK"), "UI must not render SYS_THINK");
+  assert.ok(!content.includes("REASONING TRACE"), "UI must not render REASONING TRACE");
+  assert.ok(!content.includes("INSPECT"), "UI must not render INSPECT button");
+  assert.ok(!content.includes("<think>"), "UI must not contain <think> tags");
+  assert.ok(!content.includes("dangerouslySetInnerHTML"), "UI must not use dangerouslySetInnerHTML");
+
+  // 2. Must NOT render dashboard cards, meters, badges, or telemetry tables
+  assert.ok(!content.includes("CONFIDENCE:"), "UI must not render confidence score percentage in UI");
+  assert.ok(!content.includes("BUILT WITH:"), "UI must not render technical capability badge flood");
+  assert.ok(!content.includes("[ RELEVANCE SIGNAL ]"), "UI must not render telemetry tags in UI");
 });
 
-test("PersonalizedIntelligenceSection: Renders 5 predicted opportunities with AGENTS.md tokens", () => {
+test("PersonalizedIntelligenceSection: Renders plain editorial human text with understated intro", () => {
   const content = fs.readFileSync(COMPONENT_PATH, "utf-8");
 
-  // 1. Header overline format
+  // 1. Understated section introduction
   assert.match(
     content,
-    /WHAT LAXVISH CAN BUILD FOR YOU|PREDICTED SOLUTION|PREDICTED AI OPPORTUNITY/i,
-    "Header must state what Laxvish builds for the visitor"
+    /We’ve been thinking about what AI could do for you/i,
+    "Header must state understated intro: We’ve been thinking about what AI could do for you"
   );
 
   // 2. Palette tokens
@@ -59,9 +53,12 @@ test("PersonalizedIntelligenceSection: Renders 5 predicted opportunities with AG
 
   // 3. Motion safety
   assert.match(content, /prefersReducedMotion|prefers-reduced-motion/i, "Must support reduced motion");
+
+  // 4. Closing action
+  assert.match(content, /Let’s talk about what we could build for you/i, "Must have quiet conversational closing action");
 });
 
-test("SOLUTION_OPPORTUNITY_REGISTRY contains 15+ rich multi-industry AI opportunities", () => {
+test("SOLUTION_OPPORTUNITY_REGISTRY contains 15+ rich multi-industry AI opportunities with conversational thoughts", () => {
   assert.ok(
     SOLUTION_OPPORTUNITY_REGISTRY.length >= 15,
     `Registry must contain at least 15 solution opportunities, found ${SOLUTION_OPPORTUNITY_REGISTRY.length}`
@@ -75,9 +72,8 @@ test("SOLUTION_OPPORTUNITY_REGISTRY contains 15+ rich multi-industry AI opportun
 
   for (const sol of SOLUTION_OPPORTUNITY_REGISTRY) {
     assert.ok(sol.id, "Solution must have an id");
-    assert.ok(sol.title.startsWith("AI for") || sol.title.includes("AI"), "Title should be AI solution oriented");
-    assert.ok(sol.headline.length > 5, "Headline must be informative");
-    assert.ok(sol.description.length >= 20, "Description must be substantive");
+    assert.ok(sol.conversationalThought.length >= 30, "Must have rich conversational thought text");
+    assert.ok(!sol.conversationalThought.includes("<think>"), "Conversational thought must not contain <think>");
     assert.ok(sol.laxvishCapabilities.length > 0, "Must map to Laxvish capabilities");
     assert.ok(sol.ctaHref.startsWith("/"), "CTA href must be a valid path");
   }
@@ -149,6 +145,7 @@ test("scoreAndRankPredictedSolutions enforces top 5 diversity across distinct ca
 
   for (let i = 0; i < 5; i++) {
     assert.equal(top5[i].rank, i + 1, `Solution at index ${i} must have rank ${i + 1}`);
+    assert.ok(top5[i].text.length >= 30, `Thought text at rank ${i + 1} must be substantial`);
   }
 });
 
@@ -212,6 +209,7 @@ test("Direct user input overrides environmental baseline in solution ranking", (
 
   assert.equal(top5[0].category, "healthcare", "Healthcare opportunity must be ranked #1 when user explicitly inquires about it");
   assert.equal(top5[0].title, "AI for Healthcare");
+  assert.ok(top5[0].text.includes("healthcare") || top5[0].text.includes("clinical"), "Thought text must reflect healthcare domain");
 });
 
 test("sanitizeModelOutput cleanly strips thinking tags and JSON code fences", () => {
@@ -220,11 +218,10 @@ The visitor is in Bengaluru. I will synthesize an education solution.
 </think>
 \`\`\`json
 {
-  "solutions": [
+  "predictions": [
     {
       "id": "ai_education_platform",
-      "headline": "Institutional Administration",
-      "description": "We can build an AI education platform."
+      "text": "And if education is part of your world, we could build an AI layer around your school."
     }
   ]
 }
@@ -237,5 +234,6 @@ The visitor is in Bengaluru. I will synthesize an education solution.
   assert.ok(!clean.includes("```"), "Must strip backticks");
 
   const parsed = JSON.parse(clean);
-  assert.equal(parsed.solutions[0].id, "ai_education_platform");
+  assert.equal(parsed.predictions[0].id, "ai_education_platform");
+  assert.ok(parsed.predictions[0].text.startsWith("And if education"));
 });

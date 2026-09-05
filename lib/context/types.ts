@@ -120,6 +120,7 @@ export interface PredictedSolutionOpportunity {
   rank: number;
   title: string;              // e.g. "AI for Finance", "AI for Education", "AI for Healthcare"
   category: string;           // "finance" | "education" | "healthcare" | "sales" | "operations" | "legal" | "hr" | "logistics" | "document" | "support" | "knowledge" | "compliance"
+  text: string;               // Plain human conversational thought ("I think we could help you scale...")
   headline: string;           // short descriptive name
   description: string;        // 1-2 sentence high-impact editorial description ("We can help you scale...")
   rationale?: string;         // Customer-facing explanation (Zero internal think/telemetry leaks!)
@@ -136,6 +137,7 @@ export interface SolutionOpportunityDefinition {
   id: string;
   title: string;
   category: string;
+  conversationalThought: string; // Plain human conversational thought
   headline: string;
   description: string;
   rationale: string;

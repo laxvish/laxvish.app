@@ -106,6 +106,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_finance_platform",
     title: "AI for Finance",
     category: "finance",
+    conversationalThought: "I think we could help you scale your business with AI — especially around the financial workflows, reconciliations, and routine ledger decisions that take time away from the people making the important strategic calls.",
     headline: "Autonomous Invoicing, Reconciliation & Cash Flow Intelligence",
     description: "We can help you scale your finance operations with AI — from repetitive reconciliations to instant decision-support.",
     rationale: "Tailored for high-volume enterprise financial operations and commercial corridors.",
@@ -123,6 +124,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_education_platform",
     title: "AI for Education",
     category: "education",
+    conversationalThought: "And if education is part of your world, we could build an AI layer around your school that gives teachers more time, takes repetitive administrative work away, and makes the learning experience better for students.",
     headline: "Institutional Administration & Intelligent Learning Support",
     description: "We can build an AI education platform that saves your institution time, automates administration, and improves the learning experience.",
     rationale: "Structured for educational institutions, academies, and university ecosystems.",
@@ -140,6 +142,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_healthcare_operations",
     title: "AI for Healthcare",
     category: "healthcare",
+    conversationalThought: "There is also something meaningful we can do in healthcare. We could take the documentation, discharge summaries, and administrative coordination that surround your clinical team and turn much of it into something AI handles quietly in the background.",
     headline: "Clinical Documentation & Patient Flow Orchestration",
     description: "We can build intelligent systems that reduce administrative burdens and documentation overhead so your healthcare team can focus on patients.",
     rationale: "Engineered for clinical workflows, hospital networks, and diagnostic centres.",
@@ -157,6 +160,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_sales_telephony_agent",
     title: "AI for Sales",
     category: "sales",
+    conversationalThought: "You may also have opportunities to use AI on the front line of your business. We could build voice and inbound agents that talk to prospects in natural Indian languages, qualify opportunities, and keep your pipeline moving without asking your team to do every follow-up themselves.",
     headline: "Autonomous Voice Qualification & Inbound Triage",
     description: "We can build AI agents that qualify leads, handle customer conversations in natural Indian languages, and keep your sales pipeline moving.",
     rationale: "Optimized for fast-moving sales teams and high-volume inbound pipelines.",
@@ -174,6 +178,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_operations_automation",
     title: "AI for Operations",
     category: "operations",
+    conversationalThought: "We could turn repetitive business processes into autonomous workflows that operate safely across your existing software systems and take over routine cross-tool tasks.",
     headline: "Autonomous Cross-System Enterprise Workflows",
     description: "We can turn repetitive business processes into autonomous AI workflows that operate safely across your existing software systems.",
     rationale: "Designed for multi-department enterprises with legacy databases and modern cloud ERPs.",
@@ -191,6 +196,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_document_intelligence",
     title: "AI for Documents",
     category: "document",
+    conversationalThought: "And if your team spends a lot of time moving information between documents, people, and systems, we could turn that entire extraction and verification pipeline into something that largely takes care of itself.",
     headline: "Deterministic Extraction for Invoices, Contracts & Records",
     description: "We can extract, validate, and verify unstructured enterprise documents with zero hallucination risk and cryptographic audit trails.",
     rationale: "Built for paperwork-heavy compliance, legal, and operational environments.",
@@ -208,6 +214,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_logistics_orchestrator",
     title: "AI for Logistics",
     category: "logistics",
+    conversationalThought: "In logistics and supply chain operations, we could orchestrate carrier updates, dispatch exceptions, and freight documentation with real-time autonomous intelligence.",
     headline: "Supply Chain Visibility & Dispatch Coordination",
     description: "We can orchestrate shipment exceptions, carrier communications, and warehouse dispatch updates with real-time autonomous intelligence.",
     rationale: "Configured for freight corridors, manufacturing hubs, and distribution networks.",
@@ -225,6 +232,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_legal_intelligence",
     title: "AI for Legal",
     category: "legal",
+    conversationalThought: "There is also a powerful opportunity around contracts and compliance — analyzing complex agreements, cross-checking statutory clauses, and catching regulatory risks in seconds.",
     headline: "Contract Analysis & Regulatory Compliance Systems",
     description: "We can analyze complex enterprise agreements, flag regulatory risks, and ensure adherence to Indian statutory norms in seconds.",
     rationale: "Specialized for corporate legal departments, law firms, and statutory advisory teams.",
@@ -242,6 +250,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_hr_automation",
     title: "AI for HR",
     category: "hr",
+    conversationalThought: "We could streamline your talent pipeline by screening candidates, automating employee onboarding workflows, and answering routine internal policy questions instantly.",
     headline: "Talent Screening, Onboarding & Employee Operations",
     description: "We can streamline candidate screening, automate employee onboarding workflows, and handle internal policy inquiries instantly.",
     rationale: "Engineered for scaling enterprises managing distributed and high-volume workforces.",
@@ -259,6 +268,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_customer_support_core",
     title: "AI for Customer Support",
     category: "support",
+    conversationalThought: "We could build 24/7 conversational support systems that resolve customer inquiries instantly across voice, chat, and email with total consistency and human escalation safeguards.",
     headline: "24/7 Multilingual Omnichannel Support Agents",
     description: "We can build conversational support systems that resolve customer inquiries instantly across voice, chat, and email with human escalation safeguards.",
     rationale: "Designed for customer-centric brands handling high interaction volumes.",
@@ -276,6 +286,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_enterprise_brain",
     title: "AI for Enterprise Knowledge",
     category: "knowledge",
+    conversationalThought: "The bigger opportunity may be connecting all of this together — giving your organization an AI layer that understands its work, remembers what matters, and can actually do things on your behalf.",
     headline: "Unified Semantic Memory & Internal AI Copilots",
     description: "We can connect your company's distributed documents, communications, and databases into a single searchable thinking backbone.",
     rationale: "Created for organizations seeking to eliminate internal knowledge silos.",
@@ -293,6 +304,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_compliance_brakes",
     title: "AI for Compliance & Safety",
     category: "compliance",
+    conversationalThought: "We can install deterministic safety guardrails that guarantee your automated systems operate under strict DPDP compliance with zero hallucination risk.",
     headline: "Deterministic Policy Enforcement & DPDP Brakes",
     description: "We can install deterministic safety guardrails that prevent unauthorized AI actions and guarantee full DPDP compliance across your stack.",
     rationale: "Essential for regulated industries requiring strict data sovereignty.",
@@ -310,6 +322,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_procurement_intelligence",
     title: "AI for Procurement",
     category: "procurement",
+    conversationalThought: "We could automate vendor comparison, purchase requisition matching, and supplier invoice verification to eliminate cost leakage across your supply chain.",
     headline: "Vendor Evaluation & Purchase Order Automation",
     description: "We can automate vendor comparison, purchase requisition matching, and supplier invoice verification to prevent cost leakages.",
     rationale: "Tailored for enterprises managing extensive supplier and vendor networks.",
@@ -327,6 +340,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_real_estate_operations",
     title: "AI for Real Estate",
     category: "real_estate",
+    conversationalThought: "In real estate and property operations, we could automate inbound tenant inquiries, streamline lease audits, and coordinate facility maintenance without manual ticket handling.",
     headline: "Tenant Triage, Lease Analytics & Facility Automation",
     description: "We can automate property inquiries, streamline lease management, and coordinate facility maintenance requests with autonomous AI.",
     rationale: "Structured for property developers, co-working operators, and commercial asset managers.",
@@ -344,6 +358,7 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
     id: "ai_retail_intelligence",
     title: "AI for Retail & Commerce",
     category: "retail",
+    conversationalThought: "For retail and commerce, we could synchronize inventory forecasts, catalog updates, and order exceptions across all your sales channels automatically.",
     headline: "Inventory Forecasting & Omnichannel Order Operations",
     description: "We can synchronize catalog updates, forecast stock requirements, and automate order exception handling across your retail channels.",
     rationale: "Engineered for retail chains, distributors, and omnichannel consumer merchants.",
@@ -582,9 +597,8 @@ export function scoreAndRankPredictedSolutions(
     }
   }
 
-  // Map to PredictedSolutionOpportunity contract
+  // Map to PredictedSolutionOpportunity contract with natural human thoughts
   return selected.slice(0, 5).map((def, index) => {
-    // Confidence gracefully descends across ranks
     const baseConfidence = 0.94 - index * 0.04;
     const confidence = Math.max(0.70, Number(baseConfidence.toFixed(2)));
 
@@ -593,6 +607,7 @@ export function scoreAndRankPredictedSolutions(
       rank: index + 1,
       title: def.title,
       category: def.category,
+      text: def.conversationalThought,
       headline: def.headline,
       description: def.description,
       rationale: def.rationale,
