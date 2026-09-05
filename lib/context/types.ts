@@ -115,6 +115,14 @@ export interface SolutionCandidate {
   ctaHref: string;
 }
 
+export interface AIPrediction {
+  text: string;
+}
+
+export interface AIPredictionsResponse {
+  predictions: AIPrediction[];
+}
+
 export interface PredictedSolutionOpportunity {
   id: string;
   rank: number;

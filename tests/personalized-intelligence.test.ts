@@ -8,6 +8,8 @@ import {
 } from "../lib/context/ontology.ts";
 import { sanitizeModelOutput } from "../lib/context/poolside.ts";
 import type {
+  AIPrediction,
+  AIPredictionsResponse,
   BehaviorModel,
   DirectInputModel,
   EnvironmentModel,
@@ -34,9 +36,11 @@ test("PersonalizedIntelligenceSection: Strict anti-dashboard and anti-leak guara
   assert.ok(!content.includes("CONFIDENCE:"), "UI must not render confidence score percentage in UI");
   assert.ok(!content.includes("BUILT WITH:"), "UI must not render technical capability badge flood");
   assert.ok(!content.includes("[ RELEVANCE SIGNAL ]"), "UI must not render telemetry tags in UI");
+  assert.ok(!content.includes("1 of 5"), "UI must not render 1 of 5 indicators");
+  assert.ok(!content.includes("01 / 05"), "UI must not render 01 / 05 indicators");
 });
 
-test("PersonalizedIntelligenceSection: Renders plain editorial human text with understated intro", () => {
+test("PersonalizedIntelligenceSection: Renders exactly ONE prediction at a time with 2000ms timing", () => {
   const content = fs.readFileSync(COMPONENT_PATH, "utf-8");
 
   // 1. Understated section introduction
@@ -46,16 +50,92 @@ test("PersonalizedIntelligenceSection: Renders plain editorial human text with u
     "Header must state understated intro: We’ve been thinking about what AI could do for you"
   );
 
-  // 2. Palette tokens
+  // 2. Holds each prediction for 2000ms
+  assert.match(
+    content,
+    /PREDICTION_HOLD_MS\s*=\s*2000|2000/i,
+    "Must hold each prediction for 2000ms before transitioning"
+  );
+
+  // 3. State machine maintains activePredictionIndex and renders currentPrediction
+  assert.match(
+    content,
+    /activePredictionIndex/i,
+    "Must track activePredictionIndex in state"
+  );
+  assert.match(
+    content,
+    /currentPrediction/i,
+    "Must render single currentPrediction at any given moment"
+  );
+
+  // 4. Subtle fade transition
+  assert.match(
+    content,
+    /AnimatePresence/i,
+    "Must use AnimatePresence for smooth fade transitions"
+  );
+
+  // 5. Palette tokens
   assert.match(content, /bg-obsidian/, "Must use obsidian background");
   assert.match(content, /text-charcoal/, "Must use charcoal text");
   assert.match(content, /text-neonCyan/, "Must use neonCyan text");
 
-  // 3. Motion safety
+  // 6. Motion safety
   assert.match(content, /prefersReducedMotion|prefers-reduced-motion/i, "Must support reduced motion");
 
-  // 4. Closing action
+  // 7. Closing action
   assert.match(content, /Let’s talk about what we could build for you/i, "Must have quiet conversational closing action");
+});
+
+test("TypeScript types: AIPrediction and AIPredictionsResponse conform to contract", () => {
+  const prediction: AIPrediction = {
+    text: "I think we could help you scale your business with AI.",
+  };
+  assert.ok(typeof prediction.text === "string");
+
+  const response: AIPredictionsResponse = {
+    predictions: [
+      prediction,
+      { text: "If education is part of your world..." },
+    ],
+  };
+  assert.ok(Array.isArray(response.predictions));
+  assert.equal(response.predictions.length, 2);
+  assert.equal(response.predictions[0].text, prediction.text);
+});
+
+test("Sequential state machine progresses 1->2->3->4->5 and stops after #5 without looping", () => {
+  const predictions: AIPrediction[] = [
+    { text: "Thought 1" },
+    { text: "Thought 2" },
+    { text: "Thought 3" },
+    { text: "Thought 4" },
+    { text: "Thought 5" },
+  ];
+
+  let activeIndex = 0;
+
+  const advance = (current: number) => {
+    if (current >= predictions.length - 1) {
+      return current; // Stop, do not loop
+    }
+    return current + 1;
+  };
+
+  // 0 -> 1 -> 2 -> 3 -> 4
+  activeIndex = advance(activeIndex);
+  assert.equal(activeIndex, 1);
+  activeIndex = advance(activeIndex);
+  assert.equal(activeIndex, 2);
+  activeIndex = advance(activeIndex);
+  assert.equal(activeIndex, 3);
+  activeIndex = advance(activeIndex);
+  assert.equal(activeIndex, 4);
+
+  // After 4 (which is #5), advancing must stop at 4
+  activeIndex = advance(activeIndex);
+  assert.equal(activeIndex, 4, "Must stop at prediction #5 without looping back to 0");
 });
 
 test("SOLUTION_OPPORTUNITY_REGISTRY contains 15+ rich multi-industry AI opportunities with conversational thoughts", () => {

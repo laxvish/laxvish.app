@@ -1,13 +1,35 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useLaxvishContext } from "@/lib/laxvish-context/client";
-import type { PredictedSolutionOpportunity } from "@/lib/context/types";
+import type { AIPrediction, PredictedSolutionOpportunity } from "@/lib/context/types";
+
+const PREDICTION_HOLD_MS = 2000;
+const FADE_DURATION_SEC = 0.35;
+
+const FALLBACK_PREDICTIONS: AIPrediction[] = [
+  {
+    text: "I think we could help you scale your business with AI — taking some of the repetitive operational work away so your team can spend more time on the decisions that actually matter.",
+  },
+  {
+    text: "And if education or institutional training is part of your world, we could build an AI layer around your curriculum and administration that gives teachers more time and creates a better experience for students.",
+  },
+  {
+    text: "If your team spends time moving information between documents, people, and systems, we could turn that entire extraction and verification process into something that largely takes care of itself.",
+  },
+  {
+    text: "You may also have opportunities on the front line of your business. We could build agents that talk to prospects in natural Indian languages, qualify opportunities, and keep conversations moving without asking your team to do every follow-up themselves.",
+  },
+  {
+    text: "The bigger opportunity may be connecting all of this together — giving your organization an AI layer that understands its work, remembers what matters, and can actually do things on your behalf.",
+  },
+];
 
 export function PersonalizedIntelligenceSection() {
   const { predictedSolutions, contextGraph } = useLaxvishContext();
+  const [activePredictionIndex, setActivePredictionIndex] = useState<number>(0);
 
   const prefersReducedMotion = Boolean(
     contextGraph?.technical?.prefersReducedMotion ||
@@ -15,18 +37,40 @@ export function PersonalizedIntelligenceSection() {
         window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches)
   );
 
-  const thoughts: string[] = useMemo(() => {
-    if (Array.isArray(predictedSolutions) && predictedSolutions.length >= 5) {
-      return predictedSolutions.slice(0, 5).map((s: PredictedSolutionOpportunity) => s.text || s.description);
+  // Validate and strongly type the predictions array
+  const predictions: AIPrediction[] = useMemo(() => {
+    if (Array.isArray(predictedSolutions) && predictedSolutions.length > 0) {
+      const valid = predictedSolutions
+        .map((s: PredictedSolutionOpportunity) => ({
+          text: (s.text || s.description || "").trim(),
+        }))
+        .filter((p: AIPrediction) => p.text.length > 0);
+
+      if (valid.length > 0) {
+        return valid.slice(0, 5);
+      }
     }
-    return [
-      "I think we could help you scale your business with AI — taking some of the repetitive operational work away so your team can spend more time on the decisions that actually matter.",
-      "And if education or institutional training is part of your world, we could build an AI layer around your curriculum and administration that gives teachers more time and creates a better experience for students.",
-      "If your team spends time moving information between documents, people, and systems, we could turn that entire extraction and verification process into something that largely takes care of itself.",
-      "You may also have opportunities on the front line of your business. We could build agents that talk to prospects in natural Indian languages, qualify opportunities, and keep conversations moving without asking your team to do every follow-up themselves.",
-      "The bigger opportunity may be connecting all of this together — giving your organization an AI layer that understands its work, remembers what matters, and can actually do things on your behalf.",
-    ];
+    return FALLBACK_PREDICTIONS;
   }, [predictedSolutions]);
+
+  // Sequential progression: Each thought is visible for exactly 2 seconds, then transitions. Stops after the last prediction.
+  useEffect(() => {
+    if (predictions.length <= 1) return;
+    if (activePredictionIndex >= predictions.length - 1) return;
+
+    const timer = window.setTimeout(() => {
+      setActivePredictionIndex((current: number) => {
+        if (current >= predictions.length - 1) {
+          return current;
+        }
+        return current + 1;
+      });
+    }, PREDICTION_HOLD_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [activePredictionIndex, predictions.length]);
+
+  const currentPrediction = predictions[activePredictionIndex] || predictions[0];
 
   return (
     <section
@@ -42,30 +86,29 @@ export function PersonalizedIntelligenceSection() {
           </p>
         </div>
 
-        {/* The Sequence of Five Thoughts with Generous Whitespace */}
-        <div className="pt-12 sm:pt-16 lg:pt-20 space-y-12 sm:space-y-16 lg:space-y-20">
-          {thoughts.map((thoughtText, index) => (
+        {/* Single Active Thought with Subtle Sequential Fade */}
+        <div className="py-14 sm:py-20 lg:py-28 min-h-[220px] sm:min-h-[260px] flex items-center">
+          <AnimatePresence mode="wait">
             <motion.div
-              key={index}
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
+              key={activePredictionIndex}
+              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
               transition={{
-                duration: prefersReducedMotion ? 0 : 0.65,
-                delay: prefersReducedMotion ? 0 : index * 0.08,
+                duration: prefersReducedMotion ? 0 : FADE_DURATION_SEC,
                 ease: [0.25, 0.1, 0.25, 1],
               }}
-              className="relative"
+              className="w-full"
             >
-              <p className="text-xl sm:text-2xl lg:text-[1.75rem] font-normal leading-[1.6] tracking-[-0.01em] text-charcoal font-space-grotesk">
-                {thoughtText}
+              <p className="text-xl sm:text-2xl lg:text-[1.85rem] font-normal leading-[1.65] tracking-[-0.01em] text-charcoal font-space-grotesk">
+                {currentPrediction.text}
               </p>
             </motion.div>
-          ))}
+          </AnimatePresence>
         </div>
 
-        {/* Quiet closing action */}
-        <div className="mt-16 sm:mt-24 lg:mt-32 pt-10 border-t border-charcoal/15 flex items-center justify-between">
+        {/* Quiet Closing Action Link */}
+        <div className="pt-10 border-t border-charcoal/15 flex items-center justify-between">
           <Link
             href="/contact"
             className="inline-flex items-center gap-3 text-sm sm:text-base font-mono uppercase tracking-[0.14em] text-charcoal hover:text-neonCyan transition-colors group"
