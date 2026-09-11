@@ -5,6 +5,7 @@ import { ContactPanel } from "@/components/sections/ContactPanel";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
+import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { PersonalizedIntelligenceSection } from "@/components/sections/PersonalizedIntelligenceSection";
 import { PillarsGrid } from "@/components/sections/PillarsGrid";
 import { ProofBand } from "@/components/sections/ProofBand";
@@ -30,6 +31,7 @@ export default function Home() {
     <>
       <Hero />
       <AgentWorkforceSection />
+      <HowItWorksSection />
       <PersonalizedIntelligenceSection />
       <PillarsGrid />
       <ProofBand />
