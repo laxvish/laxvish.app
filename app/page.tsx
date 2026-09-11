@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AgentWorkforceSection } from "@/components/sections/AgentWorkforceSection";
 import { CallmeSection } from "@/components/sections/CallmeSection";
 import { ContactPanel } from "@/components/sections/ContactPanel";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
@@ -28,6 +29,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <AgentWorkforceSection />
       <PersonalizedIntelligenceSection />
       <PillarsGrid />
       <ProofBand />
