@@ -18,7 +18,6 @@ import { TheMoon } from "@/components/ui/TheMoon";
 import {
   BOOK_NOW_BUTTON_CLASS,
   SECONDARY_HERO_CTA_CLASS,
-  getBookDemoUrl,
 } from "@/lib/site-navigation";
 
 /**
@@ -37,7 +36,6 @@ export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const motionEnabled = !prefersReducedMotion;
-  const bookDemoUrl = getBookDemoUrl();
   const [deviceTier, setDeviceTier] = useState<"mobile" | "tablet" | "desktop">("desktop");
   const [isShortHeight, setIsShortHeight] = useState(false);
 
@@ -284,41 +282,47 @@ export function Hero() {
           >
             <FadeIn delay={0.1} yOffset={10}>
               <p className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] text-neonCyan uppercase">
-                An AI company · AI systems for Indian enterprise
+                AI Agents for Business
               </p>
             </FadeIn>
 
             <FadeIn delay={0.2} yOffset={14}>
               <h1 className="mt-2.5 sm:mt-5 text-[clamp(1.75rem,4.5vw,3.5rem)] font-normal leading-[1.08] tracking-[-0.02em] text-charcoal">
-                We build AI systems that do the real work.
+                AI agents that do the work.
               </h1>
+            </FadeIn>
+
+            <FadeIn delay={0.25} yOffset={14}>
+              <p className="mt-2.5 sm:mt-4 max-w-xl text-sm sm:text-lg lg:text-xl leading-snug font-medium text-charcoal">
+                Deploy, customize, and control an AI workforce for your
+                business.
+              </p>
             </FadeIn>
 
             <FadeIn delay={0.3} yOffset={14}>
               <p className="mt-2.5 sm:mt-4 max-w-xl text-xs sm:text-base lg:text-lg leading-relaxed tracking-wide text-charcoal/70">
-                Workers execute. Brain coordinates. Brakes verify. Laxvish
-                engineers the systems, runs them on your rules, and hands you
-                finished work: you stay in control of every decision.
+                Laxvish gives businesses specialized AI agents for sales,
+                support, research, operations, and workflows — with the tools
+                to connect them to the systems your team already uses and keep
+                their execution under control.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.4} yOffset={14}>
               <div className="mt-4 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4">
                 <MagneticButton
-                  as="a"
-                  href={bookDemoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  as={Link}
+                  href="/solutions"
                   className={`${BOOK_NOW_BUTTON_CLASS} w-full sm:w-auto text-center justify-center py-2.5 sm:py-3.5 text-xs sm:text-sm`}
                 >
-                  <span>Book a working session</span>
+                  <span>Explore AI Agents</span>
                 </MagneticButton>
                 <MagneticButton
                   as={Link}
-                  href="/solutions"
+                  href="/contact"
                   className={`${SECONDARY_HERO_CTA_CLASS} w-full sm:w-auto text-center justify-center py-2.5 sm:py-3.5 text-xs sm:text-sm`}
                 >
-                  See what we automate
+                  Talk to Laxvish
                 </MagneticButton>
               </div>
             </FadeIn>
