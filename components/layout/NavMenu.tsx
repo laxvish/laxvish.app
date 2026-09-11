@@ -23,7 +23,7 @@ export function NavMenu({
           <Link
             key={item.href}
             href={item.href}
-            className={`text-sm tracking-wide transition-colors duration-200 py-1 px-1.5 ${
+            className={`text-sm tracking-wide transition-colors duration-200 py-1 px-1.5 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-charcoal ${
               isActive
                 ? "text-charcoal font-semibold border-b border-charcoal"
                 : "text-charcoal/70 hover:text-charcoal"
