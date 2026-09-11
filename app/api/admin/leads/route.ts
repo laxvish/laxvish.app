@@ -16,33 +16,21 @@ interface LeadExportRow {
   updatedAt: string;
 }
 
+const CSV_FORMULA_RE = /^[=+\-@]/;
+const CSV_NEEDS_QUOTE_RE = /[",\n]/;
+
 function toCsvValue(value: string): string {
-  if (!value) return '';
-  
-  const sanitized = /^[=+\-@]/.test(value) ? "'" + value : value;
-  
-  if (!sanitized.includes(",") && !sanitized.includes("\"") && !sanitized.includes("\n")) {
-    return sanitized;
-  }
-  return `"${sanitized.replaceAll("\"", "\"\"")}"`;
+  if (!value) return "";
+  const sanitized = CSV_FORMULA_RE.test(value) ? `'${value}` : value;
+  if (!CSV_NEEDS_QUOTE_RE.test(sanitized)) return sanitized;
+  return `"${sanitized.replaceAll('"', '""')}"`;
 }
 
-function toCsv(rows: LeadExportRow[]): string {
-  const header = [
-    "id",
-    "name",
-    "workEmail",
-    "company",
-    "useCase",
-    "action",
-    "status",
-    "source",
-    "metadata",
-    "createdAt",
-    "updatedAt",
-  ].join(",");
+const CSV_HEADER =
+  "id,name,workEmail,company,useCase,action,status,source,metadata,createdAt,updatedAt";
 
-  const lines = rows.map((row) =>
+function toCsvLine(row: LeadExportRow): string {
+  return (
     [
       row.id,
       row.name,
@@ -57,13 +45,44 @@ function toCsv(rows: LeadExportRow[]): string {
       row.updatedAt,
     ]
       .map(toCsvValue)
-      .join(","),
+      .join(",")
   );
-
-  return [header, ...lines].join("\n");
 }
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
+function toCsv(rows: LeadExportRow[]): string {
+  if (rows.length === 0) return CSV_HEADER;
+  // Preallocate: header + rows joined — single allocation vs map+join intermediate
+  return `${CSV_HEADER}\n${rows.map(toCsvLine).join("\n")}`;
+}
+
+/** Streaming CSV for large exports — yields header then one line per row without buffering full string */
+function streamCsv(rows: LeadExportRow[]): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  let index = -1; // -1 = header not yet yielded
+  return new ReadableStream<Uint8Array>({
+    pull(controller) {
+      if (index === -1) {
+        controller.enqueue(encoder.encode(`${CSV_HEADER}\n`));
+        index = 0;
+        return;
+      }
+      if (index >= rows.length) {
+        controller.close();
+        return;
+      }
+      // Batch 64 rows per pull to amortize enqueue overhead
+      const end = Math.min(index + 64, rows.length);
+      let chunk = "";
+      for (; index < end; index++) chunk += `${toCsvLine(rows[index])}\n`;
+      // Trim trailing newline on last batch
+      if (end === rows.length) chunk = chunk.slice(0, -1);
+      controller.enqueue(encoder.encode(chunk));
+      if (end === rows.length) controller.close();
+    },
+  });
+}
+
+export async function GET(request: NextRequest): Promise<Response> {
   const adminApiKey = process.env.ADMIN_API_KEY;
   if (!adminApiKey) {
     return NextResponse.json(
@@ -111,6 +130,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }));
 
   if (format === "csv") {
+    // Stream to avoid buffering the full CSV string for large exports
+    if (rows.length > 200) {
+      return new Response(streamCsv(rows), {
+        status: 200,
+        headers: {
+          "content-type": "text/csv; charset=utf-8",
+          "content-disposition": `attachment; filename="leads-export-${new Date().toISOString().slice(0, 10)}.csv"`,
+        },
+      });
+    }
     return new NextResponse(toCsv(rows), {
       status: 200,
       headers: {

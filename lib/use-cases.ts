@@ -1126,31 +1126,37 @@ export const USE_CASES: UseCase[] = [
   },
 ];
 
-/** Get a use case by slug. Returns undefined if not found. */
-export function getUseCase(slug: string): UseCase | undefined {
-  return USE_CASES.find((uc) => uc.slug === slug);
-}
-
-/** Get the 4 flagship use cases for the home page grid. */
-export function getFlagshipUseCases(): UseCase[] {
-  return USE_CASES.filter((uc) => uc.flagship);
-}
-
-/** Get the remaining (non-flagship) use cases for the home page list. */
-export function getOtherUseCases(): UseCase[] {
-  return USE_CASES.filter((uc) => !uc.flagship);
-}
-
-/** Get use cases grouped by category, used on the /solutions index. */
-export function getUseCasesByCategory(): Record<UseCaseCategory, UseCase[]> {
+// O(1) lookup indexes — built once at import
+const USE_CASE_BY_SLUG: Map<string, UseCase> = new Map(USE_CASES.map((uc) => [uc.slug, uc]));
+const FLAGSHIP_USE_CASES: UseCase[] = USE_CASES.filter((uc) => uc.flagship);
+const OTHER_USE_CASES: UseCase[] = USE_CASES.filter((uc) => !uc.flagship);
+const USE_CASES_BY_CATEGORY: Record<UseCaseCategory, UseCase[]> = (() => {
   const groups: Record<UseCaseCategory, UseCase[]> = {
     "Sales & Growth": [],
     "Customer Operations": [],
     "Internal Operations": [],
     "Finance & Compliance": [],
   };
-  for (const uc of USE_CASES) {
-    groups[uc.category].push(uc);
-  }
+  for (const uc of USE_CASES) groups[uc.category].push(uc);
   return groups;
+})();
+
+/** Get a use case by slug — O(1) Map lookup (was O(n) Array.find). */
+export function getUseCase(slug: string): UseCase | undefined {
+  return USE_CASE_BY_SLUG.get(slug);
+}
+
+/** Flagship use cases for the home page — precomputed (was filter O(n) per call). */
+export function getFlagshipUseCases(): UseCase[] {
+  return FLAGSHIP_USE_CASES;
+}
+
+/** Non-flagship use cases — precomputed. */
+export function getOtherUseCases(): UseCase[] {
+  return OTHER_USE_CASES;
+}
+
+/** Use cases grouped by category — precomputed (was allocation + loop per call). */
+export function getUseCasesByCategory(): Record<UseCaseCategory, UseCase[]> {
+  return USE_CASES_BY_CATEGORY;
 }

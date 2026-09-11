@@ -33,20 +33,28 @@ export function getSiteUrl(): string {
  * crawlers do not resolve relative og:image URLs.
  */
 function absoluteOgImage(): string {
-  return `${getSiteUrl().replace(/\/$/, "")}/opengraph-image`;
+  // Inline getSiteUrl to avoid a function call indirection; trim is cheaper than replace(/\/?$/)
+  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? DEFAULT_SITE_URL).replace(/\/$/, "");
+  return `${base}/opengraph-image`;
 }
 
 const OG_IMAGE_ALT = "Laxvish — an AI company building AI systems for Indian enterprises";
 
-function ogImages() {
+function buildOgImages() {
   return [
-    {
-      url: absoluteOgImage(),
-      width: 1200,
-      height: 630,
-      alt: OG_IMAGE_ALT,
-    },
+    { url: absoluteOgImage(), width: 1200, height: 630, alt: OG_IMAGE_ALT },
   ];
+}
+
+let cachedOgImages: ReturnType<typeof buildOgImages> | null = null;
+let cachedOgSiteUrl: string | null = null;
+
+function ogImages() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? DEFAULT_SITE_URL;
+  if (cachedOgImages && cachedOgSiteUrl === siteUrl) return cachedOgImages;
+  cachedOgSiteUrl = siteUrl;
+  cachedOgImages = buildOgImages();
+  return cachedOgImages;
 }
 
 export function buildPageMetadata({

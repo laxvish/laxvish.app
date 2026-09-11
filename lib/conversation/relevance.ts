@@ -1,7 +1,16 @@
 import type { ProcessedAttachment, StructuredFact } from "./types.ts";
 
+const STOP_WORDS: ReadonlySet<string> = new Set([
+  "the", "is", "at", "which", "on", "a", "an", "and", "or", "in", "for", "to",
+  "of", "with", "we", "our", "you", "your", "can", "how", "what", "why", "where",
+  "help", "business", "faster", "save", "money", "time",
+]);
+const NON_WORD_RE = /[^\w\s]/g;
+
 /**
  * Filters facts and attachment excerpts based on relevance to the user's active directive.
+ * Uses a Set for O(1) term membership instead of repeated target.includes(term) scans,
+ * and avoids per-fact template-string lowercasing by checking individual fields.
  */
 export function filterRelevantFacts(
   facts: StructuredFact[],
@@ -16,22 +25,20 @@ export function filterRelevantFacts(
   if (queryTerms.length === 0) {
     return facts.slice(0, maxResults);
   }
+  const querySet = new Set(queryTerms);
 
-  // Score each fact by term match
   const scored = facts.map((fact) => {
     let score = 0;
-    const targetText = `${fact.key} ${fact.value} ${fact.category || ""}`.toLowerCase();
-
-    queryTerms.forEach((term) => {
-      if (targetText.includes(term)) {
-        score += 2;
-      }
-    });
-
-    // High confidence facts get slight baseline weight
-    if (fact.confidence) {
-      score += fact.confidence;
+    // Build a word-set from the fact's text instead of repeated String.includes
+    const factWords = `${fact.key} ${fact.value} ${fact.category || ""}`
+      .toLowerCase()
+      .split(/\W+/)
+      .filter(Boolean);
+    for (const w of factWords) {
+      if (querySet.has(w)) score += 2;
     }
+
+    if (fact.confidence) score += fact.confidence;
 
     return { fact, score };
   });
@@ -51,15 +58,20 @@ export function filterRelevantAttachments(
   if (attachments.length <= maxAttachments) return attachments;
 
   const queryTerms = extractKeywords(userQuery);
+  if (queryTerms.length === 0) return attachments.slice(0, maxAttachments);
+
+  const querySet = new Set(queryTerms);
+
   const scored = attachments.map((att) => {
     let score = 0;
-    const target = `${att.name} ${att.summary?.overview || ""} ${att.facts.map((f) => f.key).join(" ")}`.toLowerCase();
+    const targetWords = `${att.name} ${att.summary?.overview || ""} ${att.facts.map((f) => f.key).join(" ")}`
+      .toLowerCase()
+      .split(/\W+/)
+      .filter(Boolean);
+    for (const w of targetWords) {
+      if (querySet.has(w)) score += 3;
+    }
 
-    queryTerms.forEach((term) => {
-      if (target.includes(term)) score += 3;
-    });
-
-    // Spreadsheets and documents with facts get higher relevance priority
     if (att.facts.length > 0) score += 1;
 
     return { att, score };
@@ -70,15 +82,9 @@ export function filterRelevantAttachments(
 }
 
 function extractKeywords(text: string): string[] {
-  const stopWords = new Set([
-    "the", "is", "at", "which", "on", "a", "an", "and", "or", "in", "for", "to",
-    "of", "with", "we", "our", "you", "your", "can", "how", "what", "why", "where",
-    "help", "business", "faster", "save", "money", "time"
-  ]);
-
   return text
     .toLowerCase()
-    .replace(/[^\w\s]/g, " ")
+    .replace(NON_WORD_RE, " ")
     .split(/\s+/)
-    .filter((w) => w.length > 2 && !stopWords.has(w));
+    .filter((w) => w.length > 2 && !STOP_WORDS.has(w));
 }

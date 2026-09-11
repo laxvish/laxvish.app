@@ -14,6 +14,10 @@ export const MAX_EXCERPTS_CHARS = 3000;
 export const MAX_HISTORY_MESSAGES = 16;
 export const MAX_TOTAL_PROMPT_CHARS = 14000;
 
+// Precompiled — was 2 × inline RegExp per attachment per call
+const HTML_COMMENT_RE = /<!--[\s\S]*?-->/g;
+const PROMPT_INJECTION_RE = /\[\/?(SYSTEM|INSTRUCTION|PROMPT)[^\]]*\]/gi;
+
 export const LAXVISH_SYSTEM_PROMPT = [
   "You represent Laxvish, an AI company building mission-critical AI systems for Indian enterprises.",
   "Laxvish builds AI systems that do real work: Workers execute deterministic tasks, the Brain coordinates context and prioritization, and Brakes verify and govern safety.",
@@ -59,16 +63,16 @@ export function buildSynthesizedPromptMessages(
   const factsBlock = formatFactsForPrompt(relevantFacts).slice(0, MAX_FACTS_CHARS);
   const summariesBlock = formatDocumentSummariesForPrompt(relevantAttachments).slice(0, MAX_SUMMARIES_CHARS);
 
-  // Formulate excerpts with prompt-injection defense delimiters
+  // Formulate excerpts with prompt-injection defense (precompiled regex)
   const excerpts: string[] = [];
-  relevantAttachments.forEach((att) => {
-    if (att.extractedExcerpt && att.extractedExcerpt.trim()) {
+  for (const att of relevantAttachments) {
+    if (att.extractedExcerpt?.trim()) {
       const sanitized = att.extractedExcerpt
-        .replace(/<!--[\s\S]*?-->/g, "")
-        .replace(/\[\/?(SYSTEM|INSTRUCTION|PROMPT)[^\]]*\]/gi, "");
+        .replace(HTML_COMMENT_RE, "")
+        .replace(PROMPT_INJECTION_RE, "");
       excerpts.push(`--- File: ${att.name} ---\n${sanitized.slice(0, 800)}`);
     }
-  });
+  }
 
   const excerptsBlock =
     excerpts.length > 0

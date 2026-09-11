@@ -62,41 +62,70 @@ export class InMemoryRateLimitStore implements RateLimitStore {
     this.maxKeys = maxKeys;
   }
 
+  // Amortized eviction: O(1) per hit instead of O(n) full scan.
+  // - Always evict the lookup key if stale (lazy, precise).
+  // - Opportunistically sweep one stale entry per hit to prevent leak.
+  // - Full sweep only every SWEEP_INTERVAL hits (or when at capacity).
+  private sweepCounter = 0;
+  private static readonly SWEEP_INTERVAL = 256;
+
   async hit(key: string, limit: number, windowSeconds: number): Promise<RateLimitDecision> {
     const now = Date.now();
-    this.evictExpired(now);
 
+    // 1. Lazy evict the bucket we actually need — O(1)
     const existing = this.buckets.get(key);
-    if (!existing || existing.resetAt <= now) {
-      // Guard against unbounded growth under key churn (e.g. spoofed IPs).
+    if (existing && existing.resetAt <= now) {
+      this.buckets.delete(key);
+    }
+    const bucket = existing && existing.resetAt > now ? existing : null;
+
+    // 2. Opportunistic single-entry sweep — O(1) amortised leak prevention
+    this.sweepCounter++;
+    if (!bucket && this.buckets.size >= this.maxKeys) {
+      // At capacity: sweep until we find one expired entry, else evict oldest (LRU-like)
+      this.sweepOneExpired(now);
       if (this.buckets.size >= this.maxKeys) {
         const oldest = this.buckets.keys().next().value;
-        if (oldest !== undefined) {
-          this.buckets.delete(oldest);
-        }
+        if (oldest !== undefined) this.buckets.delete(oldest);
       }
+    } else if (this.sweepCounter % InMemoryRateLimitStore.SWEEP_INTERVAL === 0) {
+      this.sweepOneExpired(now);
+    }
+
+    if (!bucket) {
       this.buckets.set(key, { count: 1, resetAt: now + windowSeconds * 1000 });
       return { allowed: true, limit, remaining: limit - 1, retryAfterSeconds: 0 };
     }
 
-    if (existing.count >= limit) {
+    if (bucket.count >= limit) {
       return {
         allowed: false,
         limit,
         remaining: 0,
-        retryAfterSeconds: Math.max(1, Math.ceil((existing.resetAt - now) / 1000)),
+        retryAfterSeconds: Math.max(1, Math.ceil((bucket.resetAt - now) / 1000)),
       };
     }
 
-    existing.count += 1;
+    bucket.count += 1;
     return {
       allowed: true,
       limit,
-      remaining: Math.max(0, limit - existing.count),
+      remaining: Math.max(0, limit - bucket.count),
       retryAfterSeconds: 0,
     };
   }
 
+  /** Delete at most one expired entry — caller decides cadence. */
+  private sweepOneExpired(now: number): void {
+    for (const [k, v] of this.buckets) {
+      if (v.resetAt <= now) {
+        this.buckets.delete(k);
+        return;
+      }
+    }
+  }
+
+  /** Legacy full sweep — retained as explicit maintenance hook. */
   private evictExpired(now: number): void {
     for (const [key, bucket] of this.buckets) {
       if (bucket.resetAt <= now) {

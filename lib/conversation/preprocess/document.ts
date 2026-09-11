@@ -1,5 +1,14 @@
 import type { ProcessedAttachment, StructuredFact, DocumentSummary } from "../types.ts";
 
+const HEADING_RE = /^(?:section|chapter|\d+\.|\b[A-Z\s]{4,30}\b|#)/i;
+const SLA_RE = /(?:sla|turnaround|response time|resolution time|tat)[:\s]+([^.,\n]+)/i;
+const TEAM_RE = /(?:team size|headcount|staff|employees|agents)[:\s]+(\d+[\d,]*\+?)/i;
+const BOTTLENECK_RE = /(?:bottleneck|delay|manual step|blocker|risk|compliance gap|backlog)/i;
+const CONTROL_CHARS_RE = /[^\x20-\x7E\r\n\t\u00A0-\u024F]/g;
+const H_SPACE_RE = /[ \t]+/g;
+const BLANK_LINES_RE = /\n\s*\n/g;
+const HEADING_PREFIX_RE = /^[#\d.\-\s]+/;
+
 /**
  * Structured Document Preprocessor (PDF, DOCX, DOC, RTF).
  * Extracts headings, bulleted SLAs, compliance statements, workflow hierarchies, and metadata.
@@ -58,46 +67,40 @@ export function processDocumentData(
   const keySections: string[] = [];
   const bottlenecks: string[] = [];
 
-  // Extract headings / structural blocks
-  lines.forEach((line) => {
-    if (/^(?:section|chapter|\d+\.|\b[A-Z\s]{4,30}\b|#)/i.test(line) && line.length < 80) {
-      const heading = line.replace(/^[#\d.\-\s]+/, "").trim();
-      if (heading && keySections.length < 8) {
-        keySections.push(heading);
+  // Single-pass: headings, SLA, team size, bottlenecks
+  for (const line of lines) {
+    if (HEADING_RE.test(line) && line.length < 80) {
+      const heading = line.replace(HEADING_PREFIX_RE, "").trim();
+      if (heading && keySections.length < 8) keySections.push(heading);
+    }
+
+    if (facts.length < 10) {
+      const slaMatch = line.match(SLA_RE);
+      if (slaMatch) {
+        facts.push({
+          key: "SLA / Turnaround Target",
+          value: slaMatch[1].trim(),
+          category: "constraint",
+          confidence: 0.9,
+          source: name,
+        });
+      }
+      const teamMatch = line.match(TEAM_RE);
+      if (teamMatch && facts.length < 10) {
+        facts.push({
+          key: "Team / Headcount",
+          value: teamMatch[1].trim(),
+          category: "metric",
+          confidence: 0.9,
+          source: name,
+        });
       }
     }
 
-    // Extract SLA / Turnaround facts
-    const slaMatch = line.match(/(?:sla|turnaround|response time|resolution time|tat)[:\s]+([^.,\n]+)/i);
-    if (slaMatch && facts.length < 10) {
-      facts.push({
-        key: "SLA / Turnaround Target",
-        value: slaMatch[1].trim(),
-        category: "constraint",
-        confidence: 0.9,
-        source: name,
-      });
+    if (BOTTLENECK_RE.test(line) && bottlenecks.length < 4 && line.length < 200) {
+      bottlenecks.push(line);
     }
-
-    // Extract team / employee size facts
-    const teamMatch = line.match(/(?:team size|headcount|staff|employees|agents)[:\s]+(\d+[\d,]*\+?)/i);
-    if (teamMatch && facts.length < 10) {
-      facts.push({
-        key: "Team / Headcount",
-        value: teamMatch[1].trim(),
-        category: "metric",
-        confidence: 0.9,
-        source: name,
-      });
-    }
-
-    // Extract bottleneck / operational challenges
-    if (/(?:bottleneck|delay|manual step|blocker|risk|compliance gap|backlog)/i.test(line)) {
-      if (bottlenecks.length < 4 && line.length < 200) {
-        bottlenecks.push(line);
-      }
-    }
-  });
+  }
 
   const summary: DocumentSummary = {
     overview: `${getDocumentFormatLabel(name, mimeType)} containing ${lines.length} paragraphs (${Math.round(cleanText.length / 1024)} KB text).`,
@@ -123,11 +126,10 @@ export function processDocumentData(
 
 function extractReadableText(raw: string): string {
   if (!raw) return "";
-  // Strip control characters while keeping newlines and printable text
   return raw
-    .replace(/[^\x20-\x7E\r\n\t\u00A0-\u024F]/g, " ")
-    .replace(/[ \t]+/g, " ")
-    .replace(/\n\s*\n/g, "\n\n")
+    .replace(CONTROL_CHARS_RE, " ")
+    .replace(H_SPACE_RE, " ")
+    .replace(BLANK_LINES_RE, "\n\n")
     .trim();
 }
 

@@ -42,12 +42,14 @@ export const SECONDARY_HERO_CTA_CLASS =
 
 /**
  * Build the "What we automate" mega-menu group from the use cases.
- * Flagship use cases appear first, then the rest by category.
+ * Memoized — categories are static, rebuilt only if use-cases change.
  */
+let cachedNavGroups: UseCaseGroup[] | null = null;
 export function getUseCaseNavGroups(): UseCaseGroup[] {
+  if (cachedNavGroups) return cachedNavGroups;
   const grouped = getUseCasesByCategory();
   const categories = Object.keys(grouped) as UseCaseCategory[];
-  return categories.map((category) => ({
+  cachedNavGroups = categories.map((category) => ({
     category,
     links: grouped[category].map((uc) => ({
       label: uc.title,
@@ -56,26 +58,33 @@ export function getUseCaseNavGroups(): UseCaseGroup[] {
       description: uc.oneLiner,
     })),
   }));
+  return cachedNavGroups;
 }
 
-/** Quick access list of flagship use cases for the home page CTA. */
+/** Flagship links — memoized; underlying data is static. */
+let cachedFlagshipLinks: SiteLink[] | null = null;
 export function getFlagshipNavLinks(): SiteLink[] {
-  return getFlagshipUseCases().map((uc) => ({
+  if (cachedFlagshipLinks) return cachedFlagshipLinks;
+  cachedFlagshipLinks = getFlagshipUseCases().map((uc) => ({
     label: uc.title,
     href: `/solutions/${uc.slug}`,
-    kind: "primary",
+    kind: "primary" as NavKind,
     description: uc.oneLiner,
   }));
+  return cachedFlagshipLinks;
 }
 
-/** Compact list of non-flagship use cases for the "more ways we help" section. */
+/** Non-flagship links — memoized. */
+let cachedOtherLinks: SiteLink[] | null = null;
 export function getOtherUseCaseNavLinks(): SiteLink[] {
-  return getOtherUseCases().map((uc) => ({
+  if (cachedOtherLinks) return cachedOtherLinks;
+  cachedOtherLinks = getOtherUseCases().map((uc) => ({
     label: uc.title,
     href: `/solutions/${uc.slug}`,
-    kind: "primary",
+    kind: "primary" as NavKind,
     description: uc.oneLiner,
   }));
+  return cachedOtherLinks;
 }
 
 export const PRIMARY_NAV_LINKS: SiteLink[] = [

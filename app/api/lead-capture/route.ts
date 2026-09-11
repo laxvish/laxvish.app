@@ -34,12 +34,16 @@ function tooManyRequests(retryAfterSeconds: number, scope: string): NextResponse
   );
 }
 
+// Reused encoder + lookup table — avoids per-call allocation & toString(16) churn
+const SHA256_ENCODER = new TextEncoder();
+const HEX_TABLE: string[] = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, "0"));
+
 async function toSha256(value: string): Promise<string> {
-  const data = new TextEncoder().encode(value);
-  const digest = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(digest))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+  const digest = await crypto.subtle.digest("SHA-256", SHA256_ENCODER.encode(value));
+  const bytes = new Uint8Array(digest);
+  let hex = "";
+  for (let i = 0; i < bytes.length; i++) hex += HEX_TABLE[bytes[i]];
+  return hex;
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -95,11 +99,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
+  // Both hashes are independent of the identity-rate-limit decision — compute
+  // concurrently to remove a sequential crypto round-trip from the hot path.
+  const [identityRateKey, identityHash] = await Promise.all([
+    toSha256(`${validation.data.workEmail.toLowerCase()}|${validation.data.action}`),
+    toSha256(`${validation.data.workEmail}|${validation.data.company}|${requesterKey}`),
+  ]);
+
   // Hashed before it becomes a cache key: the raw work email must never be
   // written into shared rate-limit storage.
-  const identityRateKey = await toSha256(
-    `${validation.data.workEmail.toLowerCase()}|${validation.data.action}`,
-  );
   const identityDecision = await store.hit(
     `id:${identityRateKey}`,
     MAX_REQUESTS_PER_IDENTITY_WINDOW,
@@ -109,9 +117,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return tooManyRequests(identityDecision.retryAfterSeconds, "identity");
   }
 
-  const identityHash = await toSha256(
-    `${validation.data.workEmail}|${validation.data.company}|${requesterKey}`,
-  );
   const record = buildLeadVaultRecord(
     validation.data,
     identityHash,

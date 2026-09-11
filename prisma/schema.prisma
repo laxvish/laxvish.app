@@ -36,6 +36,9 @@ model Lead {
   @@index([company])
   @@index([createdAt])
   @@index([status])
+  // Composite indexes — without these Postgres falls back to seq scan + sort
+  @@index([status, createdAt(sort: Desc)])
+  @@index([identity])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -82,6 +85,7 @@ model SessionEvent {
 
   @@index([sessionId, type])
   @@index([timestamp])
+  @@index([sessionId, timestamp(sort: Desc)])
 }
 
 model ProblemHypothesisRecord {
@@ -119,5 +123,6 @@ model NarrativeGeneration {
   createdAt     DateTime       @default(now())
 
   @@index([sessionId, stage])
+  @@index([sessionId, stage, isFallback, createdAt(sort: Desc)])
 }
 

@@ -37,31 +37,19 @@ export function preprocessAttachment(
   }
 }
 
+const SPREADSHEET_EXTS = new Set(["xlsx", "xls", "csv", "tsv"]);
+const DOCUMENT_EXTS = new Set(["pdf", "docx", "doc", "rtf"]);
+const IMAGE_EXTS = new Set(["png", "jpg", "jpeg", "webp", "gif", "svg"]);
+
 export function detectCategory(ext: string, mime: string): AttachmentCategory {
-  if (
-    ["xlsx", "xls", "csv", "tsv"].includes(ext) ||
-    mime.includes("spreadsheet") ||
-    mime.includes("csv") ||
-    mime.includes("excel")
-  ) {
+  if (SPREADSHEET_EXTS.has(ext) || mime.includes("spreadsheet") || mime.includes("csv") || mime.includes("excel")) {
     return "spreadsheet";
   }
-
-  if (
-    ["pdf", "docx", "doc", "rtf"].includes(ext) ||
-    mime.includes("pdf") ||
-    mime.includes("word") ||
-    mime.includes("officedocument")
-  ) {
+  if (DOCUMENT_EXTS.has(ext) || mime.includes("pdf") || mime.includes("word") || mime.includes("officedocument")) {
     return "document";
   }
-
-  if (
-    ["png", "jpg", "jpeg", "webp", "gif", "svg"].includes(ext) ||
-    mime.startsWith("image/")
-  ) {
+  if (IMAGE_EXTS.has(ext) || mime.startsWith("image/")) {
     return "image";
   }
-
   return "text";
 }

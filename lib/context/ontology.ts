@@ -377,6 +377,15 @@ export const SOLUTION_OPPORTUNITY_REGISTRY: SolutionOpportunityDefinition[] = [
 /**
  * Deterministic multi-signal problem hypothesis scorer (Legacy compatibility)
  */
+// O(1) lookup for top-solution resolution (was linear find per call)
+const PROBLEM_BY_KEY: Map<string, ProblemDefinition> = new Map(
+  LAXVISH_PROBLEM_TAXONOMY.map((p) => [p.key, p])
+);
+// Precomputed Sets avoid O(n) Array.includes inside hot per-topic loops
+const PROBLEM_TOPIC_SETS: Map<string, Set<string>> = new Map(
+  LAXVISH_PROBLEM_TAXONOMY.map((p) => [p.key, new Set(p.relevantTopics)])
+);
+
 export function scoreProblemHypotheses(
   environment: EnvironmentModel,
   behavior: BehaviorModel,
@@ -384,58 +393,58 @@ export function scoreProblemHypotheses(
   temporal: TemporalModel,
   technical: TechnicalModel
 ): { hypotheses: ProblemHypothesis[]; topSolution?: SolutionCandidate } {
+  // Hoist direct-text flags — was re-evaluated per prob with repeated .includes()
+  const hasDirect = direct.promptQueries.length > 0 || !!direct.statedProblem;
+  const directText = hasDirect
+    ? `${direct.promptQueries.join(" ")} ${direct.statedProblem || ""}`.toLowerCase()
+    : "";
+  const hasSalesTerm = hasDirect && (
+    directText.includes("call") || directText.includes("voice") ||
+    directText.includes("lead") || directText.includes("sales")
+  );
+  const hasDocTerm = hasDirect && !hasSalesTerm && (
+    directText.includes("document") || directText.includes("invoice") ||
+    directText.includes("paperwork") || directText.includes("pdf")
+  );
+  const hasWorkflowTerm = hasDirect && !hasSalesTerm && !hasDocTerm && (
+    directText.includes("workflow") || directText.includes("automate") ||
+    directText.includes("process") || directText.includes("erp")
+  );
+  // Normalise behavior topics once (was .toLowerCase() + .includes() per prob×topic)
+  const behaviorEntries: Array<[string, string, number]> = Object.entries(behavior.topicsOfInterest).map(
+    ([k, v]) => [k, k.toLowerCase(), v]
+  );
+  const isAfterHours = temporal.localHour >= 18 || temporal.localHour < 6;
+  const isMobile = technical.deviceClass === "mobile";
+
   const scoredList: ProblemHypothesis[] = [];
 
   for (const prob of LAXVISH_PROBLEM_TAXONOMY) {
     const evidence: string[] = [];
-    let score = 0.2; // baseline prior
+    let score = 0.2;
 
-    // 1. Direct user input (Strongest: 1.0 weight)
-    if (direct.promptQueries.length > 0 || direct.statedProblem) {
-      const directText = `${direct.promptQueries.join(" ")} ${direct.statedProblem || ""}`.toLowerCase();
-      if (
-        directText.includes("call") ||
-        directText.includes("voice") ||
-        directText.includes("lead") ||
-        directText.includes("sales")
-      ) {
-        if (prob.key === "sales_lead_qualification_bottleneck") {
-          score += 0.80;
-          evidence.push(`Direct inquiry on voice & lead qualification`);
-        }
-      } else if (
-        directText.includes("document") ||
-        directText.includes("invoice") ||
-        directText.includes("paperwork") ||
-        directText.includes("pdf")
-      ) {
-        if (prob.key === "documentation_extraction_burden") {
-          score += 0.80;
-          evidence.push(`Direct inquiry on document automation`);
-        }
-      } else if (
-        directText.includes("workflow") ||
-        directText.includes("automate") ||
-        directText.includes("process") ||
-        directText.includes("erp")
-      ) {
-        if (prob.key === "workflow_fragmentation") {
-          score += 0.80;
-          evidence.push(`Direct inquiry on automated workflow execution`);
-        }
+    // 1. Direct input — branch once using hoisted flags
+    if (hasSalesTerm && prob.key === "sales_lead_qualification_bottleneck") {
+      score += 0.80;
+      evidence.push(`Direct inquiry on voice & lead qualification`);
+    } else if (hasDocTerm && prob.key === "documentation_extraction_burden") {
+      score += 0.80;
+      evidence.push(`Direct inquiry on document automation`);
+    } else if (hasWorkflowTerm && prob.key === "workflow_fragmentation") {
+      score += 0.80;
+      evidence.push(`Direct inquiry on automated workflow execution`);
+    }
+
+    // 2. Behavioral telemetry — Set.has O(1) vs Array.includes O(n)
+    const topicSet = PROBLEM_TOPIC_SETS.get(prob.key)!;
+    for (const [origTopic, lowerTopic, topicScore] of behaviorEntries) {
+      if (topicSet.has(lowerTopic)) {
+        score += topicScore * 0.35;
+        evidence.push(`Dwell & interest in ${origTopic} (${(topicScore * 100).toFixed(0)}%)`);
       }
     }
 
-    // 2. Behavioral On-Site Telemetry (0.85 weight)
-    for (const [topic, topicScore] of Object.entries(behavior.topicsOfInterest)) {
-      if (prob.relevantTopics.includes(topic.toLowerCase())) {
-        const delta = topicScore * 0.35;
-        score += delta;
-        evidence.push(`Dwell & interest in ${topic} (${(topicScore * 100).toFixed(0)}%)`);
-      }
-    }
-
-    // 3. Environment Context (0.55 weight)
+    // 3. Environment
     for (const envCat of prob.relevantEnvCategories) {
       const density = environment.categories[envCat] || 0;
       if (density > 0.4) {
@@ -444,22 +453,19 @@ export function scoreProblemHypotheses(
       }
     }
 
-    // 4. Temporal Context (0.30 weight)
-    if (temporal.localHour >= 18 || temporal.localHour < 6) {
-      if (prob.key === "workflow_fragmentation" || prob.key === "sales_lead_qualification_bottleneck") {
-        score += 0.05;
-        evidence.push(`After-hours session (operational continuity need)`);
-      }
+    // 4. Temporal (hoisted boolean)
+    if (isAfterHours && (prob.key === "workflow_fragmentation" || prob.key === "sales_lead_qualification_bottleneck")) {
+      score += 0.05;
+      evidence.push(`After-hours session (operational continuity need)`);
     }
 
-    // 5. Technical Signals (0.15 weight)
-    if (technical.deviceClass === "mobile" && prob.key === "sales_lead_qualification_bottleneck") {
+    // 5. Technical (hoisted boolean)
+    if (isMobile && prob.key === "sales_lead_qualification_bottleneck") {
       score += 0.05;
       evidence.push(`Mobile interface interaction`);
     }
 
     const confidence = Math.min(0.98, Math.max(0.20, Number(score.toFixed(2))));
-
     scoredList.push({
       id: `hyp_${prob.key}`,
       problemKey: prob.key,
@@ -471,16 +477,32 @@ export function scoreProblemHypotheses(
   }
 
   scoredList.sort((a, b) => b.confidence - a.confidence);
-
   const topHypothesis = scoredList[0];
-  const matchedProbDef = LAXVISH_PROBLEM_TAXONOMY.find((p) => p.key === topHypothesis?.problemKey);
-  const topSolution = matchedProbDef?.recommendedSolution;
-
-  return {
-    hypotheses: scoredList,
-    topSolution,
-  };
+  const topSolution = topHypothesis ? PROBLEM_BY_KEY.get(topHypothesis.problemKey)?.recommendedSolution : undefined;
+  return { hypotheses: scoredList, topSolution };
 }
+
+// Precomputed per-solution indexes — built once at module load (≈15 entries)
+const SOLUTION_SCORING_META: Map<string, {
+  topicsLower: string[];
+  topicSet: Set<string>;
+  industriesLower: string[];
+  rolesLower: string[];
+  categoryLower: string;
+  envSet: Set<string>;
+}> = new Map(SOLUTION_OPPORTUNITY_REGISTRY.map((def) => [
+  def.id,
+  {
+    topicsLower: def.relevantTopics.map((t) => t.toLowerCase()),
+    topicSet: new Set(def.relevantTopics.map((t) => t.toLowerCase())),
+    industriesLower: def.targetIndustries.map((i) => i.toLowerCase()),
+    rolesLower: def.targetRoles.map((r) => r.toLowerCase()),
+    categoryLower: def.category.toLowerCase(),
+    envSet: new Set(def.relevantEnvCategories as string[]),
+  },
+]));
+const AFTER_HOURS_CATEGORIES = new Set(["support", "sales", "operations"]);
+const MOBILE_BOOST_CATEGORIES = new Set(["sales", "support"]);
 
 /**
  * Predicts and ranks the top 5 diverse AI solution opportunities for a visitor
@@ -494,51 +516,60 @@ export function scoreAndRankPredictedSolutions(
   technical: TechnicalModel
 ): PredictedSolutionOpportunity[] {
   const directText = `${direct.promptQueries.join(" ")} ${direct.statedProblem || ""}`.toLowerCase();
+  // Hoisted — was split 15× per call
+  const directWords: string[] = directText.length > 0
+    ? directText.split(/\W+/).filter((w) => w.length >= 3)
+    : [];
+  const directWordsSet: Set<string> | null = directWords.length > 0 ? new Set(directWords) : null;
+  const hasDirect = directWords.length > 0;
+  // Hoisted context flags
+  const isAfterHours = temporal.localHour >= 18 || temporal.localHour < 6;
+  const isMobile = technical.deviceClass === "mobile";
+  const behaviorEntries: Array<[string, number]> = Object.entries(behavior.topicsOfInterest).map(
+    ([k, v]) => [k.toLowerCase(), v]
+  );
+  const nearbyPlaces = environment.nearestRepresentative;
 
   const scoredCandidates: Array<{ def: SolutionOpportunityDefinition; score: number }> = [];
 
   for (const def of SOLUTION_OPPORTUNITY_REGISTRY) {
     let score = def.baseWeight || 0.35;
+    const meta = SOLUTION_SCORING_META.get(def.id)!;
 
-    // 1. Explicit Direct Query (Weight 1.0 - Dominant override)
-    if (directText.length > 0) {
-      const words = directText.split(/\W+/).filter((w) => w.length >= 3);
+    // 1. Explicit Direct Query — reuses hoisted word set & lowercased meta
+    if (hasDirect) {
       let directScore = 0;
 
-      for (const topic of def.relevantTopics) {
-        const tLower = topic.toLowerCase();
-        if (words.some((w) => w.includes(tLower) || tLower.includes(w))) {
-          directScore += 1.8;
-        }
+      for (const tLower of meta.topicsLower) {
+        if (directWordsSet!.has(tLower)) directScore += 1.8;
+        else if (directWords.some((w) => w.includes(tLower) || tLower.includes(w))) directScore += 1.8;
       }
-      for (const industry of def.targetIndustries) {
-        const iLower = industry.toLowerCase();
-        if (words.some((w) => w.includes(iLower) || iLower.includes(w))) {
-          directScore += 2.2;
-        }
+      for (const iLower of meta.industriesLower) {
+        if (directWordsSet!.has(iLower)) directScore += 2.2;
+        else if (directWords.some((w) => w.includes(iLower) || iLower.includes(w))) directScore += 2.2;
       }
-      if (words.some((w) => w.includes(def.category) || def.category.includes(w))) {
-        directScore += 2.0;
-      }
-      for (const role of def.targetRoles) {
-        const rLower = role.toLowerCase();
-        if (words.some((w) => w.includes(rLower) || rLower.includes(w))) {
-          directScore += 1.2;
-        }
+      // category is single string — exact set check first, then single scan
+      if (directWordsSet!.has(meta.categoryLower)) directScore += 2.0;
+      else if (directWords.some((w) => w.includes(meta.categoryLower) || meta.categoryLower.includes(w))) directScore += 2.0;
+
+      for (const rLower of meta.rolesLower) {
+        if (directWordsSet!.has(rLower)) directScore += 1.2;
+        else if (directWords.some((w) => w.includes(rLower) || rLower.includes(w))) directScore += 1.2;
       }
 
       score += directScore;
     }
 
-    // 2. Behavioral Telemetry & Topics Explored (Weight 0.85)
-    for (const [topic, topicWeight] of Object.entries(behavior.topicsOfInterest)) {
-      const lowerTopic = topic.toLowerCase();
-      if (def.relevantTopics.some((t) => lowerTopic.includes(t) || t.includes(lowerTopic))) {
+    // 2. Behavioral Telemetry — Set fast-path + hoisted lower topics
+    for (const [lowerTopic, topicWeight] of behaviorEntries) {
+      if (meta.topicSet.has(lowerTopic)) {
+        score += topicWeight * 0.45;
+      } else if (meta.topicsLower.some((t) => lowerTopic.includes(t) || t.includes(lowerTopic))) {
         score += topicWeight * 0.45;
       }
     }
 
-    // 3. Environmental Density & Nearby Ecosystem (Weight 0.55)
+    // 3. Environmental Density — direct indexed lookup (same)
     for (const envCat of def.relevantEnvCategories) {
       const density = environment.categories[envCat] || 0;
       if (density > 0.3) {
@@ -546,27 +577,23 @@ export function scoreAndRankPredictedSolutions(
       }
     }
 
-    // Nearby representative places boost
-    if (environment.nearestRepresentative?.length) {
-      for (const place of environment.nearestRepresentative) {
-        if (def.relevantEnvCategories.includes(place.category as keyof EnvironmentCategoryDensity)) {
+    // Nearby representative places — Set.has O(1) vs Array.includes O(k)
+    if (nearbyPlaces?.length) {
+      for (const place of nearbyPlaces) {
+        if (meta.envSet.has(place.category)) {
           score += place.densityFactor * 0.20;
         }
       }
     }
 
-    // 4. Temporal Context (Weight 0.30)
-    if (temporal.localHour >= 18 || temporal.localHour < 6) {
-      if (def.category === "support" || def.category === "sales" || def.category === "operations") {
-        score += 0.08;
-      }
+    // 4. Temporal Context — hoisted boolean + Set.has O(1)
+    if (isAfterHours && AFTER_HOURS_CATEGORIES.has(def.category)) {
+      score += 0.08;
     }
 
-    // 5. Technical Context (Weight 0.15)
-    if (technical.deviceClass === "mobile") {
-      if (def.category === "sales" || def.category === "support") {
-        score += 0.05;
-      }
+    // 5. Technical Context — hoisted boolean + Set.has O(1)
+    if (isMobile && MOBILE_BOOST_CATEGORIES.has(def.category)) {
+      score += 0.05;
     }
 
     scoredCandidates.push({ def, score });

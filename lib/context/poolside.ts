@@ -62,6 +62,13 @@ OUTPUT RULE:
 - Never output stage names (do NOT write "arrival", "environment", "opportunity", "interaction", or "synthesis").
 - No conversational prefixes, labels, markdown quotes, or JSON brackets.`;
 
+// Precompiled — was 5 × inline RegExp construction per call
+const SANITIZE_RE_THINK = /<think>[\s\S]*?<\/think>/gi;
+const SANITIZE_RE_ANALYSIS = /<analysis>[\s\S]*?<\/analysis>/gi;
+const SANITIZE_RE_REASONING = /<reasoning>[\s\S]*?<\/reasoning>/gi;
+const SANITIZE_RE_THINK_UNCLOSED = /<think>[\s\S]*$/gi;
+const SANITIZE_RE_CODE_FENCE = /```(?:json)?([\s\S]*?)```/gi;
+
 /**
  * Strict Server-Side Anti-Leak Sanitizer
  * Strips all internal thinking, reasoning, analysis tags, and markdown code fences.
@@ -69,11 +76,11 @@ OUTPUT RULE:
 export function sanitizeModelOutput(raw: string): string {
   if (!raw) return "";
   return raw
-    .replace(/<think>[\s\S]*?<\/think>/gi, "")
-    .replace(/<analysis>[\s\S]*?<\/analysis>/gi, "")
-    .replace(/<reasoning>[\s\S]*?<\/reasoning>/gi, "")
-    .replace(/<think>[\s\S]*$/gi, "") // unclosed think tag
-    .replace(/```(?:json)?([\s\S]*?)```/gi, "$1")
+    .replace(SANITIZE_RE_THINK, "")
+    .replace(SANITIZE_RE_ANALYSIS, "")
+    .replace(SANITIZE_RE_REASONING, "")
+    .replace(SANITIZE_RE_THINK_UNCLOSED, "")
+    .replace(SANITIZE_RE_CODE_FENCE, "$1")
     .trim();
 }
 
@@ -179,17 +186,20 @@ export async function refinePredictedSolutionsWithLLM(
 /**
  * Extracts reasoning thinking block and clean editorial text from raw model output.
  */
+const THINK_CLOSED_RE = /<think>([\s\S]*?)<\/think>/i;
+const THINK_OPEN_RE = /<think>([\s\S]*)$/i;
+
 export function extractThoughtAndNarrative(rawText: string): { thought: string; text: string } {
   if (!rawText) return { thought: "", text: "" };
 
-  const thinkMatch = rawText.match(/<think>([\s\S]*?)<\/think>/i);
+  const thinkMatch = rawText.match(THINK_CLOSED_RE);
   if (thinkMatch) {
     const thought = thinkMatch[1].trim();
-    const text = rawText.replace(/<think>[\s\S]*?<\/think>/i, "").trim();
+    const text = rawText.replace(THINK_CLOSED_RE, "").trim();
     return { thought, text };
   }
 
-  const openThinkMatch = rawText.match(/<think>([\s\S]*)$/i);
+  const openThinkMatch = rawText.match(THINK_OPEN_RE);
   if (openThinkMatch) {
     return { thought: openThinkMatch[1].trim(), text: "" };
   }
@@ -226,9 +236,13 @@ export function generateDeterministicNarrative(
       confidence = 0.45;
       break;
 
-    case "environment":
+    case "environment": {
       evidenceUsed.push(`cluster:${environment.locationSource}`, `confidence:${environment.confidenceTier}`);
-      const topCat = Object.entries(environment.categories).sort((a, b) => b[1] - a[1])[0];
+      // Linear max scan O(n) — was O(n log n) sort for top-1
+      let topCat: [string, number] | undefined;
+      for (const entry of Object.entries(environment.categories) as Array<[string, number]>) {
+        if (!topCat || entry[1] > topCat[1]) topCat = entry;
+      }
       thought = `Synthesizing cluster density for ${cityStr} (${environment.locationSource}, ${environment.confidenceTier}). Dominant sector: ${topCat ? topCat[0] : "business"}. Formulating commercial corridor description.`;
       if (topCat && topCat[1] > 0.6) {
         text = `You are surrounded by a high-density ${topCat[0]} and commercial corridor with complex operational workflows.`;
@@ -237,6 +251,7 @@ export function generateDeterministicNarrative(
       }
       confidence = 0.65;
       break;
+    }
 
     case "opportunity":
       evidenceUsed.push(`envCategory:${topHypothesis?.problemKey || "operations"}`);
@@ -245,8 +260,12 @@ export function generateDeterministicNarrative(
       confidence = 0.75;
       break;
 
-    case "interaction":
-      const topTopic = Object.entries(behavior.topicsOfInterest).sort((a, b) => b[1] - a[1])[0];
+    case "interaction": {
+      // Linear max scan O(n) — was O(n log n) sort for top-1
+      let topTopic: [string, number] | undefined;
+      for (const entry of Object.entries(behavior.topicsOfInterest) as Array<[string, number]>) {
+        if (!topTopic || entry[1] > topTopic[1]) topTopic = entry;
+      }
       thought = `Evaluating behavioral telemetry: reading depth ${(behavior.readingDepthScore * 100).toFixed(0)}%, topics of interest (${Object.keys(behavior.topicsOfInterest).join(", ") || "pipeline"}). Reflecting focused exploration.`;
       if (topTopic) {
         evidenceUsed.push(`topic:${topTopic[0]} (${(topTopic[1] * 100).toFixed(0)}%)`);
@@ -257,6 +276,7 @@ export function generateDeterministicNarrative(
       }
       confidence = 0.82;
       break;
+    }
 
     case "synthesis":
       evidenceUsed.push(`hypothesis:${topHypothesis?.title || "Workflow"}`, `confidence:${(topHypothesis?.confidence || 0.85) * 100}%`);
@@ -285,6 +305,12 @@ export function generateDeterministicNarrative(
   };
 }
 
+const FORBIDDEN_PATTERNS: readonly string[] = [
+  "whatsapp", "gmail", "instagram", "browser history", "other tabs",
+  "notification", "private files", "call log", "sms",
+  "depression", "mental health", "diagnos",
+];
+
 /**
  * Validates model output against strict anti-hallucination and privacy rules
  */
@@ -292,23 +318,7 @@ export function validateNarrativeOutput(rawText: string): { valid: boolean; reas
   const { thought, text } = extractThoughtAndNarrative(rawText);
   const combinedLower = (rawText + " " + text + " " + thought).toLowerCase();
 
-  // Banned surveillance claims
-  const forbiddenPatterns = [
-    "whatsapp",
-    "gmail",
-    "instagram",
-    "browser history",
-    "other tabs",
-    "notification",
-    "private files",
-    "call log",
-    "sms",
-    "depression",
-    "mental health",
-    "diagnos",
-  ];
-
-  for (const pattern of forbiddenPatterns) {
+  for (const pattern of FORBIDDEN_PATTERNS) {
     if (combinedLower.includes(pattern)) {
       return { valid: false, reason: `Forbidden pattern detected: ${pattern}` };
     }

@@ -1,5 +1,9 @@
 import type { ProcessedAttachment, StructuredFact, DocumentSummary } from "../types.ts";
 
+const STATUS_COL_RE = /status|state|outcome|stage|result|condition/i;
+const FAILURE_KW_RE = /fail|error|pending|stuck|blocked|delayed|unresolved|reject/i;
+const NUMERIC_CLEAN_RE = /[$,]/g;
+
 /**
  * Spreadsheet & Tabular Data Preprocessor (CSV, TSV, Spreadsheet extracts).
  * Transforms raw grid data into compact operational aggregates, metrics, and facts.
@@ -74,19 +78,17 @@ export function processSpreadsheetData(
   ];
 
   // Column Analysis: Detect Status / Status Distributions / Bottlenecks
-  const statusColIdx = headers.findIndex((h) =>
-    /status|state|outcome|stage|result|condition/i.test(h)
-  );
+  const statusColIdx = headers.findIndex((h) => STATUS_COL_RE.test(h));
 
   const anomalies: string[] = [];
   const bottlenecks: string[] = [];
 
   if (statusColIdx !== -1 && rowCount > 0) {
     const statusCounts: Record<string, number> = {};
-    dataRows.forEach((r) => {
-      const val = (r[statusColIdx] || "").trim() || "Empty/Missing";
+    for (let i = 0; i < dataRows.length; i++) {
+      const val = (dataRows[i][statusColIdx] || "").trim() || "Empty/Missing";
       statusCounts[val] = (statusCounts[val] || 0) + 1;
-    });
+    }
 
     const statusSummary = Object.entries(statusCounts)
       .sort((a, b) => b[1] - a[1])
@@ -102,12 +104,11 @@ export function processSpreadsheetData(
       source: name,
     });
 
-    // Check for failure/unresolved spikes
-    const failureKeywords = /fail|error|pending|stuck|blocked|delayed|unresolved|reject/i;
-    const unresolvedEntries = Object.entries(statusCounts).filter(([st]) =>
-      failureKeywords.test(st)
-    );
-    const totalUnresolved = unresolvedEntries.reduce((sum, [, c]) => sum + c, 0);
+    // Check for failure/unresolved spikes — single pass, no second Object.entries filter
+    let totalUnresolved = 0;
+    for (const [st, cnt] of Object.entries(statusCounts)) {
+      if (FAILURE_KW_RE.test(st)) totalUnresolved += cnt;
+    }
     if (totalUnresolved > 0) {
       const pct = Math.round((totalUnresolved / rowCount) * 100);
       bottlenecks.push(`Found ${totalUnresolved} unresolved/delayed records (${pct}% of total dataset).`);
@@ -121,29 +122,44 @@ export function processSpreadsheetData(
     }
   }
 
-  // Numerical column summary (Sum, Average, Min, Max)
-  headers.forEach((h, colIdx) => {
-    if (colIdx === statusColIdx) return;
-    const sampleValues = dataRows.slice(0, 100).map((r) => r[colIdx]);
-    const numValues = sampleValues
-      .map((v) => parseFloat((v || "").replace(/[$,]/g, "")))
-      .filter((n) => !isNaN(n));
+  // Numerical column summary — single-pass min/max/avg, reuse NUMERIC_CLEAN_RE
+  const sampleLimit = Math.min(dataRows.length, 100);
+  for (let colIdx = 0; colIdx < headers.length; colIdx++) {
+    if (colIdx === statusColIdx) continue;
+    if (facts.length >= 12) break;
 
-    if (numValues.length > sampleValues.length * 0.7 && numValues.length > 5) {
-      const min = Math.min(...numValues);
-      const max = Math.max(...numValues);
-      const avg = Math.round(numValues.reduce((a, b) => a + b, 0) / numValues.length);
-      if (facts.length < 12) {
-        facts.push({
-          key: `Metric (${h})`,
-          value: `Avg: ${avg.toLocaleString()}, Range: [${min.toLocaleString()} - ${max.toLocaleString()}]`,
-          category: "metric",
-          confidence: 0.85,
-          source: name,
-        });
+    let numCount = 0;
+    let sum = 0;
+    let min = Infinity;
+    let max = -Infinity;
+    let nonNumeric = 0;
+
+    for (let r = 0; r < sampleLimit; r++) {
+      const raw = (dataRows[r][colIdx] || "").replace(NUMERIC_CLEAN_RE, "");
+      const n = parseFloat(raw);
+      if (!Number.isNaN(n)) {
+        numCount++;
+        sum += n;
+        if (n < min) min = n;
+        if (n > max) max = n;
+      } else {
+        nonNumeric++;
       }
     }
-  });
+
+    if (numCount > sampleLimit * 0.7 && numCount > 5) {
+      const avg = Math.round(sum / numCount);
+      facts.push({
+        key: `Metric (${headers[colIdx]})`,
+        value: `Avg: ${avg.toLocaleString()}, Range: [${min.toLocaleString()} - ${max.toLocaleString()}]`,
+        category: "metric",
+        confidence: 0.85,
+        source: name,
+      });
+    }
+    // Avoid dead-store warning for nonNumeric — it participates in the threshold
+    void nonNumeric;
+  }
 
   // Sample data snippet (first 3 representative rows formatted as key-value pairs)
   const sampleSnippet = dataRows

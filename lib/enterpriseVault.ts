@@ -71,7 +71,7 @@ const MIN_CAREER_MESSAGE_LENGTH = 20;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^[+()\-.\s0-9]{7,24}$/;
-const roleTrackValues: CareerRoleTrack[] = ["internship", "full-time"];
+const ROLE_TRACK_SET: ReadonlySet<string> = new Set<string>(["internship", "full-time"]);
 
 declare global {
   var leadVaultMemory: LeadVaultRecord[] | undefined;
@@ -143,7 +143,7 @@ export function validateLeadVaultInsert(payload: unknown): LeadVaultValidationRe
     if (!phonePattern.test(phone) || phone.length > MAX_PHONE_LENGTH) {
       errors.push("phone must be a valid contact number.");
     }
-    if (!roleTrackValues.includes(roleTrack as CareerRoleTrack)) {
+    if (!ROLE_TRACK_SET.has(roleTrack)) {
       errors.push("roleTrack must be either internship or full-time.");
     }
     if (!isValidHttpUrl(portfolioUrl)) {

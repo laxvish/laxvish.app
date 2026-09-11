@@ -1,5 +1,9 @@
 import type { ProcessedAttachment, StructuredFact, DocumentSummary } from "../types.ts";
 
+const KV_RE = /^([A-Za-z0-9\s_\-]{3,30}):\s*(.+)$/;
+const VOLUME_RE = /(\d+[\d,]*\+?\s*(?:users|employees|records|tickets|leads|calls|transactions|orders))/i;
+const HEADING_PREFIX_RE = /^[#=\-\s]+/;
+
 /**
  * Text & Code Preprocessor (TXT, MD, JSON, LOG).
  * Normalizes unstructured text, extracts operational facts and generates a compact summary.
@@ -59,42 +63,45 @@ export function processTextFile(
     }
   }
 
-  // Extract Markdown Headings / Sections
-  lines.forEach((line) => {
+  // Single-pass heading + KV extraction
+  let hasVolumeFact = false;
+  for (const line of lines) {
     if (line.startsWith("#") || line.startsWith("==") || line.startsWith("--")) {
-      const heading = line.replace(/^[#=\-\s]+/, "").trim();
-      if (heading && keySections.length < 8) {
-        keySections.push(heading);
-      }
+      const heading = line.replace(HEADING_PREFIX_RE, "").trim();
+      if (heading && keySections.length < 8) keySections.push(heading);
     }
 
-    // Extract explicit Key: Value pairs
-    const kvMatch = line.match(/^([A-Za-z0-9\s_\-]{3,30}):\s*(.+)$/);
-    if (kvMatch && facts.length < 15) {
-      const key = kvMatch[1].trim();
-      const val = kvMatch[2].trim();
-      if (val.length > 0 && val.length < 150) {
-        facts.push({
-          key,
-          value: val,
-          category: categorizeFactKey(key),
-          confidence: 0.9,
-          source: name,
-        });
+    if (facts.length < 15) {
+      const kvMatch = line.match(KV_RE);
+      if (kvMatch) {
+        const key = kvMatch[1].trim();
+        const val = kvMatch[2].trim();
+        if (val.length > 0 && val.length < 150) {
+          if (key.toLowerCase().includes("volume")) hasVolumeFact = true;
+          facts.push({
+            key,
+            value: val,
+            category: categorizeFactKey(key),
+            confidence: 0.9,
+            source: name,
+          });
+        }
       }
     }
-  });
+  }
 
-  // Extract common metric or volume patterns (e.g., "5000 users", "SLA: 2 hours", "10k records/day")
-  const volumeMatch = content.match(/(\d+[\d,]*\+?\s*(?:users|employees|records|tickets|leads|calls|transactions|orders))/i);
-  if (volumeMatch && !facts.some((f) => f.key.toLowerCase().includes("volume"))) {
-    facts.push({
-      key: "Detected Operational Volume",
-      value: volumeMatch[1],
-      category: "metric",
-      confidence: 0.85,
-      source: name,
-    });
+  // Volume pattern — reuse hasVolumeFact instead of facts.some(…toLowerCase) O(n) scan
+  if (!hasVolumeFact) {
+    const volumeMatch = content.match(VOLUME_RE);
+    if (volumeMatch) {
+      facts.push({
+        key: "Detected Operational Volume",
+        value: volumeMatch[1],
+        category: "metric",
+        confidence: 0.85,
+        source: name,
+      });
+    }
   }
 
   const summary: DocumentSummary = {

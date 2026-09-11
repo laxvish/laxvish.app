@@ -59,14 +59,18 @@ export async function POST(request: NextRequest) {
         };
       }
 
-      // Process discrete events
+      // Dedup via Sets — O(1) vs Array.includes O(n) per event; arrays can grow unbounded
+      const ctaSet = new Set(graph.behavior.ctasClicked);
+      const querySet = new Set(graph.behavior.searchQueries);
       for (const ev of events) {
         if (ev.type === "cta_click" && typeof ev.value === "string") {
-          if (!graph.behavior.ctasClicked.includes(ev.value)) {
+          if (!ctaSet.has(ev.value)) {
+            ctaSet.add(ev.value);
             graph.behavior.ctasClicked.push(ev.value);
           }
         } else if (ev.type === "search_query" && typeof ev.value === "string") {
-          if (!graph.behavior.searchQueries.includes(ev.value)) {
+          if (!querySet.has(ev.value)) {
+            querySet.add(ev.value);
             graph.behavior.searchQueries.push(ev.value);
             graph.direct.promptQueries.push(ev.value);
           }
@@ -95,8 +99,11 @@ export async function POST(request: NextRequest) {
       graph.predictedSolutions = predictedSolutions;
 
       const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-      await persistContextSession(graph, clientIp);
-      await persistEvents(sessionId, events);
+      // Independent DB writes — run concurrently instead of sequentially
+      await Promise.all([
+        persistContextSession(graph, clientIp),
+        persistEvents(sessionId, events),
+      ]);
 
       return NextResponse.json({
         ok: true,
